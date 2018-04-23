@@ -1,0 +1,3 @@
+[submodule "trc"]
+	path = trc
+	url = git@github.com:rvolosatovs/trc.git
