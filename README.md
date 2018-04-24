@@ -4,5 +4,5 @@
 A remote control interface used for Soccer Robot demonstration.
 
 # Documentation
-- Coding guidelines are in [CONTIBUTING.md](CONTIBUTING.md)
+- Coding guidelines are in [CONTRIBUTING.md](CONTRIBUTING.md)
 - Setting up a development environment is documented in [DEVELOPMENT.md](DEVELOPMENT.md)
