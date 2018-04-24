@@ -10,7 +10,7 @@ On macOS using [Homebrew](https://brew.sh):
 brew install go node yarn
 ```
 
-On Ubuntu (or Ubuntu [using the Windows Subsystem for Linux](https://www.microsoft.com/nl-NL/store/p/ubuntu/9nblggh4msv6?rtc=1)):
+On Ubuntu (or Ubuntu [using the Windows 10 Subsystem for Linux](https://www.microsoft.com/nl-NL/store/p/ubuntu/9nblggh4msv6?rtc=1)):
 
 ```sh
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -27,6 +27,13 @@ curl -sS https://dl.google.com/go/go1.10.1.linux-amd64.tar.gz -o go1.10.1.linux-
 sudo tar -C /usr/local -xzf go1.10.1.linux-amd64.tar.gz
 sudo ln -s /usr/local/go/bin/* /usr/local/bin
 ```
+
+On Windows:
+
+- Install Go from [official website](https://golang.org/dl/).
+- Install Make from e.g. [here](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=datapacket&download=).
+- Install Node.js from [official website](https://nodejs.org/en/download/current/).
+- Install Yarn from [official website](https://yarnpkg.com/lang/en/docs/install/#windows-stable).
 
 ### Getting started with Go Development
 
