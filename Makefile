@@ -1,5 +1,5 @@
 SHELL = /usr/bin/env bash
-BINDIR ?= bin
+BINDIR ?= release
 GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
 
 all: soccer-robot-remote
