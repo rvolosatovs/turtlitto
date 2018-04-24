@@ -1,6 +1,7 @@
-[submodule "trc"]
-	path = trc
-	url = git@github.com:rvolosatovs/trc.git
 [submodule "docs"]
 	path = docs
 	url = https://git.overleaf.com/15730722njrbbxmmphnh
+
+[submodule "turtle2"]
+	path = turtle2
+	url = git@github.com:rvolosatovs/turtle2.git
