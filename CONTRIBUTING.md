@@ -118,11 +118,11 @@ Follow the [official go guidelines](https://github.com/golang/go/wiki/CodeReview
 | :------------------: | :-----: | :-----------------------------------------------------------: |
 | context              | ctx     | context.Context                                               |
 | mutex                | mu      | sync.Mutex                                                    |
-| configuration        | conf    | github.com/TheThingsNetwork/ttn/pkg/config.Config             |
-| logger               | logger  | github.com/TheThingsNetwork/ttn/pkg/log.Logger                |
-| message              | msg     | github.com/TheThingsNetwork/ttn/api/gateway.UplinkMessage     |
-| status               | st      | github.com/TheThingsNetwork/ttn/api/gateway.Status            |
-| server               | srv     | github.com/TheThingsNetwork/ttn/pkg/network-server.Server     |
+| configuration        | conf    |                                                               |
+| logger               | logger  | log.Logger                                                    |
+| message              | msg     |                                                               |
+| status               | st      |                                                               |
+| server               | srv     |                                                               |
 | ID                   | id      | string                                                        |
 | counter              | cnt     | int                                                           |
 
@@ -138,6 +138,6 @@ In case one of the words specifies the meaning of the variable in a specific lan
 
 ### Comments
 
-Code should be as self-explanatory as possible. However, comments should be used to respect Go formatting guidelines, to generate insightful documentation with [Godoc](https://godoc.org/github.com/TheThingsNetwork/ttn), and to explain what can not be expressed by pure code. Comments should be English sentences, and documentation-generating comments should be closed by a period. Comments can also be used to indicate steps to take in the future (*TODOs*).
+Code should be as self-explanatory as possible. However, comments should be used to respect Go formatting guidelines and to explain what can not be expressed by pure code. Comments should be English sentences, and documentation-generating comments should be closed by a period. Comments can also be used to indicate steps to take in the future (*TODOs*).
 
 + In **Go files**, comments should be added according to `golint` requirements and [Effective Go guidelines](https://golang.org/doc/effective_go.html#commentary), especially in regards to commenting exported packages, types and variables.
