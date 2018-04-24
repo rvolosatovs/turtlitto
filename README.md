@@ -3,8 +3,6 @@
 # Soccer Robot Remote
 A remote control interface used for Soccer Robot demonstration.
 
-# Development
-_Note the `--recursive` flag!_
-```sh
-    git clone --recursive git@github.com:rvolosatovs/turtlitto.git
-```
+# Documentation
+- Coding guidelines are in [STYLE.md](STYLE.md)
+- Setting up a development environment is documented in [DEVELOPMENT.md](DEVELOPMENT.md)
