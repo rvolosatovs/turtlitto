@@ -1,4 +1,4 @@
-# The Things Network Stack Development
+# Soccer Robot Remote Development
 
 ## Development Environment
 
@@ -97,7 +97,7 @@ make js.test
 
 #### Building
 
-There's one binary to be built: the `ttn-example` binary, which holds an example component for the stack.
+There's one binary to be built: the `soccer-robot-remote` binary, which holds the remote control for the soccer robots.
 
 To build it run:
 
