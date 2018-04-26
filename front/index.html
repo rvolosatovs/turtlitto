@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>Turtle love</title>
+    <script language="javascript">
+      var conn;
+
+      function createSocket(port) {
+        conn = new WebSocket('ws://localhost:'+port+'/commands');
+        conn.onmessage = (e) => console.log("Got message:" + e.data);
+        conn.onclose = (e) => console.log("Closed socket with code " + e.code);
+      }
+
+      function sendMessage(msg) {
+        conn.send(msg);
+      }
+
+    </script>
+  </head>
+  <body>
+    <p>Open JS console and observe</p><br>
+    <form name="form" action="" method="GET">
+      Port:
+      <input type="text" name="port" value="4242">
+      <input type="button" name="create-btn" value="Create socket" onclick="createSocket(this.form.port.value)">
+      <br>
+      Message:
+      <input type="text" name="message" value="Yo sup">
+      <input type="button" name="send-btn" value="Send message" onclick="sendMessage(this.form.message.value)">
+    </form>
+    </body>
+  </html>
