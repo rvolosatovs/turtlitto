@@ -6,6 +6,8 @@ all: soccer-robot-remote
 
 deps:
 	$(info Checking development deps...)
+	@command -v go > /dev/null || { printf 'Please install go (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
+	@command -v yarn > /dev/null || { printf 'Please install yarn (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
 	@command -v dep > /dev/null || go get -u -v github.com/golang/dep/cmd/dep
 	$(info Syncing go deps...)
 	@dep ensure -v
