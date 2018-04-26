@@ -48,7 +48,7 @@ Now that your Go development environment is ready, it strongly recommended to ge
 ### Getting started with development
 _Note the `--recursive` flag!_
 ```sh
-git clone --recursive git@github.com:rvolosatovs/turtlitto.git
+git clone --recursive git@github.com:rvolosatovs/turtlitto.git $GOPATH/github.com/rvolosatovs/turtlitto
 ```
 
 All development is done in this directory.
