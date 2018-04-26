@@ -4,12 +4,14 @@
 
 The development environment heavily relies on [`make`](https://www.gnu.org/software/make/). Under the hood, `make` calls other tools such as `go`, `yarn` etc. Let's first make sure you have `go`, `node` and `yarn`:
 
-On macOS using [Homebrew](https://brew.sh):
+### MacOS
+Using [Homebrew](https://brew.sh):
 
 ```sh
 brew install go node yarn
 ```
 
+### Linux
 On Ubuntu (or Ubuntu [using the Windows 10 Subsystem for Linux](https://www.microsoft.com/nl-NL/store/p/ubuntu/9nblggh4msv6?rtc=1)):
 
 ```sh
@@ -28,8 +30,7 @@ sudo tar -C /usr/local -xzf go1.10.1.linux-amd64.tar.gz
 sudo ln -s /usr/local/go/bin/* /usr/local/bin
 ```
 
-On Windows:
-
+### Windows
 - Install Go from [official website](https://golang.org/dl/).
 - Install Make from e.g. [here](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=datapacket&download=).
 - Install Node.js from [official website](https://nodejs.org/en/download/current/).
@@ -37,7 +38,7 @@ On Windows:
 
 ### Getting started with Go Development
 
-_Note, that the commands should be executed in a *bash* shell(it is installed by default with git on Windows)_
+_Note, that the commands should be executed in a **bash** shell(it is installed by default with git on Windows)_
 
 We will first need a Go workspace. The Go workspace is a folder that contains the following sub-folders:
 
@@ -45,11 +46,12 @@ We will first need a Go workspace. The Go workspace is a folder that contains th
 - `pkg` which contains compiled package objects
 - `bin` which contains binary executables
 
-From now on this folder is referred to as `$GOPATH`. By default, Go assumes that it's in `$HOME/go`, but to be sure that everything works correctly, you can add the following to your profile (in `$HOME/.profile`):
+From now on this folder is referred to as `$GOPATH`. By default, Go assumes that it's in `$HOME/go`.
+Execute this to explicitly setup `$GOPATH` and add `$GOPATH/bin` to your `$PATH`.
 
 ```sh
-export GOPATH="$(go env GOPATH)"
-export PATH="$PATH:$GOPATH/bin"
+printf 'export GOPATH="$(go env GOPATH)"\nexport PATH="$PATH:$GOPATH/bin"' >> ~/.profile
+source ~/.profile
 ```
 
 Now that your Go development environment is ready, it strongly recommended to get familiar with Go by following the [Tour of Go](https://tour.golang.org/).
@@ -57,7 +59,7 @@ Now that your Go development environment is ready, it strongly recommended to ge
 ### Getting started with development
 _Note the `--recursive` flag!_
 ```sh
-git clone --recursive git@github.com:rvolosatovs/turtlitto.git $GOPATH/github.com/rvolosatovs/turtlitto
+git clone --recursive git@github.com:rvolosatovs/turtlitto.git $GOPATH/src/github.com/rvolosatovs/turtlitto
 ```
 
 All development is done in this directory.
