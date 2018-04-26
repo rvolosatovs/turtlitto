@@ -37,6 +37,8 @@ On Windows:
 
 ### Getting started with Go Development
 
+_Note, that the commands should be executed in a *bash* shell(it is installed by default with git on Windows)_
+
 We will first need a Go workspace. The Go workspace is a folder that contains the following sub-folders:
 
 - `src` which contains all source files
