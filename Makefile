@@ -1,6 +1,7 @@
 SHELL = /usr/bin/env bash
 BINDIR ?= release
 GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
+YARN ?= yarn --cwd front
 
 all: soccer-robot-remote
 
@@ -11,6 +12,7 @@ deps:
 	@command -v dep > /dev/null || go get -u -v github.com/golang/dep/cmd/dep
 	$(info Syncing go deps...)
 	@dep ensure -v
+	$(YARN) install
 
 vendor: deps
 
