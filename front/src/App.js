@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import "./App.css";
 import "normalize.css";
-import "flexboxgrid2/flexboxgrid2.css";
-import styled, { css } from "styled-components";
+import { Grid, Row, Col } from "react-flexbox-grid";
+import styled, { css, ThemeProvider } from "styled-components";
+import format from "date-fns/format";
+import theme from "./theme";
 
 import StartButton from "./StartButton";
-import NumberInput from "./NumberInput";
+import InputField from "./InputField";
 
 const Header = styled.header`
   height: 100vh;
-  background: linear-gradient(270deg, #196ebd, #01b0dd);
+  background: ${props => props.theme.background};
 `;
 
 const Content = styled.div`
@@ -23,14 +25,14 @@ const Content = styled.div`
 
 const Title = styled.h1`
   font-size: 3.6rem;
-  color: white;
+  color: ${props => props.theme.title};
 `;
 
 const MessagesList = styled.ul`
   list-style-type: none;
   height: 40rem; // dont do that
   margin: 0 auto;
-  border: 0.2rem solid #d3d3d3;
+  border: 0.2rem solid ${props => props.theme.secondary};
   background: white;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -44,22 +46,31 @@ const Message = styled.li`
   padding: 0.5rem 0;
 `;
 
-const InfoMessage = styled.li`
-  color: #bdbdbd;
+const InfoMessage = Message.extend`
+  color: ${props => props.theme.info};
 `;
 
 const ErrorMessage = Message.extend`
-  color: red;
+  color: ${props => props.theme.error};
+`;
+
+const SuccessMessage = Message.extend`
+  color: ${props => props.theme.success};
 `;
 
 const PingButton = styled.button`
   padding: 0.5rem 1rem;
   border-radius: 1.5rem;
   text-transform: uppercase;
-  border: 0.2rem solid ${props => (props.isDisabled ? "rgba(216,216,216, 0.5)" : "white")};
+  border: 0.2rem solid
+    ${props =>
+      props.isDisabled
+        ? props.theme.baseButtonDisabled
+        : props.theme.baseButton};
   font-size: 2rem;
   background: transparent;
-  color: ${props => (props.isDisabled ? "rgba(216,216,216, 0.5)" : "white")};
+  color: ${props =>
+    props.isDisabled ? props.theme.baseButtonDisabled : props.theme.baseButton};
   transition: 0.15s ease transform;
   margin-top: 2rem;
   max-width: 13rem;
@@ -79,8 +90,9 @@ const PingButton = styled.button`
   }
 `;
 
-const PortWrapper = styled.div`
+const ConnectionWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
@@ -88,14 +100,32 @@ const PortWrapper = styled.div`
   align-self: center;
 `;
 
-const PortConnectionInput = styled(NumberInput)`
-  width: 100%;
+const PortConnectionInput = styled(InputField)`
+  flex-basis: 70%;
+`;
+
+const HostConnectionInput = styled(InputField)`
+  flex-basis: 70%;
 `;
 
 const StartConnectionButton = styled(StartButton)`
-  margin-left: 1.5rem;
-  min-width: 7rem;
+  flex-basis: 25%;
 `;
+
+const MessageTypes = Object.freeze({ INFO: 1, ERROR: 2, SUCCESS: 3 });
+
+const styleOutputMessage = (message, key) => {
+  switch (message.type) {
+    case MessageTypes.INFO:
+      return <InfoMessage key={key}>{message.msg}</InfoMessage>;
+    case MessageTypes.ERROR:
+      return <ErrorMessage key={key}>{message.msg}</ErrorMessage>;
+    case MessageTypes.SUCCESS:
+      return <SuccessMessage key={key}>{message.msg}</SuccessMessage>;
+    default:
+      throw new Error("Unknown message type");
+  }
+};
 
 class App extends Component {
   constructor(props) {
@@ -104,86 +134,174 @@ class App extends Component {
     this.state = {
       messages: [],
       isConnected: false,
-      port: 4242
+      port: "4242",
+      host: "localhost"
     };
 
     this.connection = null;
   }
 
   onSendPing() {
+    this.connection.send("ping");
     this.setState(prev => {
-      return [...prev.messages, { msg: "Sent ping!", isError: false }];
+      return {
+        messages: [
+          ...prev.messages,
+          {
+            msg: `${format(new Date(), "HH:mm:ss:SS")} > Sent ping!`,
+            type: MessageTypes.INFO
+          }
+        ]
+      };
     });
   }
 
   onReceivePong(pong) {
     this.setState(prev => {
-      return [...prev.messages, { msg: `Received ${pong}!`, isError: false }];
+      return {
+        messages: [
+          ...prev.messages,
+          {
+            msg: `${format(new Date(), "HH:mm:ss:SS")} > Received ${pong}!`,
+            type: MessageTypes.INFO
+          }
+        ]
+      };
     });
   }
 
-  onError(error) {
+  onError(event) {
+    const errorMessage = `Cant establish connection to ws://${
+      this.state.host
+    }:${this.state.port}/commands`;
+
     this.setState(prev => {
-      return [...prev.messages, { msg: `Received ${error}!`, isError: true }];
+      return {
+        messages: [
+          ...prev.messages,
+          {
+            msg: `${format(
+              new Date(),
+              "HH:mm:ss:SS"
+            )} > Error: ${errorMessage}`,
+            type: MessageTypes.ERROR
+          }
+        ]
+      };
     });
   }
 
   onSocketClose(code) {
-    this.setState(prev => {
-      return [...prev.messages, { msg: `Socket closed with code ${code}!`, isError: true }];
-    });
+    if (this.state.isConnected) {
+      this.setState(prev => {
+        return {
+          messages: [
+            ...prev.messages,
+            {
+              msg: `${format(
+                new Date(),
+                "HH:mm:ss:SS"
+              )} > Socket closed with code ${code}!`,
+              type: MessageTypes.ERROR
+            }
+          ],
+          isConnected: !prev.isConnected
+        };
+      });
+    }
   }
 
-  handlePortChange(value) {
-    this.setState({ port: value });
+  onSocketOpen() {
+    if (!this.state.isConnected) {
+      this.setState(prev => {
+        return {
+          messages: [
+            {
+              msg: `${format(
+                new Date(),
+                "HH:mm:ss:SS"
+              )} > Connection established!`,
+              type: MessageTypes.SUCCESS
+            }
+          ],
+          isConnected: !prev.isConnected
+        };
+      });
+    }
   }
 
-  handleConnectionChange() {
+  handleConnectionChange(value, name) {
+    this.setState({ [name]: value });
+  }
+
+  handleConnectionStatusChange() {
     if (this.state.isConnected) {
       this.connection.close();
     } else {
-      this.connection = new WebSocket(`ws://localhost:${this.state.port}/commands`);
-      if (this.connection.readyState !== 1) {
-        this.onError("Websocket connection failed");
-        return;
+      try {
+        this.connection = new WebSocket(
+          `ws://${this.state.host}:${this.state.port}/commands`
+        );
+        this.connection.onclose = event => this.onSocketClose(event.code);
+        this.connection.onmessage = event => this.onReceivePong(event.data);
+        this.connection.onerror = event => this.onError(event);
+        this.connection.onopen = event => this.onSocketOpen();
+      } catch (e) {
+        this.onError(e.message);
       }
-
-      this.connection.onclose = event => this.onSocketClose(event.code);
-      this.connection.onmessage = event => this.onReceivePong(event.data);
-      this.connection.onerror = event => this.onError(event);
     }
-
-    this.setState(prev => {
-      return { isConnected: !prev.isConnected };
-    });
   }
 
   render() {
-    const { port, isConnected } = this.state;
+    const { port, isConnected, host } = this.state;
     return (
-      <Header>
-        <div className="container">
-          <div className="row center-xs">
-            <div className="col-xs-12">
-              <Content>
-                <Title className="App-title">Websocket example</Title>
-                <PortWrapper>
-                  <PortConnectionInput onChange={value => this.handlePortChange(value)} value={port} isEnabled={!isConnected} />
-                  <StartConnectionButton onClick={() => this.handleConnectionChange()} />
-                </PortWrapper>
-                <MessagesList>
-                  {this.state.messages.map((message, index) => {
-                    return message.isError ? <InfoMessage key={index}>↳ {message.msg}</InfoMessage> : <ErrorMessage key={index}>↳ {message.msg}</ErrorMessage>;
-                  })}
-                </MessagesList>
-                <PingButton disabled={!this.state.isConnected} isDisabled={!this.state.isConnected}>
-                  send ping
-                </PingButton>
-              </Content>
-            </div>
-          </div>
-        </div>
-      </Header>
+      <ThemeProvider theme={theme}>
+        <Header>
+          <Grid>
+            <Row center="xs">
+              <Col xs={12}>
+                <Content>
+                  <Title className="App-title">Websocket example</Title>
+                  <ConnectionWrapper>
+                    <PortConnectionInput
+                      onChange={value =>
+                        this.handleConnectionChange(value, "port")
+                      }
+                      value={port}
+                      isDisabled={isConnected}
+                      placeholder="Port"
+                    />
+                    <HostConnectionInput
+                      onChange={value =>
+                        this.handleConnectionChange(value, "host")
+                      }
+                      value={host}
+                      isDisabled={isConnected}
+                      placeholder="Host"
+                    />
+                    <StartConnectionButton
+                      onClick={() => this.handleConnectionStatusChange()}
+                      isRunning={isConnected}
+                    />
+                  </ConnectionWrapper>
+                  <MessagesList>
+                    {this.state.messages.map((message, index) => {
+                      return styleOutputMessage(message, index);
+                    })}
+                  </MessagesList>
+                  <PingButton
+                    onClick={() => this.onSendPing()}
+                    disabled={!this.state.isConnected}
+                    isDisabled={!this.state.isConnected}
+                  >
+                    send ping
+                  </PingButton>
+                </Content>
+              </Col>
+            </Row>
+          </Grid>
+        </Header>
+      </ThemeProvider>
     );
   }
 }
