@@ -12,7 +12,7 @@ deps:
 	@command -v dep > /dev/null || go get -u -v github.com/golang/dep/cmd/dep
 	$(info Syncing go deps...)
 	@dep ensure -v
-	$(YARN) install
+	@$(YARN) install
 
 vendor: deps
 
@@ -34,8 +34,8 @@ $(BINDIR)/soccer-robot-remote-linux-amd64: vendor
 
 soccer-robot-remote: $(BINDIR)/soccer-robot-remote-linux-amd64
 
-js.build: 
-	$(YARN) build
+js.build:
+	@$(YARN) build
 
 clean:
 	rm -rf vendor $(BINDIR)/soccer-robot-remote-linux-amd64
