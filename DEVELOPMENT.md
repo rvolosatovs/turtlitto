@@ -99,7 +99,7 @@ make deps
 The application consists of two modules, namely the go backend server and react application for the client side. There are several ways to run the application on your machine, but in order to make debugging easier, we will deploy them separately.
 
 1.  Build the application `make deps`.
-2.  Start the Go server `go run cmd/soccer-robot-remote/main.go -dev`.
+2.  Start the Go server `go run cmd/soccer-robot-remote/main.go`.
 3.  Open another terminal and move to the project folder.
 4.  Start webpack development server and host the react app `yarn start`.
 5.  Open `http://localhost:3000` in your browser.
