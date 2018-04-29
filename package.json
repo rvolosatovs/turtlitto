@@ -1,0 +1,10 @@
+{
+  "name": "srr-root",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "cd ./front && yarn start",
+    "build": "cd ./front && yarn build",
+    "test": "cd ./front && yarn test --env=jsdom"
+  }
+}

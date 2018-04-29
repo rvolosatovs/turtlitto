@@ -94,6 +94,18 @@ make deps
 └── vendor              dependencies managed by golang/dep - not added to git
 ```
 
+#### Local deployment
+
+The application consists of two modules, namely the go backend server and react application for the client side. There are several ways to run the application on your machine, but in order to make debugging easier, we will deploy them separately.
+
+1.  Build the application `make deps`.
+2.  Start the Go server `go run cmd/soccer-robot-remote/main.go -dev`.
+3.  Open another terminal and move to the project folder.
+4.  Start webpack development server and host the react app `yarn start`.
+5.  Open `http://localhost:3000` in your browser.
+
+This approach makes development and debugging much easier. Webpack development server has the hot module replacement feature, that will automatically show all changes in the browser without the need to rebuild the project. Also, the source code wont be obfuscated and minified.
+
 #### Testing
 
 For backend:

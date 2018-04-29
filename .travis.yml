@@ -2,3 +2,4 @@ language: go
 
 before_script:
   - make clean
+  - npm install -g yarn@latest
