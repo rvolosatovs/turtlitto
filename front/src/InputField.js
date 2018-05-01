@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const Input = styled.input`
@@ -13,31 +13,15 @@ const Input = styled.input`
   }
 `;
 
-class InputField extends Component {
-  state = {
-    value: this.props.value,
-    isDisabled: false
-  };
-
-  render() {
-    return (
-      <Input
-        className={this.props.className}
-        placeholder={this.props.placeholder}
-        onChange={event => this.props.onChange(event.target.value)}
-        type="text"
-        value={this.state.value}
-        disabled={this.state.isDisabled}
-      />
-    );
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      value: props.value,
-      isDisabled: props.isDisabled
-    });
-  }
-}
-
-export default InputField;
+export default props => {
+  return (
+    <Input
+      className={props.className}
+      placeholder={props.placeholder}
+      onChange={event => props.onChange(event.target.value)}
+      type="text"
+      value={props.value}
+      disabled={props.isDisabled}
+    />
+  );
+};
