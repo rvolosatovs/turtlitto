@@ -5,6 +5,7 @@
 The development environment heavily relies on [`make`](https://www.gnu.org/software/make/). Under the hood, `make` calls other tools such as `go`, `yarn` etc. Let's first make sure you have `go`, `node` and `yarn`:
 
 ### MacOS
+
 Using [Homebrew](https://brew.sh):
 
 ```sh
@@ -12,6 +13,7 @@ brew install go node yarn
 ```
 
 ### Linux
+
 On Ubuntu (or Ubuntu [using the Windows 10 Subsystem for Linux](https://www.microsoft.com/nl-NL/store/p/ubuntu/9nblggh4msv6?rtc=1)):
 
 ```sh
@@ -31,10 +33,11 @@ sudo ln -s /usr/local/go/bin/* /usr/local/bin
 ```
 
 ### Windows
-- Install Go from [official website](https://golang.org/dl/).
-- Install Make from e.g. [here](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=datapacket&download=).
-- Install Node.js from [official website](https://nodejs.org/en/download/current/).
-- Install Yarn from [official website](https://yarnpkg.com/lang/en/docs/install/#windows-stable).
+
+* Install Go from [official website](https://golang.org/dl/).
+* Install Make from e.g. [here](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=datapacket&download=).
+* Install Node.js from [official website](https://nodejs.org/en/download/current/).
+* Install Yarn from [official website](https://yarnpkg.com/lang/en/docs/install/#windows-stable).
 
 ### Getting started with Go Development
 
@@ -42,9 +45,9 @@ _Note, that the commands should be executed in a **bash** shell(it is installed 
 
 We will first need a Go workspace. The Go workspace is a folder that contains the following sub-folders:
 
-- `src` which contains all source files
-- `pkg` which contains compiled package objects
-- `bin` which contains binary executables
+* `src` which contains all source files
+* `pkg` which contains compiled package objects
+* `bin` which contains binary executables
 
 From now on this folder is referred to as `$GOPATH`. By default, Go assumes that it's in `$HOME/go`.
 Execute this to explicitly setup `$GOPATH` and add `$GOPATH/bin` to your `$PATH`.
@@ -57,7 +60,9 @@ source ~/.profile
 Now that your Go development environment is ready, it strongly recommended to get familiar with Go by following the [Tour of Go](https://tour.golang.org/).
 
 ### Getting started with development
+
 _Note the `--recursive` flag!_
+
 ```sh
 git clone --recursive git@github.com:rvolosatovs/turtlitto.git $GOPATH/src/github.com/rvolosatovs/turtlitto
 ```
@@ -109,11 +114,13 @@ This approach makes development and debugging much easier. Webpack development s
 #### Testing
 
 For backend:
+
 ```sh
 make go.test
 ```
 
 For frontend:
+
 ```sh
 make js.test
 ```

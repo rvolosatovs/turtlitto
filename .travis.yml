@@ -3,3 +3,10 @@ language: go
 before_script:
   - make clean
   - npm install -g yarn@latest
+  - make fmt
+  - make lint || true
+
+script:
+  - make test
+  - make
+  - git diff --exit-code

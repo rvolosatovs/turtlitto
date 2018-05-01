@@ -1,30 +1,38 @@
 SHELL = /usr/bin/env bash
 BINDIR ?= release
 GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
-YARN ?= yarn --cwd front
+YARN ?= yarn
 
-all: soccer-robot-remote js.build
+all: deps go.build js.build
 
 deps:
 	$(info Checking development deps...)
-	@command -v go > /dev/null || { printf 'Please install go (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
 	@command -v yarn > /dev/null || { printf 'Please install yarn (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
+	@command -v go > /dev/null || { printf 'Please install go (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
 	@command -v dep > /dev/null || go get -u -v github.com/golang/dep/cmd/dep
+	@command -v gometalinter > /dev/null || go get -u -v github.com/alecthomas/gometalinter
+	@command -v unconvert > /dev/null || gometalinter -i
+	@command -v misspell > /dev/null || gometalinter -i
 	$(info Syncing go deps...)
 	@dep ensure -v
 	@$(YARN) install
+	@$(YARN) --cwd front install
 
 vendor: deps
 
-fmt: go.fmt
-
-go.fmt:
+go.fmt: deps
 	$(info Formatting Go code...)
-	@go fmt ./...
+	@gofmt -w -s `find cmd pkg -name '*.go'`
+	@unconvert -safe -apply ./...
+	@misspell -w ./...
+
+go.lint: deps
+	$(info Linting Go code...)
+	@gometalinter --fast pkg cmd
 
 test: go.test
 
-go.test:
+go.test: deps
 	$(info Formatting Go code...)
 	@go test -cover -v ./...
 
@@ -34,10 +42,26 @@ $(BINDIR)/soccer-robot-remote-linux-amd64: vendor
 
 soccer-robot-remote: $(BINDIR)/soccer-robot-remote-linux-amd64
 
-js.build:
+go.build: soccer-robot-remote
+
+js.fmt: deps
+	$(info Formatting JS code...)
+	@$(YARN) run js.fmt
+
+js.build: deps
 	@$(YARN) build
+	@rm -rf $(BINDIR)/front
+	@mv ./front/build $(BINDIR)/front
+
+md.fmt: deps
+	$(info Formatting MD code...)
+	@$(YARN) run md.fmt
+
+lint: go.lint
+
+fmt: go.fmt js.fmt md.fmt
 
 clean:
-	rm -rf vendor $(BINDIR)/soccer-robot-remote-linux-amd64
+	rm -rf node_modules front/node_modules vendor $(BINDIR)/soccer-robot-remote-linux-amd64
 
-.PHONY: all soccer-robot-remote deps fmt test go.fmt go.test js.build clean
+.PHONY: all soccer-robot-remote deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean

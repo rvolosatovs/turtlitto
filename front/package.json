@@ -14,26 +14,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "rm -rf ../release/front && react-scripts build && mv build ../release/front",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js, jsx}": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.{css,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "devDependencies": {
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-prettier": "^2.6.0",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.0.5",
-    "prettier": "^1.12.1"
+    "fmt": "eslint --fix src/**/*.js"
   }
 }
