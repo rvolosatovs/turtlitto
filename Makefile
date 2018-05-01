@@ -7,9 +7,12 @@ all: deps go.build js.build
 
 deps:
 	$(info Checking development deps...)
-	@command -v go > /dev/null || { printf 'Please install go (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
 	@command -v yarn > /dev/null || { printf 'Please install yarn (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
+	@command -v go > /dev/null || { printf 'Please install go (follow the steps in DEVELOPMENT.md)\n'; exit 1; }
 	@command -v dep > /dev/null || go get -u -v github.com/golang/dep/cmd/dep
+	@command -v gometalinter > /dev/null || go get -u -v github.com/alecthomas/gometalinter
+	@command -v unconvert > /dev/null || gometalinter -i
+	@command -v misspell > /dev/null || gometalinter -i
 	$(info Syncing go deps...)
 	@dep ensure -v
 	@$(YARN) install
@@ -20,6 +23,8 @@ vendor: deps
 go.fmt: deps
 	$(info Formatting Go code...)
 	@gofmt -w -s `find cmd pkg -name '*.go'`
+	@unconvert -safe -apply ./...
+	@misspell -w ./...
 
 test: go.test
 
