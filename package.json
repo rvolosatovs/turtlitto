@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "yarn --cwd front start",
-    "build": "rm -rf release/front && yarn --cwd front build && mv build ../release/front",
+    "build": "yarn --cwd front build",
     "js.fmt": "yarn --cwd front fmt",
     "md.fmt": "prettier --write *.md",
     "test": "yarn --cwd front test",

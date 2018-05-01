@@ -3,7 +3,7 @@ BINDIR ?= release
 GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
 YARN ?= yarn
 
-all: deps fmt go.build js.build
+all: deps go.build js.build
 
 deps:
 	$(info Checking development deps...)
@@ -17,13 +17,13 @@ deps:
 
 vendor: deps
 
-go.fmt:
+go.fmt: deps
 	$(info Formatting Go code...)
 	@go fmt ./...
 
 test: go.test
 
-go.test:
+go.test: deps
 	$(info Formatting Go code...)
 	@go test -cover -v ./...
 
@@ -35,20 +35,22 @@ soccer-robot-remote: $(BINDIR)/soccer-robot-remote-linux-amd64
 
 go.build: soccer-robot-remote
 
-js.fmt:
+js.fmt: deps
 	$(info Formatting JS code...)
 	@$(YARN) run js.fmt
 
-js.build:
+js.build: deps
 	@$(YARN) build
+	@rm -rf $(BINDIR)/front
+	@mv ./front/build $(BINDIR)/front
 
-md.fmt:
+md.fmt: deps
 	$(info Formatting MD code...)
 	@$(YARN) run md.fmt
 
 fmt: go.fmt js.fmt md.fmt
 
 clean:
-	rm -rf vendor $(BINDIR)/soccer-robot-remote-linux-amd64
+	rm -rf node_modules front/node_modules vendor $(BINDIR)/soccer-robot-remote-linux-amd64
 
 .PHONY: all soccer-robot-remote deps fmt test go.build go.fmt go.test js.build js.fmt md.fmt clean
