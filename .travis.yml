@@ -3,7 +3,7 @@ language: go
 before_script:
   - make clean
   - npm install -g yarn@latest
-  - make fmt
+  - make fmt lint
 
 script:
   - make test
