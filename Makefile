@@ -26,6 +26,10 @@ go.fmt: deps
 	@unconvert -safe -apply ./...
 	@misspell -w ./...
 
+go.lint: deps
+	$(info Linting Go code...)
+	@gometalinter --fast pkg cmd
+
 test: go.test
 
 go.test: deps
@@ -53,9 +57,12 @@ md.fmt: deps
 	$(info Formatting MD code...)
 	@$(YARN) run md.fmt
 
+
+lint: go.lint
+
 fmt: go.fmt js.fmt md.fmt
 
 clean:
 	rm -rf node_modules front/node_modules vendor $(BINDIR)/soccer-robot-remote-linux-amd64
 
-.PHONY: all soccer-robot-remote deps fmt test go.build go.fmt go.test js.build js.fmt md.fmt clean
+.PHONY: all soccer-robot-remote deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
