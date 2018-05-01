@@ -1,6 +1,6 @@
-+ [Git branching workflow](#branching)
-+ [Commit conventions](#commit)
-+ [Coding conventions](#code)
+* [Git branching workflow](#branching)
+* [Commit conventions](#commit)
+* [Coding conventions](#code)
 
 ## <a name="branching"></a>Branching
 
@@ -8,10 +8,10 @@
 
 All branches shall have one of these names.
 
-- `master`: the default branch. This is a clean branch where reviewed, approved and CI passed pull requests are merged into. Merging to this branch is restricted to project maintainers
-- `fix/#-short-name` or `fix/short-name`: refers to a fix, preferably with issue number. The short name describes the bug or issue
-- `feature/#-short-name` or `feature/short-name`: (main) feature branch, preferably with issue number. The short name describes the feature
-  - `feature/#-short-name-part`: a sub scope of the feature in a separate branch, that is intended to merge into the main feature branch before the main feature branch is merged into `master`
+* `master`: the default branch. This is a clean branch where reviewed, approved and CI passed pull requests are merged into. Merging to this branch is restricted to project maintainers
+* `fix/#-short-name` or `fix/short-name`: refers to a fix, preferably with issue number. The short name describes the bug or issue
+* `feature/#-short-name` or `feature/short-name`: (main) feature branch, preferably with issue number. The short name describes the feature
+* `feature/#-short-name-part`: a sub scope of the feature in a separate branch, that is intended to merge into the main feature branch before the main feature branch is merged into `master`
 
 ### Scope
 
@@ -19,7 +19,7 @@ A fix, feature or issue branch should be **small and focused** and should be sco
 
 ### Pull requests and rebasing
 
-+ **Before** a reviewer is assigned, rebasing the branch to reduce the number of commits is highly advised. Self-review your own pull request: making the [commit](#commit) history clean, check for typos or incoherences, and make sure Continuous Integration passes.
+* **Before** a reviewer is assigned, rebasing the branch to reduce the number of commits is highly advised. Self-review your own pull request: making the [commit](#commit) history clean, check for typos or incoherences, and make sure Continuous Integration passes.
 
 Keep the commits to be merged clean: adhere to the commit message format defined below and instead of adding and deleting files within a pull request, drop or fix the concerning commit that added the file.
 
@@ -35,19 +35,20 @@ The subject contains the concerning component or topic and a concise message in 
 
 The component or topic is typically a few characters long and should always be present. Component names are e.g.:
 
-- `srr`: Soccer robot remote binary
-- `util`: utilities
-- `ci`: Continuous Integration instructions, e.g. Travis file
-- `doc`: documentation
-- `dev`: other non-functional development changes, e.g. Makefile, .gitignore, editor config
-- `*`: changes affecting all code, e.g. primitive types
+* `srr`: Soccer robot remote binary
+* `util`: utilities
+* `ci`: Continuous Integration instructions, e.g. Travis file
+* `doc`: documentation
+* `dev`: other non-functional development changes, e.g. Makefile, .gitignore, editor config
+* `*`: changes affecting all code, e.g. primitive types
 
 Changes that affect multiple components can be comma separated.
 
 Good commit messages:
-- `srr: Support -42 flag`
-- `make: Set version from git tag, close #123`
-- `srr,util: Fix WebSocket authentication`
+
+* `srr: Support -42 flag`
+* `make: Set version from git tag, close #123`
+* `srr,util: Fix WebSocket authentication`
 
 Make sure that commits are scoped to something meaningful and could, potentially, be merged individually.
 
@@ -71,15 +72,15 @@ Use **utf-8**, **LF** line endings, a **final newline** and **trim whitespace** 
 
 Many developers have strong opinions about using tabs vs spaces. We apply the following rules:
 
-- All `.go` files are indented using **tabs**
-- The `Makefile` and all `.make` files are indented using **tabs**
-- All other files are indented using **two spaces**
+* All `.go` files are indented using **tabs**
+* The `Makefile` and all `.make` files are indented using **tabs**
+* All other files are indented using **two spaces**
 
 #### Line length
 
-- If a line is longer than 80 columns, try to find a "natural" break
-- If a line is longer than 120 columns, insert a line break
-- In very special cases, longer lines are tolerated
+* If a line is longer than 80 columns, try to find a "natural" break
+* If a line is longer than 120 columns, insert a line break
+* In very special cases, longer lines are tolerated
 
 ### Linting
 
@@ -114,30 +115,30 @@ Follow the [official go guidelines](https://github.com/golang/go/wiki/CodeReview
 
 #### Single-word entities
 
-| entity               | name    | example type                                                  |
-| :------------------: | :-----: | :-----------------------------------------------------------: |
-| context              | ctx     | context.Context                                               |
-| mutex                | mu      | sync.Mutex                                                    |
-| configuration        | conf    |                                                               |
-| logger               | logger  | log.Logger                                                    |
-| message              | msg     |                                                               |
-| status               | st      |                                                               |
-| server               | srv     |                                                               |
-| ID                   | id      | string                                                        |
-| counter              | cnt     | int                                                           |
+|    entity     |  name  |  example type   |
+| :-----------: | :----: | :-------------: |
+|    context    |  ctx   | context.Context |
+|     mutex     |   mu   |   sync.Mutex    |
+| configuration |  conf  |                 |
+|    logger     | logger |   log.Logger    |
+|    message    |  msg   |                 |
+|    status     |   st   |                 |
+|    server     |  srv   |                 |
+|      ID       |   id   |     string      |
+|    counter    |  cnt   |       int       |
 
 #### 2-word entities
 
 In case both of the words have an implementation-specific meaning, the variable name is the combination of first letter of each word.
 
-| entity                                                  | name    |
-| :-----------------------------------------------------: | :-----: |
-| wait group                                              | wg      |
+|   entity   | name |
+| :--------: | :--: |
+| wait group |  wg  |
 
-In case one of the words specifies the meaning of the variable in a specific language construct context, the variable name is the combination of abbrevations of the words. 
+In case one of the words specifies the meaning of the variable in a specific language construct context, the variable name is the combination of abbrevations of the words.
 
 ### Comments
 
-Code should be as self-explanatory as possible. However, comments should be used to respect Go formatting guidelines and to explain what can not be expressed by pure code. Comments should be English sentences, and documentation-generating comments should be closed by a period. Comments can also be used to indicate steps to take in the future (*TODOs*).
+Code should be as self-explanatory as possible. However, comments should be used to respect Go formatting guidelines and to explain what can not be expressed by pure code. Comments should be English sentences, and documentation-generating comments should be closed by a period. Comments can also be used to indicate steps to take in the future (_TODOs_).
 
-+ In **Go files**, comments should be added according to `golint` requirements and [Effective Go guidelines](https://golang.org/doc/effective_go.html#commentary), especially in regards to commenting exported packages, types and variables.
+* In **Go files**, comments should be added according to `golint` requirements and [Effective Go guidelines](https://golang.org/doc/effective_go.html#commentary), especially in regards to commenting exported packages, types and variables.

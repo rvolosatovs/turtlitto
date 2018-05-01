@@ -57,7 +57,6 @@ md.fmt: deps
 	$(info Formatting MD code...)
 	@$(YARN) run md.fmt
 
-
 lint: go.lint
 
 fmt: go.fmt js.fmt md.fmt
