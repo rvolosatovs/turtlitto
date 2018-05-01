@@ -19,7 +19,7 @@ vendor: deps
 
 go.fmt: deps
 	$(info Formatting Go code...)
-	@go fmt ./...
+	@gofmt -w -s `find cmd pkg -name '*.go'`
 
 test: go.test
 
