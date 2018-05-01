@@ -3,3 +3,5 @@ release
 
 *.pdf
 *.jpg
+
+node_modules

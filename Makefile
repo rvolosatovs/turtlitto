@@ -1,9 +1,9 @@
 SHELL = /usr/bin/env bash
 BINDIR ?= release
 GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
-YARN ?= yarn --cwd front
+YARN ?= yarn
 
-all: soccer-robot-remote js.build
+all: deps fmt go.build js.build
 
 deps:
 	$(info Checking development deps...)
@@ -13,10 +13,9 @@ deps:
 	$(info Syncing go deps...)
 	@dep ensure -v
 	@$(YARN) install
+	@$(YARN) --cwd front install
 
 vendor: deps
-
-fmt: go.fmt
 
 go.fmt:
 	$(info Formatting Go code...)
@@ -34,10 +33,22 @@ $(BINDIR)/soccer-robot-remote-linux-amd64: vendor
 
 soccer-robot-remote: $(BINDIR)/soccer-robot-remote-linux-amd64
 
+go.build: soccer-robot-remote
+
+js.fmt:
+	$(info Formatting JS code...)
+	@$(YARN) run js.fmt
+
 js.build:
 	@$(YARN) build
+
+md.fmt:
+	$(info Formatting MD code...)
+	@$(YARN) run md.fmt
+
+fmt: go.fmt js.fmt md.fmt
 
 clean:
 	rm -rf vendor $(BINDIR)/soccer-robot-remote-linux-amd64
 
-.PHONY: all soccer-robot-remote deps fmt test go.fmt go.test js.build clean
+.PHONY: all soccer-robot-remote deps fmt test go.build go.fmt go.test js.build js.fmt md.fmt clean
