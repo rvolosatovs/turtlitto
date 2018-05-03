@@ -47,7 +47,7 @@ func NewClient(w io.Writer, r io.Reader) *Client {
 
 // do performs the command specified by typ with optional pld
 // and attempts to decode the contents of received Payload field into v, if v != nil.
-func (cl *Client) do(typ string, pld []byte, v interface{}) (err error) {
+func (cl *Client) do(typ string, pld interface{}, v interface{}) (err error) {
 	id, err := ulid.New(ulid.Now(), cl.entropy)
 	if err != nil {
 		return errors.Wrap(err, "failed to generate ULID")
@@ -62,15 +62,21 @@ func (cl *Client) do(typ string, pld []byte, v interface{}) (err error) {
 	req := &message{
 		Type:      typ,
 		MessageID: id,
-		Payload:   pld,
 	}
+	if pld != nil {
+		req.Payload, err = json.Marshal(pld)
+		if err != nil {
+			return errors.Wrap(err, "failed to marshal payload")
+		}
+	}
+
 	if err := cl.encoder.Encode(req); err != nil {
-		return errors.Wrap(err, "failed to encode command")
+		return errors.Wrap(err, "failed to encode request")
 	}
 
 	resp := &message{}
 	if err := cl.decoder.Decode(resp); err != nil {
-		return errors.Wrap(err, "failed to encode result")
+		return errors.Wrap(err, "failed to decode response")
 	}
 
 	if resp.MessageID != req.MessageID {
@@ -81,7 +87,7 @@ func (cl *Client) do(typ string, pld []byte, v interface{}) (err error) {
 	}
 
 	if v != nil {
-		return cl.decoder.Decode(v)
+		return json.Unmarshal(resp.Payload, v)
 	}
 	return nil
 }
@@ -93,7 +99,7 @@ func (cl *Client) SetState(s *turtlitto.TRCState) (*turtlitto.TRCState, error) {
 }
 
 // Status returns the current status of turtles as reported by TRC.
-func (cl *Client) Status() ([]*turtlitto.TurtleStatus, error) {
-	ret := &turtlitto.TurtleStatus{}
-	return ret, cl.do("get_status", ret)
+func (cl *Client) Status() (map[string]*turtlitto.TurtleStatus, error) {
+	ret := make(map[string]*turtlitto.TurtleStatus)
+	return ret, cl.do("get_status", nil, &ret)
 }

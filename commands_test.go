@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"testing"
 )
 
-func ExampleEncoding() {
+func ExampleTRCState(t *testing.T) {
 	b, err := json.Marshal(&TRCState{
 		Teams: map[string]*TeamState{
 			"foo": &TeamState{

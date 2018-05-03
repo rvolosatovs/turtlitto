@@ -4,9 +4,13 @@ import (
 	"encoding/hex"
 	"flag"
 	"log"
+	"net"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gorilla/websocket"
+	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
 const defaultAddr = ":4242" // default webserver address
@@ -14,6 +18,7 @@ const defaultAddr = ":4242" // default webserver address
 var (
 	httpAddr = flag.String("http", defaultAddr, "HTTP service address")
 	static   = flag.String("static", "", "Path to the static assets")
+	sock     = flag.String("socket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
 	upgrader = websocket.Upgrader{
 		EnableCompression: true,
 		CheckOrigin: func(r *http.Request) bool {
@@ -22,8 +27,19 @@ var (
 	}
 )
 
+func init() {
+	log.SetFlags(0)
+}
+
 func main() {
 	flag.Parse()
+
+	conn, err := net.Dial("unix", *sock)
+	if err != nil {
+		log.Fatalf("Failed to connect to unix socket at %s: %s", *sock, err)
+	}
+
+	_ = api.NewClient(conn, conn)
 
 	if *static != "" {
 		http.Handle("/", http.FileServer(http.Dir(*static)))
@@ -58,6 +74,9 @@ func main() {
 	})
 
 	if err := http.ListenAndServe(*httpAddr, nil); err != nil {
+		if cerr := conn.Close(); cerr != nil {
+			log.Printf("Failed to close socket at %s: %s", *sock, err)
+		}
 		log.Fatalf("Failed to listen on %s: %v", *httpAddr, err)
 	}
 }
