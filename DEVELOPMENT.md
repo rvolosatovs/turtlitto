@@ -73,6 +73,12 @@ All development is done in this directory.
 cd $GOPATH/src/github.com/rvolosatovs/turtlitto
 ```
 
+If you run Windows, execute the following command as well to account for the difference in the newline policy for Windows compared to Unix based systems:
+
+```sh
+git config --global core.autocrlf true
+```
+
 As most of the tasks will be managed by `make` we will first initialize the tooling. You might want to run this command from time to time:
 
 ```sh
