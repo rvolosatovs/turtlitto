@@ -3,6 +3,8 @@ BINDIR ?= release
 GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
 YARN ?= yarn
 
+GO_FILES = `find cmd pkg -name '*.go'`
+
 all: deps go.build js.build
 
 deps:
@@ -22,13 +24,13 @@ vendor: deps
 
 go.fmt: deps
 	$(info Formatting Go code...)
-	@gofmt -w -s `find cmd pkg -name '*.go'`
+	@gofmt -w -s $(GO_FILES)
 	@unconvert -safe -apply ./...
 	@misspell -w ./...
 
 go.lint: deps
 	$(info Linting Go code...)
-	@gometalinter --fast pkg cmd
+	@gometalinter --fast $(GO_FILES)
 
 test: go.test
 
