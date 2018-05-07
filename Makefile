@@ -2,6 +2,7 @@ SHELL = /usr/bin/env bash
 BINDIR ?= release
 GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
 YARN ?= yarn
+DOCKER_IMAGE_VERSION ?= "latest"
 
 GO_FILES = `find cmd pkg -name '*.go'`
 
@@ -61,7 +62,12 @@ md.fmt: deps
 
 lint: go.lint
 
+build: go.build js.build
+
 fmt: go.fmt js.fmt md.fmt
+
+docker: $(BINDIR)/front $(BINDIR)/soccer-robot-remote-linux-amd64
+	docker build -t rvolosatovs/srr:$(DOCKER_IMAGE_VERSION) .
 
 clean:
 	rm -rf node_modules front/node_modules vendor $(BINDIR)/soccer-robot-remote-linux-amd64
