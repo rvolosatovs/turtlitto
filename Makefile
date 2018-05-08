@@ -45,6 +45,12 @@ $(BINDIR)/soccer-robot-remote-linux-amd64: vendor
 
 soccer-robot-remote: $(BINDIR)/soccer-robot-remote-linux-amd64
 
+$(BINDIR)/relay-linux-amd64: vendor
+	$(info Compiling $@...)
+	@$(GOBUILD) -o $@ ./cmd/relay
+
+relay: $(BINDIR)/relay-linux-amd64
+
 go.build: soccer-robot-remote
 
 js.fmt: deps
