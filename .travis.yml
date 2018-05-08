@@ -1,10 +1,12 @@
 language: go
 go:
 - "1.10"
+
 go_import_path: github.com/rvolosatovs/turtlitto
 sudo: required
 services:
 - docker
+
 cache:
   directories:
   - $GOPATH/bin
@@ -31,4 +33,5 @@ script:
 
 after_success:
   - make docker
-  - ./travis-push.sh
+  - if [[ "${TRAVIS_BRANCH}" = "master" ]] || [[ "${TRAVIS_TAG}" ]]; then scripts/travis-push.sh; fi
+  - if [[ "${TRAVIS_BRANCH}" = "master" ]]; then scripts/redeploy.sh; fi
