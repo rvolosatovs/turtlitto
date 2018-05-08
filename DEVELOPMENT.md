@@ -79,7 +79,7 @@ If you run Windows, execute the following command as well to account for the dif
 git config --global core.autocrlf true
 ```
 
-As most of the tasks will be managed by `make` we will first initialize the tooling. You might want to run this command from time to time:
+Ensure the dependencies of the project are installed:
 
 ```sh
 make deps
@@ -105,18 +105,6 @@ make deps
 └── vendor              dependencies managed by golang/dep - not added to git
 ```
 
-#### Local deployment
-
-The application consists of two modules, namely the go backend server and react application for the client side. There are several ways to run the application on your machine, but in order to make debugging easier, we will deploy them separately.
-
-1.  Build the application `make deps`.
-2.  Start the Go server `go run cmd/soccer-robot-remote/main.go`.
-3.  Open another terminal and move to the project folder.
-4.  Start webpack development server and host the react app `yarn start`.
-5.  Open `http://localhost:3000` in your browser.
-
-This approach makes development and debugging much easier. Webpack development server has the hot module replacement feature, that will automatically show all changes in the browser without the need to rebuild the project. Also, the source code wont be obfuscated and minified.
-
 #### Testing
 
 For backend:
@@ -131,17 +119,42 @@ For frontend:
 make js.test
 ```
 
+For testing everything:
+
+```sh
+make test
+```
+
 #### Building
 
-There's one binary to be built: the `soccer-robot-remote` binary, which holds the remote control for the soccer robots.
+There's one binary to be built: the `soccer-robot-remote-linux-amd64`, which holds the remote control for the soccer robots and the frontend of the application.
 
-To build it run:
+To build those run:
 
+```sh
+make
 ```
-make soccer-robot-remote
+
+This will result in `release/soccer-robot-remote` and `release/front`generated.
+
+To build a Docker container run:
+
+```sh
+make docker
 ```
 
-This will result in `release/soccer-robot-remote-linux-amd64` generated (suffix can differ based on your architecture and operating system).
+You can later run the project using `docker-compose up` from the root of the project. It binds the web interface on `:4242` and assumes an active TRC socket at `.trc/trc.sock`.
+
+#### Local development
+
+The application consists of two modules, namely the go backend server and react application for the client side. There are several ways to run the application on your machine, but in order to make debugging easier, we will deploy them separately.
+
+1.  Start the Go server using `go run cmd/soccer-robot-remote/main.go -socket <unix-socket>` or `docker-compose up`.
+2.  Open another terminal and move to the project folder.
+3.  Start webpack development server and host the React app: `yarn start`.
+4.  Open `http://localhost:3000` in your browser(should happen automatically).
+
+This approach makes development and debugging much easier. Webpack development server has the hot module replacement feature, that will automatically show all changes in the browser without the need to rebuild the project. Also, the source code wont be obfuscated and minified.
 
 ## Frontend guidelines
 

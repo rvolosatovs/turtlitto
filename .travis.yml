@@ -1,4 +1,24 @@
 language: go
+go:
+- "1.10"
+
+go_import_path: github.com/rvolosatovs/turtlitto
+sudo: required
+services:
+- docker
+
+cache:
+  directories:
+  - $GOPATH/bin
+  - $GOPATH/pkg
+  - $GOPATH/src/github.com/golang # dep
+  - $GOPATH/src/github.com/alecthomas # gometalinter
+
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
 
 before_script:
   - make clean
@@ -7,6 +27,11 @@ before_script:
   - make lint || true
 
 script:
-  - make test
   - make
   - git diff --exit-code
+  - make test
+
+after_success:
+  - make docker
+  - if [[ "${TRAVIS_BRANCH}" = "master" ]] || [[ "${TRAVIS_TAG}" ]]; then scripts/travis-push.sh; fi
+  - if [[ "${TRAVIS_BRANCH}" = "master" ]]; then scripts/redeploy.sh; fi
