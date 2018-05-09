@@ -39,11 +39,11 @@ go.test: deps
 	$(info Formatting Go code...)
 	@go test -cover -v ./...
 
-$(BINDIR)/soccer-robot-remote-linux-amd64: vendor
+$(BINDIR)/srrs-linux-amd64: vendor
 	$(info Compiling $@...)
-	@$(GOBUILD) -o $@ ./cmd/soccer-robot-remote
+	@$(GOBUILD) -o $@ ./cmd/srrs
 
-soccer-robot-remote: $(BINDIR)/soccer-robot-remote-linux-amd64
+srrs: $(BINDIR)/srrs-linux-amd64
 
 $(BINDIR)/relay-linux-amd64: vendor
 	$(info Compiling $@...)
@@ -51,7 +51,7 @@ $(BINDIR)/relay-linux-amd64: vendor
 
 relay: $(BINDIR)/relay-linux-amd64
 
-go.build: soccer-robot-remote
+go.build: srrs
 
 js.fmt: deps
 	$(info Formatting JS code...)
@@ -72,10 +72,10 @@ build: go.build js.build
 
 fmt: go.fmt js.fmt md.fmt
 
-docker: $(BINDIR)/front $(BINDIR)/soccer-robot-remote-linux-amd64
+docker: $(BINDIR)/front $(BINDIR)/srrs-linux-amd64
 	docker build -t rvolosatovs/srr:$(DOCKER_IMAGE_VERSION) .
 
 clean:
-	rm -rf node_modules front/node_modules vendor $(BINDIR)/soccer-robot-remote-linux-amd64
+	rm -rf node_modules front/node_modules vendor $(BINDIR)/srrs-linux-amd64
 
-.PHONY: all soccer-robot-remote deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
+.PHONY: all srrs deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
