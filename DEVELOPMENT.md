@@ -97,7 +97,7 @@ make deps
 ├── README.md           general information about this project
 │   ...
 ├── cmd                 contains the different binaries
-│   └── srrs          contains the Soccer Robot Remote
+│   └── srrs            contains the Soccer Robot Remote Server
 ├── docs                contains the documentation
 ├── front               contains the frontend of the project
 ├── pkg                 contains all libraries used in the backend
