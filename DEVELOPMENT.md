@@ -97,7 +97,7 @@ make deps
 ├── README.md           general information about this project
 │   ...
 ├── cmd                 contains the different binaries
-│   └── soccer-robot-remote          contains the Soccer Robot Remote
+│   └── srrs          contains the Soccer Robot Remote
 ├── docs                contains the documentation
 ├── front               contains the frontend of the project
 ├── pkg                 contains all libraries used in the backend
@@ -127,7 +127,7 @@ make test
 
 #### Building
 
-There's one binary to be built: the `soccer-robot-remote-linux-amd64`, which holds the remote control for the soccer robots and the frontend of the application.
+There's one binary to be built: the `srrs-linux-amd64`, which holds the remote control for the soccer robots and the frontend of the application.
 
 To build those run:
 
@@ -135,7 +135,7 @@ To build those run:
 make
 ```
 
-This will result in `release/soccer-robot-remote` and `release/front`generated.
+This will result in `release/srrs` and `release/front`generated.
 
 To build a Docker container run:
 
@@ -149,7 +149,7 @@ You can later run the project using `docker-compose up` from the root of the pro
 
 The application consists of two modules, namely the go backend server and react application for the client side. There are several ways to run the application on your machine, but in order to make debugging easier, we will deploy them separately.
 
-1.  Start the Go server using `go run cmd/soccer-robot-remote/main.go -socket <unix-socket>` or `docker-compose up`.
+1.  Start the Go server using `go run cmd/srrs/main.go -socket <unix-socket>` or `docker-compose up`.
 2.  Open another terminal and move to the project folder.
 3.  Start webpack development server and host the React app: `yarn start`.
 4.  Open `http://localhost:3000` in your browser(should happen automatically).
