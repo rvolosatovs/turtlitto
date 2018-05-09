@@ -1,10 +1,9 @@
 package api
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"io"
-	"math/rand"
-	"time"
 
 	"github.com/oklog/ulid"
 	"github.com/pkg/errors"
@@ -41,8 +40,14 @@ func NewClient(w io.Writer, r io.Reader) *Client {
 	return &Client{
 		decoder: json.NewDecoder(r),
 		encoder: json.NewEncoder(w),
-		entropy: rand.New(newLockedSource(rand.NewSource(time.Now().UnixNano()))),
+		entropy: rand.Reader,
 	}
+}
+
+type message struct {
+	Type      string    `json:"type"`
+	MessageID ulid.ULID `json:"message_id"`
+	Payload   []byte    `json:"payload,omitempty"`
 }
 
 // do performs the command specified by typ with optional pld
@@ -51,12 +56,6 @@ func (cl *Client) do(typ string, pld interface{}, v interface{}) (err error) {
 	id, err := ulid.New(ulid.Now(), cl.entropy)
 	if err != nil {
 		return errors.Wrap(err, "failed to generate ULID")
-	}
-
-	type message struct {
-		Type      string    `json:"type"`
-		MessageID ulid.ULID `json:"message_id"`
-		Payload   []byte    `json:"payload,omitempty"`
 	}
 
 	req := &message{
@@ -92,14 +91,19 @@ func (cl *Client) do(typ string, pld interface{}, v interface{}) (err error) {
 	return nil
 }
 
-// SetState sets the state of TRC and returns the current TRC state.
-func (cl *Client) SetState(s *turtlitto.TRCState) (*turtlitto.TRCState, error) {
-	ret := &turtlitto.TRCState{}
-	return ret, cl.do("set_state", s, ret)
+// SendCommand sends executes a global command on the TRC.
+func (cl *Client) SendCommand(c turtlitto.Command) error {
+	return cl.do("command", c, nil)
 }
 
-// Status returns the current status of turtles as reported by TRC.
-func (cl *Client) Status() (map[string]*turtlitto.TurtleStatus, error) {
-	ret := make(map[string]*turtlitto.TurtleStatus)
+// SetState sets the state of turtles and returns the current turtle state.
+func (cl *Client) SetState(s map[string]*turtlitto.State) (map[string]*turtlitto.State, error) {
+	ret := make(map[string]*turtlitto.State, len(s))
+	return ret, cl.do("set_state", s, &ret)
+}
+
+// Status returns the current status of turtles.
+func (cl *Client) Status() (map[string]*turtlitto.State, error) {
+	ret := make(map[string]*turtlitto.State)
 	return ret, cl.do("get_status", nil, &ret)
 }

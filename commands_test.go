@@ -7,23 +7,13 @@ import (
 	"testing"
 )
 
-func ExampleTRCState(t *testing.T) {
-	b, err := json.Marshal(&TRCState{
-		Teams: map[string]*TeamState{
-			"foo": &TeamState{
-				Mode: "kick-off",
-			},
-			"bar": &TeamState{
-				Mode: "kick-on",
-			},
+func Example(t *testing.T) {
+	b, err := json.Marshal(map[string]*State{
+		"foo": &State{
+			Role: "goalkeeper",
 		},
-		Turtles: map[string]*TurtleState{
-			"foo": &TurtleState{
-				Role: "goalkeeper",
-			},
-			"bar": &TurtleState{
-				Role: "goalsaver",
-			},
+		"bar": &State{
+			Role: "goalsaver",
 		},
 	})
 	if err != nil {
