@@ -102,8 +102,8 @@ func (cl *Client) SetState(s map[string]*turtlitto.State) (map[string]*turtlitto
 	return ret, cl.do("set_state", s, &ret)
 }
 
-// Status returns the current status of turtles.
-func (cl *Client) Status() (map[string]*turtlitto.State, error) {
+// State returns the current state of turtles.
+func (cl *Client) State() (map[string]*turtlitto.State, error) {
 	ret := make(map[string]*turtlitto.State)
 	return ret, cl.do("get_status", nil, &ret)
 }
