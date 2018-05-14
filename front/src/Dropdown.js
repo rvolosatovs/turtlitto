@@ -7,13 +7,19 @@ import React from "react";
  * Props:
  *  - currentValue: the current value of this dropdown
  *  - values: the possible values of this dropdown
- *  - onChange: a function to call when an update is posted. If not provided, the dropdown menu becomes readonly
+ *  - onChange: a function to call when a selection is made
  *  - enabled: if the dropdown should be enabled
  */
 const Dropdown = props => {
   const { currentValue, values, onChange, enabled } = props;
   return (
-    <select value={currentValue} onChange={onChange} disabled={!enabled}>
+    <select
+      value={currentValue}
+      onChange={event => {
+        onChange(event.target.value);
+      }}
+      disabled={!enabled}
+    >
       {values.map(value => {
         return <option key={value}>{value}</option>;
       })}

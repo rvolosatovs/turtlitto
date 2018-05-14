@@ -303,7 +303,7 @@ class App extends Component {
                     onChange={value => {
                       console.log(value);
                     }}
-                    enabled={false}
+                    enabled={true}
                   />
                 </Content>
               </Col>
