@@ -33,10 +33,10 @@ go.lint: deps
 	$(info Linting Go code...)
 	@gometalinter --fast ./pkg/... ./cmd/...
 
-test: go.test
+test: go.test js.test
 
 go.test: deps
-	$(info Formatting Go code...)
+	$(info Testing Go code...)
 	@go test -cover -v ./...
 
 $(BINDIR)/srrs-linux-amd64: vendor
@@ -61,6 +61,10 @@ js.build: deps
 	@$(YARN) build
 	@rm -rf $(BINDIR)/front
 	@mv ./front/build $(BINDIR)/front
+
+js.test: deps
+	@$(info Testing JS code...)
+	@$(YARN) test --coverage
 
 md.fmt: deps
 	$(info Formatting MD code...)
