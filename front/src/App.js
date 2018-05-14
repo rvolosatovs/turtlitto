@@ -9,6 +9,8 @@ import theme from "./theme";
 import StartButton from "./StartButton";
 import InputField from "./InputField";
 import Dropdown from "./Dropdown";
+import RSSButton from "./RSSButton";
+import RSSSwitch from "./RSSSwitch";
 
 const Header = styled.header`
   height: 100vh;
@@ -306,6 +308,22 @@ class App extends Component {
                     enabled={true}
                   />
                 </Content>
+                <RSSButton
+                  buttonText={"hurrdurr Ahma Button"}
+                  onClick={() => {
+                    console.log("harrrr");
+                  }}
+                  enabled={true}
+                />
+                <RSSSwitch
+                  currentValue={true}
+                  buttonText={"hurrdurr Ahma Switch"}
+                  onChange={() => {
+                    console.log("hurrrr");
+                    this.currentValue = !this.currentValue;
+                  }}
+                  enabled={true}
+                />
               </Col>
             </Row>
           </Grid>
