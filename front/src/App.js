@@ -8,6 +8,7 @@ import theme from "./theme";
 
 import StartButton from "./StartButton";
 import InputField from "./InputField";
+import Dropdown from "./Dropdown";
 
 const Header = styled.header`
   height: 100vh;
@@ -296,6 +297,14 @@ class App extends Component {
                   >
                     send ping
                   </PingButton>
+                  <Dropdown
+                    values={["Henk", "Wessel"]}
+                    currentValue={"Wessel"}
+                    onChange={value => {
+                      console.log(value);
+                    }}
+                    enabled={false}
+                  />
                 </Content>
               </Col>
             </Row>
