@@ -2,15 +2,6 @@
   "name": "srr",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "date-fns": "^1.29.0",
-    "normalize.css": "^8.0.0",
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
-    "react-flexbox-grid": "^2.0.0",
-    "react-scripts": "^1.1.4",
-    "styled-components": "^3.2.6"
-  },
   "scripts": {
     "start": "yarn --cwd front start",
     "build": "yarn --cwd front build",
@@ -31,10 +22,15 @@
     ]
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.46.3",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.8.2",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.5",
     "prettier": "^1.12.1"
