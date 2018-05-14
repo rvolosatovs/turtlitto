@@ -5,3 +5,4 @@ release
 *.jpg
 
 node_modules
+yarn-error.log
