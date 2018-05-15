@@ -8,8 +8,8 @@ import React from "react";
  *
  */
 
-const RSSSwitch = props => {
-  const { currentValue, buttonText, onChange, enabled } = props;
+const SRRSwitch = props => {
+  const { currentValue, onChange, enabled } = props;
   return (
     <input
       type="checkbox"
@@ -20,11 +20,11 @@ const RSSSwitch = props => {
   );
 };
 
-RSSSwitch.propTypes = {
+SRRSwitch.propTypes = {
   currentValue: PropTypes.bool.isRequired,
   buttonText: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   enabled: PropTypes.bool.isRequired
 };
 
-export default RSSSwitch;
+export default SRRSwitch;

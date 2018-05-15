@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
+import styled from "styled-components";
 
 /**
  * Create a standard RSS Button
@@ -8,19 +9,19 @@ import React from "react";
  *
  */
 
-const RSSButton = props => {
+const SRRButton = props => {
   const { buttonText, onClick, enabled } = props;
   return (
-    <button onClick={onClick} disabled={!enabled}>
+    <button className={props.className} onClick={onClick} disabled={!enabled}>
       {buttonText}
     </button>
   );
 };
 
-RSSButton.propTypes = {
-  buttonText: PropTypes.string.isRequired,
+SRRButton.propTypes = {
+  buttonText: PropTypes.element.isRequired,
   onClick: PropTypes.func.isRequired,
   enabled: PropTypes.bool.isRequired
 };
 
-export default RSSButton;
+export default SRRButton;

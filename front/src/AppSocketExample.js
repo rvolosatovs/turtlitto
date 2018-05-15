@@ -9,8 +9,8 @@ import theme from "./theme";
 import StartButton from "./StartButton";
 import InputField from "./InputField";
 import Dropdown from "./Dropdown";
-import RSSButton from "./RSSButton";
-import RSSSwitch from "./RSSSwitch";
+import SRRButton from "./SRRButton";
+import SRRSwitch from "./SRRSwitch";
 
 const Header = styled.header`
   height: 100vh;
@@ -308,14 +308,14 @@ class AppSocketExample extends Component {
                     enabled={true}
                   />
                 </Content>
-                <RSSButton
+                <SRRButton
                   buttonText={"hurrdurr Ahma Button"}
                   onClick={() => {
                     console.log("harrrr");
                   }}
                   enabled={true}
                 />
-                <RSSSwitch
+                <SRRSwitch
                   currentValue={true}
                   buttonText={"hurrdurr Ahma Switch"}
                   onChange={() => {

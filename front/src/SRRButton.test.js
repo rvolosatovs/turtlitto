@@ -1,5 +1,5 @@
 import React from "react";
-import RSSButton from "./RSSButton";
+import SRRButton from "./SRRButton";
 import renderer from "react-test-renderer";
 
 const testFunc = () => {
@@ -9,7 +9,7 @@ const testFunc = () => {
 describe("Button can be clicked", () => {
   it("Test Button with Snapshot", () => {
     const Button = renderer.create(
-      <RSSButton buttonText={"hurrdurr"} onClick={testFunc()} enabled={true} />
+      <SRRButton buttonText={"hurrdurr"} onClick={testFunc()} enabled={true} />
     );
     let but = Button.toJSON();
     expect(but).toMatchSnapshot();
