@@ -1,0 +1,23 @@
+Component Layout SRRC
+
+App
+	SettingsScreen
+		Turtle
+			BatteryIndicator
+			LoadSoftwareButton
+			StatusGroup
+				VisionStatus
+				MotionStatus
+				WorldStatus
+			TurtleSettings
+				RoleDropdown
+				HomeDropdown
+				TeamDropdown
+		TurtleEnable
+	RefboxScreen
+		CommandButtons (2x, once for each color)
+		ModeDropdown
+	BottomBar
+		PlayButton
+		SwitchButton
+		StopButton
