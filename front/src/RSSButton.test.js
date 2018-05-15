@@ -1,5 +1,5 @@
 import React from "react";
-import RSSButton from "../RSSButton";
+import RSSButton from "./RSSButton";
 import renderer from "react-test-renderer";
 
 const testFunc = () => {

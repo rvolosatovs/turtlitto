@@ -1,5 +1,5 @@
 import React from "react";
-import Dropdown from "../Dropdown";
+import Dropdown from "./Dropdown";
 import renderer from "react-test-renderer";
 
 test("Dropdowns can be changed", () => {
@@ -42,12 +42,4 @@ test("Dropdowns can be disabled", () => {
   expect(value).toBe("test");
   tree.props.onChange({ target: { value: "test2" } });
   expect(value).toBe("test");
-});
-
-test("Dropdowns require a current value", () => {
-  expect(() => {
-    const component = renderer.create(
-      <Dropdown values={["a", "b"]} onChange={() => {}} enabled={true} />
-    );
-  }).toThrowErrorMatchingSnapshot();
 });

@@ -16,7 +16,7 @@ const Dropdown = props => {
     <select
       value={currentValue}
       onChange={event => {
-        onChange(event.target.value);
+        if (enabled) onChange(event.target.value);
       }}
       disabled={!enabled}
     >
