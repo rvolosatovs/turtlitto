@@ -39,12 +39,26 @@ const StopButton = styled(SRRButton)`
   font-size: 4vw;
 `;
 
-const SpecialP = styled.p`
+const AugmentedText = styled.p`
   margin: 0px;
   padding: 0px;
 `;
 
+const SendCommand = command => {};
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      //messages: [],
+      isConnected: false,
+      port: "4242",
+      host: "localhost"
+    };
+
+    this.connection = null;
+  }
   render() {
     return (
       <AppWrap>
@@ -61,21 +75,21 @@ class App extends Component {
 
         <Footer>
           <StartButton
-            buttonText={<SpecialP>&#9658;</SpecialP>}
+            buttonText={<AugmentedText>&#9658;</AugmentedText>}
             onClick={() => {
               console.log("hurrrr");
             }}
             enabled={true}
           />
           <SettingsButton
-            buttonText={<SpecialP>Settings</SpecialP>}
+            buttonText={<AugmentedText>Settings</AugmentedText>}
             onClick={() => {
               console.log("harrrr");
             }}
             enabled={true}
           />
           <StopButton
-            buttonText={<SpecialP>&#9724;</SpecialP>}
+            buttonText={<AugmentedText>&#9724;</AugmentedText>}
             onClick={() => {
               console.log("hrrrrr");
             }}
