@@ -3,6 +3,7 @@ import "./App.css";
 import "normalize.css";
 import styled from "styled-components";
 import SRRButton from "./SRRButton";
+import Turtle from "./Turtle";
 
 const AppWrap = styled.div`\
   width = 100%;
@@ -47,6 +48,17 @@ class App extends Component {
   render() {
     return (
       <AppWrap>
+        <Turtle
+          turtle={{
+            battery: 100,
+            editable: true,
+            role: "Goalkeeper",
+            home: "Yellow home",
+            team: "Magenta",
+            id: 2
+          }}
+        />
+
         <Footer>
           <StartButton
             buttonText={<SpecialP>&#9658;</SpecialP>}

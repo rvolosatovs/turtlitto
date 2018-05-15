@@ -3,6 +3,7 @@ import React from "react";
 
 /**
  * Create a dropdown menu
+ * Author: H.E. van der Laan
  *
  * Props:
  *  - currentValue: the current value of this dropdown
