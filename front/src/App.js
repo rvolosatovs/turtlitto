@@ -4,6 +4,7 @@ import "normalize.css";
 import styled from "styled-components";
 import SRRButton from "./SRRButton";
 import Turtle from "./Turtle";
+import format from "date-fns/format";
 
 const AppWrap = styled.div`\
   width = 100%;
@@ -44,7 +45,14 @@ const AugmentedText = styled.p`
   padding: 0px;
 `;
 
-const SendCommand = command => {};
+const composeSendCommand = (type, payload) => {
+  const command = {
+    type: type,
+    message_id: "undefined",
+    payload: payload
+  };
+  return command;
+};
 
 class App extends Component {
   constructor(props) {
@@ -59,6 +67,73 @@ class App extends Component {
 
     this.connection = null;
   }
+
+  componentDidMount() {
+    this.handleConnectionStatusChange("mount");
+  }
+
+  componentWillUnmount() {
+    this.handleConnectionStatusChange("unmount");
+  }
+
+  handleConnectionStatusChange(status) {
+    if (this.state.isConnected || status === "unmount") {
+      this.connection.close();
+    } else {
+      try {
+        this.connection = new WebSocket(
+          `ws://${this.state.host}:${this.state.port}/commands`
+        );
+        this.connection.onclose = event => this.onSocketClose(event.code);
+        this.connection.onmessage = event => this.onReceivePong(event.data);
+        this.connection.onerror = event => this.onError(event);
+        this.connection.onopen = event => this.onSocketOpen();
+      } catch (e) {
+        this.onError(e.message);
+      }
+    }
+  }
+
+  onError(event) {
+    const errorMessage = `Cant establish connection to ws://${
+      this.state.host
+    }:${this.state.port}/commands`;
+    console.log(errorMessage);
+  }
+
+  onSend(command) {
+    console.log("he senc, he receivc, he senc");
+    const toSend = composeSendCommand("command", command);
+    this.connection.send(toSend);
+    console.log(toSend);
+  }
+
+  onReceivePong(pong) {
+    console.log(pong);
+  }
+
+  onSocketClose(code) {
+    if (this.state.isConnected) {
+      this.setState(prev => {
+        return {
+          isConnected: !prev.isConnected
+        };
+      });
+    }
+    console.log("he ded");
+  }
+
+  onSocketOpen() {
+    if (!this.state.isConnected) {
+      this.setState(prev => {
+        return {
+          isConnected: !prev.isConnected
+        };
+      });
+    }
+    console.log("it's aliiiiiiiiive");
+  }
+
   render() {
     return (
       <AppWrap>
@@ -78,6 +153,7 @@ class App extends Component {
             buttonText={<AugmentedText>&#9658;</AugmentedText>}
             onClick={() => {
               console.log("hurrrr");
+              this.onSend("start");
             }}
             enabled={true}
           />
@@ -92,6 +168,7 @@ class App extends Component {
             buttonText={<AugmentedText>&#9724;</AugmentedText>}
             onClick={() => {
               console.log("hrrrrr");
+              this.onSend("stop");
             }}
             enabled={true}
           />
