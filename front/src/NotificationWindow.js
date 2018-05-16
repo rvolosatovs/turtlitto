@@ -52,7 +52,7 @@ const NotificationWindow = (props) => {
     <Window backgroundColor= {props.backgroundColor}>
     <NotificationHeader>{props.NotificationType}</NotificationHeader>
     <NotificationCloseButton onClick={() => { window.alert("pressed close");}}>
-      <FontAwesomeIcon icon = {faTimes} color = "Lime" size = "9x"/>
+      <FontAwesomeIcon icon = {faTimes} color = "Black" size = "9x"/>
     </NotificationCloseButton>
     <NotificationText>{props.children}</NotificationText>
     </Window>
