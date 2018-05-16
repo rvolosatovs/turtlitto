@@ -1,21 +1,25 @@
 import React from "react";
 import TurtleEnableButton from "./TurtleEnableButton";
-import styled from "styled-components";
 
 /**
  * Simple bar with all the turtles
  * Author: S.A. Tanja
+ * Author: H.E. van der Laan
  */
 
 const TurtleEnableBar = props => {
   return (
     <div className={props.className}>
-      <TurtleEnableButton id="1" />
-      <TurtleEnableButton id="2" />
-      <TurtleEnableButton id="3" />
-      <TurtleEnableButton id="4" />
-      <TurtleEnableButton id="5" />
-      <TurtleEnableButton id="6" />
+      {props.turtles.map((turtle, position) => {
+        return (
+          <TurtleEnableButton
+            key={turtle.id}
+            enabled={turtle.enabled}
+            onEnable={() => props.onEnable(position)}
+            onDisable={() => props.onDisable(position)}
+          />
+        );
+      })}
     </div>
   );
 };

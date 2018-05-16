@@ -86,7 +86,57 @@ class App extends Component {
       //messages: [],
       isConnected: false,
       port: "4242",
-      host: "localhost"
+      host: "localhost",
+      turtles: [
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 1,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 2,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 3,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 4,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 5,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 6,
+          role: "INACTIVE",
+          team: "Magenta"
+        }
+      ]
     };
 
     this.connection = null;
@@ -165,26 +215,48 @@ class App extends Component {
     this.forceUpdate();
   }
 
+  disableTurtle(position) {
+    this.setState((prevState, props) => {
+      const turtles = prevState.turtles;
+      turtles[position]["enabled"] = false;
+      return { turtles: turtles };
+    });
+  }
+
+  enableTurtle(position) {
+    console.log(position);
+    this.setState((prevState, props) => {
+      const turtles = prevState.turtles;
+      turtles[position]["enabled"] = true;
+      return { turtles: turtles };
+    });
+  }
+
   render() {
     return (
       <AppWrap>
-        <TurtleBar />
+        <TurtleBar
+          turtles={this.state.turtles}
+          onEnable={position => {
+            this.enableTurtle(position);
+          }}
+          onDisable={position => {
+            this.disableTurtle(position);
+          }}
+        />
         <NotificationWindow
           backgroundColor="Tomato"
           NotificationType="Critical Error"
         >
           Turtle 2 died
         </NotificationWindow>
-        <Turtle
-          turtle={{
-            battery: 100,
-            editable: true,
-            role: "Goalkeeper",
-            home: "Yellow home",
-            team: "Magenta",
-            id: 2
-          }}
-        />
+        {this.state.turtles
+          .filter(turtle => {
+            return turtle.enabled;
+          })
+          .map(turtle => {
+            return <Turtle turtle={turtle} />;
+          })}
         {showConnected(this.state.isConnected)}
         <SRRButton
           buttonText={getButtonText(this.state.isConnected)}
