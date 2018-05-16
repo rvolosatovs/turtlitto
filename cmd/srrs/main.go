@@ -1,19 +1,24 @@
 package main
 
 import (
-	"encoding/hex"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/rvolosatovs/turtlitto"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
-const defaultAddr = ":4242" // default webserver address
+const (
+	defaultAddr = ":4242" // default webserver address
+	maxTurtles  = 10
+)
 
 var (
 	httpAddr = flag.String("http", defaultAddr, "HTTP service address")
@@ -34,47 +39,77 @@ func init() {
 func main() {
 	flag.Parse()
 
-	conn, err := net.Dial("unix", *sock)
+	unixConn, err := net.Dial("unix", *sock)
 	if err != nil {
 		log.Fatalf("Failed to connect to unix socket at %s: %s", *sock, err)
 	}
+	defer unixConn.Close()
 
-	_ = api.NewClient(conn, conn)
+	cl := api.NewClient(unixConn, unixConn)
+
+	http.HandleFunc("/state", func(w http.ResponseWriter, r *http.Request) {
+		wsConn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to open WebSocket: %s", err), http.StatusBadRequest)
+			return
+		}
+		defer wsConn.Close()
+
+		go func() {
+			for {
+				select {
+				case <-r.Context().Done():
+					return
+				default:
+				}
+
+				st := make(map[string]*turtlitto.State, maxTurtles)
+				if err := wsConn.ReadJSON(&st); err != nil {
+					http.Error(w, fmt.Sprintf("Failed to read state: %s", err), http.StatusBadRequest)
+					continue
+				}
+
+				st, err = cl.SetState(st)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Failed to send state to TRC: %s", err), http.StatusInternalServerError)
+					continue
+				}
+
+				if err := wsConn.WriteJSON(st); err != nil {
+					http.Error(w, fmt.Sprintf("Failed to write state: %s", err), http.StatusInternalServerError)
+					fmt.Println(err)
+					continue
+				}
+			}
+		}()
+
+		for range time.Tick(time.Second) {
+			select {
+			case <-r.Context().Done():
+				return
+			default:
+			}
+
+			st, err := cl.State()
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Failed to get state from TRC: %s", err), http.StatusInternalServerError)
+				continue
+			}
+
+			if err := wsConn.WriteJSON(st); err != nil {
+				http.Error(w, fmt.Sprintf("Failed to write state: %s", err), http.StatusInternalServerError)
+				fmt.Println(err)
+				continue
+			}
+		}
+	})
 
 	if *static != "" {
 		http.Handle("/", http.FileServer(http.Dir(*static)))
 	}
 
-	http.HandleFunc("/commands", func(w http.ResponseWriter, r *http.Request) {
-		conn, err := upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			log.Printf("Failed to open WebSocket from %s: %s", r.RemoteAddr, err)
-			return
-		}
-
-		for {
-			mt, b, err := conn.ReadMessage()
-			if err != nil {
-				log.Printf("Failed to read message from %s: %s", r.RemoteAddr, err)
-				return
-			}
-
-			switch mt {
-			case websocket.BinaryMessage:
-				log.Printf("Got binary message from %s: %s", r.RemoteAddr, hex.EncodeToString(b))
-			case websocket.TextMessage:
-				log.Printf("Got text message from %s: %s", r.RemoteAddr, string(b))
-			}
-
-			if err := conn.WriteMessage(mt, []byte("pong")); err != nil {
-				log.Printf("Failed to write message to %s: %s", r.RemoteAddr, err)
-				return
-			}
-		}
-	})
-
 	if err := http.ListenAndServe(*httpAddr, nil); err != nil {
-		if cerr := conn.Close(); cerr != nil {
+		if cerr := unixConn.Close(); cerr != nil {
 			log.Printf("Failed to close socket at %s: %s", *sock, err)
 		}
 		log.Fatalf("Failed to listen on %s: %v", *httpAddr, err)
