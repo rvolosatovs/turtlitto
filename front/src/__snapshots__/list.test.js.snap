@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Elements are only rendered when they are enabled 1`] = `
+<div>
+  <p>
+    1
+  </p>
+</div>
+`;
+
+exports[`Multiple elements are rendered if enabled 1`] = `
+<div>
+  <p>
+    2
+  </p>
+  <p>
+    1
+  </p>
+</div>
+`;
+
+exports[`No elements are added when no elements are present 1`] = `<div />`;
