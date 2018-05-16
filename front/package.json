@@ -4,6 +4,9 @@
   "private": true,
   "description": "SRR frontend application",
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@fortawesome/react-fontawesome": "^0.0.19",
     "date-fns": "^1.29.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",

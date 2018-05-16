@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import Dropdown from "./Dropdown";
+import Battery from "./Battery";
 
 const TEAM_VALUES = ["Magenta", "Cyan"];
 const HOME_VALUES = ["Yellow home", "Blue home"];
@@ -33,7 +34,7 @@ const Turtle = props => {
   return (
     <div>
       <div>
-        <p>{battery}%</p>
+        <Battery percentage={battery} />
       </div>
       <div>
         <p>Turtle {id}</p>
