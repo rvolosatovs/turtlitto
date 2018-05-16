@@ -51,7 +51,21 @@ const composeSendCommand = (type, payload) => {
     message_id: "undefined",
     payload: payload
   };
-  return command;
+  return JSON.stringify(command);
+};
+
+const showConnected = status => {
+  if (status === true) {
+    return <p>Connection: connected</p>;
+  }
+  return <p>Connection: disconnected</p>;
+};
+
+const getButtonText = status => {
+  if (status === true) {
+    return <p>Disconnect</p>;
+  }
+  return <p>Reconnect</p>;
 };
 
 class App extends Component {
@@ -102,10 +116,14 @@ class App extends Component {
   }
 
   onSend(command) {
-    console.log("he senc, he receivc, he senc");
     const toSend = composeSendCommand("command", command);
-    this.connection.send(toSend);
-    console.log(toSend);
+    if (this.state.isConnected) {
+      this.connection.send(toSend);
+      console.log("Sending is a success!");
+      console.log(toSend);
+    } else {
+      console.log("there is no connection at the moment.");
+    }
   }
 
   onReceivePong(pong) {
@@ -120,7 +138,7 @@ class App extends Component {
         };
       });
     }
-    console.log("he ded");
+    this.forceUpdate();
   }
 
   onSocketOpen() {
@@ -131,7 +149,7 @@ class App extends Component {
         };
       });
     }
-    console.log("it's aliiiiiiiiive");
+    this.forceUpdate();
   }
 
   render() {
@@ -147,27 +165,30 @@ class App extends Component {
             id: 2
           }}
         />
-
+        {showConnected(this.state.isConnected)}
+        <SRRButton
+          buttonText={getButtonText(this.state.isConnected)}
+          onClick={() => {
+            this.handleConnectionStatusChange("mount");
+          }}
+          enabled={true}
+        />
         <Footer>
           <StartButton
             buttonText={<AugmentedText>&#9658;</AugmentedText>}
             onClick={() => {
-              console.log("hurrrr");
               this.onSend("start");
             }}
             enabled={true}
           />
           <SettingsButton
             buttonText={<AugmentedText>Settings</AugmentedText>}
-            onClick={() => {
-              console.log("harrrr");
-            }}
+            onClick={() => {}}
             enabled={true}
           />
           <StopButton
             buttonText={<AugmentedText>&#9724;</AugmentedText>}
             onClick={() => {
-              console.log("hrrrrr");
               this.onSend("stop");
             }}
             enabled={true}
