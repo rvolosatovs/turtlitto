@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/rvolosatovs/turtlitto"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
@@ -63,7 +62,7 @@ func main() {
 				default:
 				}
 
-				st := make(map[string]*turtlitto.State, maxTurtles)
+				st := make(map[string]*api.State, maxTurtles)
 				if err := wsConn.ReadJSON(&st); err != nil {
 					http.Error(w, fmt.Sprintf("Failed to read state: %s", err), http.StatusBadRequest)
 					continue

@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/gorilla/websocket"
-	"github.com/rvolosatovs/turtlitto"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 	"github.com/stretchr/testify/assert"
 )
@@ -65,8 +64,8 @@ func TestAll(t *testing.T) {
 		t.FailNow()
 	}
 
-	state := map[string]*turtlitto.State{
-		"foo": &turtlitto.State{
+	state := map[string]*api.State{
+		"foo": &api.State{
 			ID: "bar",
 			// TODO: add more fields
 		},
@@ -90,14 +89,14 @@ func TestAll(t *testing.T) {
 			}
 
 			switch req.Type {
-			case "set_state":
-			case "get_status":
+			case api.MessageTypeSetState:
+			case api.MessageTypeGetState:
 				b, err := json.Marshal(state)
 				if err != nil {
 					panic(err)
 				}
 				resp.Payload = b
-			case "command":
+			case api.MessageTypeCommand:
 			default:
 				t.Errorf("Unmatched message type: %s", req.Type)
 				return
@@ -108,7 +107,7 @@ func TestAll(t *testing.T) {
 		}
 	}()
 
-	var got map[string]*turtlitto.State
+	var got map[string]*api.State
 
 	err = conn.ReadJSON(&got)
 	if !a.Nil(err) {

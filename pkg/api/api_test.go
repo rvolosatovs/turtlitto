@@ -1,42 +1,23 @@
-package api_test
+package api
 
 import (
-	"bytes"
-	"strconv"
+	"encoding/json"
+	"fmt"
+	"log"
 	"testing"
-
-	"github.com/rvolosatovs/turtlitto"
-	. "github.com/rvolosatovs/turtlitto/pkg/api"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestState(t *testing.T) {
-	for i, tc := range []struct {
-		Expected map[string]*turtlitto.State
-	}{
-		{
-			Expected: map[string]*turtlitto.State{
-				"foo": {
-					ID:             "foo",
-					BatteryVoltage: 42,
-				},
-				"bar": {
-					ID:       "foo",
-					HomeGoal: turtlitto.HomeGoalBlue,
-				},
-			},
+func Example(t *testing.T) {
+	b, err := json.Marshal(map[string]*State{
+		"foo": &State{
+			Role: "goalkeeper",
 		},
-	} {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			a := assert.New(t)
-			a.Equal(tc.Expected, tc.Expected)
-
-			var out bytes.Buffer
-			in := bytes.NewBufferString("") // TODO: encode tc.Expected and set here
-
-			cl := NewClient(&out, in)
-			// TODO: Check Status()
-			_ = cl
-		})
+		"bar": &State{
+			Role: "goalsaver",
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
+	fmt.Println(string(b))
 }
