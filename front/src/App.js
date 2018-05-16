@@ -16,9 +16,13 @@ const TurtleBar = styled(TurtleEnableBar)`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  overflow-x: scroll;
+  overflow-x: auto;
   scrollbar: hidden;
   align-content: space-between;
+  border-style: solid;
+  border-width: 0px 0px 2px 0px;
+  margin-bottom: 2px;
+  background-color: black;
 `;
 
 const Footer = styled.footer`
@@ -26,10 +30,9 @@ const Footer = styled.footer`
   background-color: white;
   bottom: 0;
   width: 100%;
-  min-width: 100px;
-  height: 10%;
+  min-height: 10%;
   border-style: solid;
-  border-width: 5px 0px 0px 0px;
+  border-width: 2px 0px 0px 0px;
   display: flex;
   justify-content: space-between;
   margin: 0px;
@@ -38,16 +41,19 @@ const Footer = styled.footer`
 const StartButton = styled(SRRButton)`
   width: 32%;
   font-size: 5vmin;
+  flex: 1;
 `;
 
 const SettingsButton = styled(SRRButton)`
   width: 32%;
   font-size: 5vmin;
+  flex: 1;
 `;
 
 const StopButton = styled(SRRButton)`
   width: 32%;
   font-size: 5vmin;
+  flex: 1;
 `;
 
 const AugmentedText = styled.p`
