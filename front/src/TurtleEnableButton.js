@@ -1,43 +1,40 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 /**
  * A button that keeps track whether a turtle is enabled or not.
  * Is reflected to the user in terms in terms of button appearance.
+ *
+ * Props:
+ * - enabled: whether this turtle is enabled or not
+ * - onDisable: function to call when disabling this turtle
+ * - onEnable: function to call when enabling this turtle
+ *
  * Author: S.A. Tanja
+ * Author: H.E. van der Laan
  */
-class TurtleEnableButton extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isActive: false,
-      id: props.id
-    };
-    this.HandleClick = this.HandleClick.bind(this);
-  }
-
-  render() {
+const TurtleEnableButton = props => {
+  if (props.enabled) {
     return (
-      <Button
-        className={this.props}
-        isActive={this.state.isActive}
-        onClick={this.HandleClick}
-      >
-        Turtle {this.state.id}
+      <Button className={props} isActive onClick={props.onDisable}>
+        Turtle {props.id}
+      </Button>
+    );
+  } else {
+    return (
+      <Button className={props} onClick={props.onEnable}>
+        Turtle {props.id}
       </Button>
     );
   }
+};
 
-  HandleClick(props) {
-    if (!this.state.isActive) {
-      this.setState({ isActive: true });
-      console.log("Enabling turtle " + this.state.id + "...");
-    } else {
-      this.setState({ isActive: false });
-      console.log("Disabling turtle " + this.state.id + "...");
-    }
-  }
-}
+TurtleEnableButton.propTypes = {
+  enabled: PropTypes.bool.isRequired,
+  onDisable: PropTypes.func.isRequired,
+  onEnable: PropTypes.func.isRequired
+};
 
 const Button = styled.button`
   border-style: ${props => (props.isActive ? "inset" : "solid")};
