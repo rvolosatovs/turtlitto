@@ -4,7 +4,8 @@ import "normalize.css";
 import styled from "styled-components";
 import SRRButton from "./SRRButton";
 import Turtle from "./Turtle";
-import format from "date-fns/format";
+import TurtleEnableBar from "./TurtleEnableBar";
+import NotificationWindow from "./NotificationWindow";
 
 const AppWrap = styled.div`\
   width = 100%;
@@ -155,6 +156,13 @@ class App extends Component {
   render() {
     return (
       <AppWrap>
+        <TurtleEnableBar />
+        <NotificationWindow
+          backgroundColor="Tomato"
+          NotificationType="Critical Error"
+        >
+          Turtle 2 died
+        </NotificationWindow>
         <Turtle
           turtle={{
             battery: 100,
