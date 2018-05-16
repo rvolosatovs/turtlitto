@@ -60,11 +60,11 @@ class RefboxField extends Component {
  * Allows for multiple refboxes to be next to each other (float : left)
  */
 const RefboxStyle = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 206px);
-    grid-template-rows: repeat(3, 206px);
-    margin: 10px;
-    float: left;
+  display: grid;
+  grid-template-columns: repeat(2, 206px);
+  grid-template-rows: repeat(3, 206px);
+  margin: 10px;
+  float: left;
 `;
 
 export default RefboxField; 

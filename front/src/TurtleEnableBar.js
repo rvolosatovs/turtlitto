@@ -7,16 +7,16 @@ import TurtleEnableButton from './TurtleEnableButton';
  * Author: S.A. Tanja
  */
 const TurtleEnableBar = () => {
-    return(
-        <div>
-            <TurtleEnableButton id = "1"/>
-            <TurtleEnableButton id = "2"/>
-            <TurtleEnableButton id = "3"/>
-            <TurtleEnableButton id = "4"/>
-            <TurtleEnableButton id = "5"/>
-            <TurtleEnableButton id = "6"/>
-        </div>
-    );
+  return(
+    <div>
+      <TurtleEnableButton id = "1"/>
+      <TurtleEnableButton id = "2"/>
+      <TurtleEnableButton id = "3"/>
+      <TurtleEnableButton id = "4"/>
+      <TurtleEnableButton id = "5"/>
+      <TurtleEnableButton id = "6"/>
+    </div>
+  );
 }
 
 export default TurtleEnableBar;
