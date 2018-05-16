@@ -92,9 +92,12 @@ class App extends Component {
   }
 
   handleConnectionStatusChange(status) {
-    if (this.state.isConnected || status === "unmount") {
+    if (
+      this.state.isConnected ||
+      (status === "unmount" && this.state.isConnected)
+    ) {
       this.connection.close();
-    } else {
+    } else if (status !== "unmount" && !this.state.isConnected) {
       try {
         this.connection = new WebSocket(
           `ws://${this.state.host}:${this.state.port}/commands`
