@@ -38,8 +38,9 @@ class TurtleEnableButton extends Component {
 
 const Button = styled.button`
   border-style: ${props => props.isActive ? "inset" : "solid"};
-  width: 200px;
-  height: 100px;
+  width: 207px;
+  height: 166px;
+  font-size: 40px;
 `;
 
 export default TurtleEnableButton;
