@@ -2,12 +2,21 @@ package api_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"strconv"
 	"testing"
 
 	. "github.com/rvolosatovs/turtlitto/pkg/api"
 	"github.com/stretchr/testify/assert"
 )
+
+type mockWriter struct {
+	WriteFunc func(b []byte) (int, error)
+}
+
+func (r *mockWriter) Write(b []byte) (int, error) {
+	return r.WriteFunc(b)
+}
 
 func TestState(t *testing.T) {
 	for i, tc := range []struct {
@@ -28,14 +37,37 @@ func TestState(t *testing.T) {
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			a := assert.New(t)
-			a.Equal(tc.Expected, tc.Expected)
 
-			var out bytes.Buffer
-			in := bytes.NewBufferString("") // TODO: encode tc.Expected and set here
+			out := &bytes.Buffer{}
+			in := &mockWriter{
+				WriteFunc: func(b []byte) (int, error) {
+					var m Message
+					err := json.Unmarshal(b, &m)
+					a.Nil(err)
+					a.NotEmpty(m.MessageID)
+					a.Equal(MessageTypeGetState, m.Type)
+					a.Nil(m.Payload)
 
-			cl := NewClient(&out, in)
-			// TODO: Check Status()
-			_ = cl
+					pld, err := json.Marshal(tc.Expected)
+					if err != nil {
+						panic(err)
+					}
+
+					err = json.NewEncoder(out).Encode(&Message{
+						MessageID: m.MessageID,
+						Type:      m.Type,
+						Payload:   pld,
+					})
+					if err != nil {
+						panic(err)
+					}
+					return len(b), nil
+				},
+			}
+
+			s, err := NewClient(in, out).State()
+			a.Nil(err)
+			a.Equal(s, tc.Expected)
 		})
 	}
 }

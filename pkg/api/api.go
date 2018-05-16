@@ -212,10 +212,9 @@ type State struct {
 type MessageType string
 
 const (
-	MessageTypeGetState = "get_state"
-	MessageTypeSetState = "set_state"
-	MessageTypeCommand  = "command"
-	// TODO: Add more message types
+	MessageTypeGetState MessageType = "get_state"
+	MessageTypeSetState MessageType = "set_state"
+	MessageTypeCommand  MessageType = "command"
 )
 
 type Message struct {
