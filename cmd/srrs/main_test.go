@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -81,46 +82,48 @@ func TestAll(t *testing.T) {
 	}
 
 	state := map[string]*api.State{
-		"foo": &api.State{
+		"foo": {
 			ID: "bar",
 			// TODO: add more fields
 		},
 	}
 
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
 	go func() {
-		for {
-			c, err := unixSock.Accept()
-			a.Nil(err)
+		defer wg.Done()
 
-			var req api.Message
+		c, err := unixSock.Accept()
+		a.Nil(err)
 
-			err = json.NewDecoder(c).Decode(&req)
-			if !a.Nil(err) {
-				return
-			}
+		var req api.Message
 
-			resp := &api.Message{
-				MessageID: req.MessageID,
-				Type:      req.Type,
-			}
-
-			switch req.Type {
-			case api.MessageTypeSetState:
-			case api.MessageTypeGetState:
-				b, err := json.Marshal(state)
-				if err != nil {
-					panic(err)
-				}
-				resp.Payload = b
-			case api.MessageTypeCommand:
-			default:
-				t.Errorf("Unmatched message type: %s", req.Type)
-				return
-			}
-
-			err = json.NewEncoder(c).Encode(resp)
-			a.Nil(err)
+		err = json.NewDecoder(c).Decode(&req)
+		if !a.Nil(err) {
+			return
 		}
+
+		resp := &api.Message{
+			MessageID: req.MessageID,
+			Type:      req.Type,
+		}
+
+		switch req.Type {
+		case api.MessageTypeSetState:
+		case api.MessageTypeGetState:
+			b, err := json.Marshal(state)
+			if err != nil {
+				panic(err)
+			}
+			resp.Payload = b
+		case api.MessageTypeCommand:
+		default:
+			t.Errorf("Unmatched message type: %s", req.Type)
+			return
+		}
+
+		err = json.NewEncoder(c).Encode(resp)
+		a.Nil(err)
 	}()
 
 	var got map[string]*api.State
@@ -130,4 +133,6 @@ func TestAll(t *testing.T) {
 		t.FailNow()
 	}
 	a.Equal(state, got)
+
+	wg.Wait()
 }
