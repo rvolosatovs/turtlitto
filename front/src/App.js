@@ -7,13 +7,20 @@ import Turtle from "./Turtle";
 import TurtleEnableBar from "./TurtleEnableBar";
 import NotificationWindow from "./NotificationWindow";
 
-const AppWrap = styled.div`\
+const AppWrap = styled.div`
   width = 100%;
   height = 100%;
 `;
 
+const TurtleBar = styled(TurtleEnableBar)`
+  \display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+`;
+
 const Footer = styled.footer`
   position: fixed;
+  background-color: white;
   bottom: 0;
   width: 100%;
   min-width: 100px;
@@ -27,18 +34,18 @@ const Footer = styled.footer`
 
 const StartButton = styled(SRRButton)`
   width: 32%;
-  font-size: 4vw;
+  font-size: 5vmin;
   content: "\&#9658;";
 `;
 
 const SettingsButton = styled(SRRButton)`
   width: 32%;
-  font-size: 3vw;
+  font-size: 4vmin;
 `;
 
 const StopButton = styled(SRRButton)`
   width: 32%;
-  font-size: 4vw;
+  font-size: 5vmin;
 `;
 
 const AugmentedText = styled.p`
@@ -159,7 +166,7 @@ class App extends Component {
   render() {
     return (
       <AppWrap>
-        <TurtleEnableBar />
+        <TurtleBar />
         <NotificationWindow
           backgroundColor="Tomato"
           NotificationType="Critical Error"

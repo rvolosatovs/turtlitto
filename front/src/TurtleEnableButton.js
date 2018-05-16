@@ -18,7 +18,11 @@ class TurtleEnableButton extends Component {
 
   render() {
     return (
-      <Button isActive={this.state.isActive} onClick={this.HandleClick}>
+      <Button
+        className={this.props}
+        isActive={this.state.isActive}
+        onClick={this.HandleClick}
+      >
         Turtle {this.state.id}
       </Button>
     );
@@ -37,9 +41,12 @@ class TurtleEnableButton extends Component {
 
 const Button = styled.button`
   border-style: ${props => (props.isActive ? "inset" : "solid")};
-  width: 207px;
-  height: 166px;
-  font-size: 40px;
+  width: 16%;
+  min-width: 75px;
+  height: 10vmin;
+  min-height: 50px;
+  font-size: 4vmin;
+  min-font-size: 12px;
 `;
 
 export default TurtleEnableButton;

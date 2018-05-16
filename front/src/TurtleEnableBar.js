@@ -1,13 +1,15 @@
 import React from "react";
 import TurtleEnableButton from "./TurtleEnableButton";
+import styled from "styled-components";
 
 /**
  * Simple bar with all the turtles
  * Author: S.A. Tanja
  */
-const TurtleEnableBar = () => {
+
+const TurtleEnableBar = props => {
   return (
-    <div>
+    <div className={props.className}>
       <TurtleEnableButton id="1" />
       <TurtleEnableButton id="2" />
       <TurtleEnableButton id="3" />
