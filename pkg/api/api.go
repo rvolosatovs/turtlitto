@@ -44,7 +44,7 @@ func NewClient(w io.Writer, r io.Reader) *Client {
 	}
 }
 
-type message struct {
+type Message struct {
 	Type      string    `json:"type"`
 	MessageID ulid.ULID `json:"message_id"`
 	Payload   []byte    `json:"payload,omitempty"`
@@ -58,7 +58,7 @@ func (cl *Client) do(typ string, pld interface{}, v interface{}) (err error) {
 		return errors.Wrap(err, "failed to generate ULID")
 	}
 
-	req := &message{
+	req := &Message{
 		Type:      typ,
 		MessageID: id,
 	}
@@ -73,7 +73,7 @@ func (cl *Client) do(typ string, pld interface{}, v interface{}) (err error) {
 		return errors.Wrap(err, "failed to encode request")
 	}
 
-	resp := &message{}
+	resp := &Message{}
 	if err := cl.decoder.Decode(resp); err != nil {
 		return errors.Wrap(err, "failed to decode response")
 	}
