@@ -8,8 +8,8 @@ import TurtleEnableBar from "./TurtleEnableBar";
 import NotificationWindow from "./NotificationWindow";
 
 const AppWrap = styled.div`
-  width = 100%;
-  height = 100%;
+  width = 100vh;
+  height = 100vh;
 `;
 
 const TurtleBar = styled(TurtleEnableBar)`
@@ -23,6 +23,11 @@ const TurtleBar = styled(TurtleEnableBar)`
   border-width: 0px 0px 2px 0px;
   margin-bottom: 2px;
   background-color: black;
+`;
+
+const Middle = styled.div`
+  position: relative
+  bottom: 90%
 `;
 
 const Footer = styled.footer`
@@ -240,7 +245,7 @@ class App extends Component {
 
   render() {
     return (
-      <AppWrap>
+      <AppWrap id="AppWrap">
         <TurtleBar
           turtles={this.state.turtles}
           onEnable={position => {
@@ -251,19 +256,22 @@ class App extends Component {
           }}
         />
         <NotificationWindow
+          id="NotificationWindow"
           backgroundColor="Tomato"
           NotificationType="Critical Error"
         >
           Turtle 2 died
         </NotificationWindow>
-        {this.state.turtles
-          .filter(turtle => {
-            return turtle.enabled;
-          })
-          .map(turtle => {
-            return <Turtle turtle={turtle} />;
-          })}
-        {showConnected(this.state.isConnected)}
+        <Middle id="Middle">
+          {this.state.turtles
+            .filter(turtle => {
+              return turtle.enabled;
+            })
+            .map(turtle => {
+              return <Turtle turtle={turtle} />;
+            })}
+          {showConnected(this.state.isConnected)}
+        </Middle>
         <SRRButton
           buttonText={getButtonText(this.state.isConnected)}
           onClick={() => {
@@ -271,7 +279,7 @@ class App extends Component {
           }}
           enabled={true}
         />
-        <Footer>
+        <Footer id="Footer">
           <StartButton
             buttonText={<AugmentedText>&#9658;</AugmentedText>}
             onClick={() => {
