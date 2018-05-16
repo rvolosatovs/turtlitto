@@ -7,23 +7,22 @@ const Window = styled.div`
   background-color : ${props => props.backgroundColor}
   border-style: solid;
   border-size: 4px;
-  width: 1200px;
-  min-height: 200px;
-  margin: auto;
-  margin-top: 25px;
+  width: 90%;
   position: relative;
+  margin-left:auto;
+  margin-right:auto;
 `;
 
 const NotificationHeader = styled.p`
   text-align: center;
-  font-size: 50px;
+  font-size: 5vmin;
 `;
 
 const NotificationText = styled.p`
   padding-left: 10px;
   padding-right: 10px;
   text-align: center;
-  font-size: 80px;
+  font-size: 8vmin;
 `;
 
 const NotificationCloseButton = styled.button`
@@ -32,12 +31,14 @@ const NotificationCloseButton = styled.button`
   position: absolute;
   top: 0;
   right: 0;
-  width: 150px;
-  height: 150px;
+  width: 4vmin;
+  height: 4vmin;
   &:focus {
     outline: 0;
   }
+  font-size: 2vmin;
 `;
+
 /**
  * Notification window
  * - Allows setting of background color (no default!)
@@ -55,7 +56,7 @@ const NotificationWindow = props => {
           window.alert("pressed close");
         }}
       >
-        <FontAwesomeIcon icon={faTimes} color="Black" size="9x" />
+        <FontAwesomeIcon icon={faTimes} color="Black" size="2x" />
       </NotificationCloseButton>
       <NotificationText>{props.children}</NotificationText>
     </Window>

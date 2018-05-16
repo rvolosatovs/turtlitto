@@ -13,9 +13,12 @@ const AppWrap = styled.div`
 `;
 
 const TurtleBar = styled(TurtleEnableBar)`
-  \display: flex;
+  display: flex;
+  width: 100%;
   justify-content: space-between;
-  flex-wrap: wrap;
+  overflow-x: scroll;
+  scrollbar: hidden;
+  align-content: space-between;
 `;
 
 const Footer = styled.footer`
@@ -35,12 +38,11 @@ const Footer = styled.footer`
 const StartButton = styled(SRRButton)`
   width: 32%;
   font-size: 5vmin;
-  content: "\&#9658;";
 `;
 
 const SettingsButton = styled(SRRButton)`
   width: 32%;
-  font-size: 4vmin;
+  font-size: 5vmin;
 `;
 
 const StopButton = styled(SRRButton)`

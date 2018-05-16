@@ -44,7 +44,7 @@ const Button = styled.button`
   width: 16%;
   min-width: 75px;
   height: 10vmin;
-  min-height: 50px;
+  min-height: 10%;
   font-size: 4vmin;
   min-font-size: 12px;
 `;
