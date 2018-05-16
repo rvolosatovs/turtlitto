@@ -209,6 +209,7 @@ type State struct {
 	// being active in e.g. penalty mode.
 }
 
+// Message specifies the type of the message.
 type MessageType string
 
 const (
@@ -217,6 +218,7 @@ const (
 	MessageTypeCommand  MessageType = "command"
 )
 
+// Message is the structure exchanged between TRC and SRRS.
 type Message struct {
 	Type      MessageType `json:"type"`
 	MessageID ulid.ULID   `json:"message_id"`

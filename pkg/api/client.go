@@ -35,6 +35,7 @@ type Client struct {
 	entropy io.Reader
 }
 
+// NewClient returns a new *Client.
 func NewClient(w io.Writer, r io.Reader) *Client {
 	return &Client{
 		decoder: json.NewDecoder(r),
