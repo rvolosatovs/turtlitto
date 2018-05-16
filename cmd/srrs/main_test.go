@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
@@ -41,10 +42,25 @@ func TestMain(m *testing.M) {
 	if err := flag.Set("socket", unixSockPath); err != nil {
 		log.Fatalf("Failed to set `socket` to %s: %s", unixSockPath, err)
 	}
-	go func() {
-		log.Print("Starting SRRS in goroutine...")
-		main()
-	}()
+
+	log.Print("Starting SRRS in goroutine...")
+	go main()
+
+	dial := func() (net.Conn, error) { return net.DialTimeout("tcp", defaultAddr, time.Second) }
+	retries := 20
+
+	conn, err := dial()
+	for i := 0; err != nil && i < retries; i++ {
+		time.Sleep(100 * time.Millisecond)
+		conn, err = dial()
+	}
+	if err != nil {
+		log.Fatalf("Failed to connect to SRRS at %s: %s", defaultAddr, err)
+	}
+
+	if err := conn.Close(); err != nil {
+		log.Fatalf("Failed to close connection: %s", err)
+	}
 
 	ret := m.Run()
 
