@@ -30,6 +30,9 @@ const TurtleBar = styled(TurtleEnableBar)`
 const Middle = styled.div`
   padding-top: 10%;
   padding-bottom: 10%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 `;
 
 const Footer = styled.footer`
@@ -50,6 +53,8 @@ const DefaultButton = styled(SRRButton)`
   font-size: 5vmin;
   flex: 1;
 `;
+
+const DefaultTurtle = styled(Turtle)``;
 
 const AugmentedText = styled.p`
   margin: 0px;
