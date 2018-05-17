@@ -16,6 +16,12 @@ const Middle = styled.div`
   padding-top: 10%;
   padding-bottom: 10%;
   display: flex;
+  flex-direction: column;
+`;
+
+const Turtles = styled.div`
+  margin: 5px;
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 `;
@@ -39,7 +45,15 @@ const DefaultButton = styled(SRRButton)`
   flex: 1;
 `;
 
-const DefaultTurtle = styled(Turtle)``;
+const DefaultTurtle = styled(Turtle)`
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding: 20px;
+  border-style: solid;
+  border: 3px 3px 3px 3px;
+`;
 
 const AugmentedText = styled.p`
   margin: 0px;
@@ -233,29 +247,32 @@ class App extends Component {
                 this.disableTurtle(position);
               }}
             />
-            <NotificationWindow
-              id="NotificationWindow"
-              backgroundColor="Tomato"
-              NotificationType="Critical Error"
-            >
-              Turtle 2 died
-            </NotificationWindow>
+
             <Middle id="Middle">
-              {this.state.turtles
-                .filter(turtle => {
-                  return turtle.enabled;
-                })
-                .map(turtle => {
-                  return <Turtle turtle={turtle} />;
-                })}
-              {showConnected(this.state.isConnected)}
-              <SRRButton
-                buttonText={getButtonText(this.state.isConnected)}
-                onClick={() => {
-                  this.handleConnectionStatusChange("mount");
-                }}
-                enabled={true}
-              />
+              <NotificationWindow
+                id="NotificationWindow"
+                backgroundColor="Tomato"
+                NotificationType="Critical Error"
+              >
+                Turtle 2 died
+              </NotificationWindow>
+              <Turtles>
+                {this.state.turtles
+                  .filter(turtle => {
+                    return turtle.enabled;
+                  })
+                  .map(turtle => {
+                    return <DefaultTurtle turtle={turtle} />;
+                  })}
+                {showConnected(this.state.isConnected)}
+                <SRRButton
+                  buttonText={getButtonText(this.state.isConnected)}
+                  onClick={() => {
+                    this.handleConnectionStatusChange("mount");
+                  }}
+                  enabled={true}
+                />
+              </Turtles>
             </Middle>
           </div>
         )}
