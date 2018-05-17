@@ -32,7 +32,7 @@ const ROLE_VALUES = [
 const Turtle = props => {
   const { battery, editable, home, id, role, team } = props.turtle;
   return (
-    <div>
+    <div className={props.className}>
       <div>
         <Battery percentage={battery} />
       </div>
