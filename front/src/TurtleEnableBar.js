@@ -8,7 +8,7 @@ import styled from "styled-components";
  * Author: H.E. van der Laan
  */
 
-const PlainTurtleEnableBar = props => {
+const TurtleEnableBar = props => {
   return (
     <div className={props.className}>
       {props.turtles.map((turtle, position) => {
@@ -25,7 +25,7 @@ const PlainTurtleEnableBar = props => {
   );
 };
 
-const TurtleEnableBar = styled(PlainTurtleEnableBar)`
+const TurtleBar = styled(TurtleEnableBar)`
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -35,6 +35,9 @@ const TurtleEnableBar = styled(PlainTurtleEnableBar)`
   border-style: solid;
   border-width: 0px 0px 2px 0px;
   margin-bottom: 2px;
-  background-color: #ededed;
+  background-color: black;
+  position: fixed;
+  z-index: 9999;
 `;
-export default TurtleEnableBar;
+
+export default TurtleBar;
