@@ -8,8 +8,7 @@ import TurtleEnableBar from "./TurtleEnableBar";
 import NotificationWindow from "./NotificationWindow";
 
 const AppWrap = styled.div`
-  width = 100vh;
-  height = 100vh;
+  height: 100vh;
 `;
 
 const TurtleBar = styled(TurtleEnableBar)`
@@ -66,13 +65,8 @@ const AugmentedText = styled.p`
   padding: 0px;
 `;
 
-const composeSendCommand = (type, payload) => {
-  const command = {
-    type: type,
-    message_id: "undefined",
-    payload: payload
-  };
-  return JSON.stringify(command);
+const composeSendCommand = payload => {
+  return JSON.stringify(payload);
 };
 
 const showConnected = status => {
@@ -190,7 +184,7 @@ class App extends Component {
   }
 
   onSend(command) {
-    const toSend = composeSendCommand("command", command);
+    const toSend = composeSendCommand(command);
     if (this.state.isConnected) {
       this.connection.send(toSend);
       console.log("Sending is a success!");
