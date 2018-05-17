@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
  *
  * Author: S.A. Tanja
  * Author: H.E. van der Laan
+ * Author: T.T.P. Franken
  */
 const TurtleEnableButton = props => {
   if (props.enabled) {
@@ -37,7 +38,8 @@ TurtleEnableButton.propTypes = {
 };
 
 const Button = styled.button`
-  border-style: ${props => (props.isActive ? "inset" : "solid")};
+  border-style: ${props => (props.isActive ? "inset" : "none")};
+  background-color: ${props => (props.isActive ? "silver" : "#ededed")};
   width: 16%;
   min-width: 75px;
   height: 10vmin;
@@ -46,6 +48,9 @@ const Button = styled.button`
   min-font-size: 12px;
   flex: 1;
   margin: 1px;
+  &:active {
+    background-color: "silver";
+  }
 `;
 
 export default TurtleEnableButton;
