@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dropdowns can be changed 1`] = `
+<select
+  disabled={false}
+  onChange={[Function]}
+  value="test"
+>
+  <option>
+    test
+  </option>
+  <option>
+    test2
+  </option>
+</select>
+`;
+
+exports[`Dropdowns can be disabled 1`] = `
+<select
+  disabled={true}
+  onChange={[Function]}
+  value="test"
+>
+  <option>
+    test
+  </option>
+  <option>
+    test2
+  </option>
+</select>
+`;

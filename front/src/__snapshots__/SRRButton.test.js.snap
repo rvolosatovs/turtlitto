@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button can be clicked Test Button with Snapshot 1`] = `
+<button
+  className={undefined}
+  disabled={false}
+  onClick="Yeah, that'll do."
+>
+  hurrdurr
+</button>
+`;

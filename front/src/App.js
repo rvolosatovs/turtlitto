@@ -1,130 +1,76 @@
 import React, { Component } from "react";
 import "./App.css";
 import "normalize.css";
-import { Grid, Row, Col } from "react-flexbox-grid";
-import styled, { css, ThemeProvider } from "styled-components";
-import format from "date-fns/format";
-import theme from "./theme";
+import styled from "styled-components";
+import SRRButton from "./SRRButton";
+import Turtle from "./Turtle";
+import TurtleEnableBar from "./TurtleEnableBar";
+import NotificationWindow from "./NotificationWindow";
+import RefboxField from "./RefboxField";
 
-import StartButton from "./StartButton";
-import InputField from "./InputField";
-
-const Header = styled.header`
+const AppWrap = styled.div`
   height: 100vh;
-  background: ${props => props.theme.background};
 `;
 
-const Content = styled.div`
-  margin: 0;
+const Middle = styled.div`
+  position: absolute;
+  width: 100%;
+  padding-bottom: 7%;
   display: flex;
   flex-direction: column;
-  align-items: space-around;
-  justify-content: center;
-  height: 100%;
 `;
 
-const Title = styled.h1`
-  font-size: 3.6rem;
-  color: ${props => props.theme.title};
-`;
-
-const MessagesList = styled.ul`
-  list-style-type: none;
-  height: 40rem; // dont do that
-  margin: 0 auto;
-  border: 0.2rem solid ${props => props.theme.secondary};
-  background: white;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  text-align: left;
-  padding: 0.6rem;
-  width: 80%;
-`;
-
-const Message = styled.li`
-  font-size: 1.5rem;
-  padding: 0.5rem 0;
-`;
-
-const InfoMessage = Message.extend`
-  color: ${props => props.theme.info};
-`;
-
-const ErrorMessage = Message.extend`
-  color: ${props => props.theme.error};
-`;
-
-const SuccessMessage = Message.extend`
-  color: ${props => props.theme.success};
-`;
-
-const PingButton = styled.button`
-  padding: 0.5rem 1rem;
-  border-radius: 1.5rem;
-  text-transform: uppercase;
-  border: 0.2rem solid
-    ${props =>
-      props.isDisabled
-        ? props.theme.baseButtonDisabled
-        : props.theme.baseButton};
-  font-size: 2rem;
-  background: transparent;
-  color: ${props =>
-    props.isDisabled ? props.theme.baseButtonDisabled : props.theme.baseButton};
-  transition: 0.15s ease transform;
-  margin-top: 2rem;
-  max-width: 13rem;
-  align-self: center;
-
-  &:hover {
-    ${props =>
-      props.isDisabled
-        ? ""
-        : css`
-            transform: translate(0, -0.2rem);
-          `};
-  }
-
-  &:active {
-    transform: translate(0, 0.3rem);
-  }
-`;
-
-const ConnectionWrapper = styled.div`
+const Turtles = styled.div`
+  margin: 5px;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
+`;
+
+const Footer = styled.footer`
+  position: fixed;
+  background-color: white;
+  bottom: 0;
+  width: 100%;
+  height: 10%;
+  border-style: solid;
+  border-width: 2px 0px 0px 0px;
+  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  width: 80%;
-  align-self: center;
+  margin: 0px;
 `;
 
-const PortConnectionInput = styled(InputField)`
-  flex-basis: 70%;
+const DefaultButton = styled(SRRButton)`
+  width: 32%;
+  font-size: 5vmin;
+  flex: 1;
 `;
 
-const HostConnectionInput = styled(InputField)`
-  flex-basis: 70%;
+const AugmentedText = styled.p`
+  margin: 0px;
+  padding: 0px;
 `;
 
-const StartConnectionButton = styled(StartButton)`
-  flex-basis: 25%;
+const StyledRefBox = styled(RefboxField)`
+  margin: auto;
 `;
 
-const MessageTypes = Object.freeze({ INFO: 1, ERROR: 2, SUCCESS: 3 });
+const composeSendCommand = payload => {
+  return JSON.stringify(payload);
+};
 
-const styleOutputMessage = (message, key) => {
-  switch (message.type) {
-    case MessageTypes.INFO:
-      return <InfoMessage key={key}>{message.msg}</InfoMessage>;
-    case MessageTypes.ERROR:
-      return <ErrorMessage key={key}>{message.msg}</ErrorMessage>;
-    case MessageTypes.SUCCESS:
-      return <SuccessMessage key={key}>{message.msg}</SuccessMessage>;
-    default:
-      throw new Error("Unknown message type");
+const showConnected = status => {
+  if (status === true) {
+    return <p>Connection: connected</p>;
   }
+  return <p>Connection: disconnected</p>;
+};
+
+const getButtonText = status => {
+  if (status === true) {
+    return <p>Disconnect</p>;
+  }
+  return <p>Reconnect</p>;
 };
 
 class App extends Component {
@@ -132,112 +78,81 @@ class App extends Component {
     super(props);
 
     this.state = {
-      messages: [],
+      //messages: [],
       isConnected: false,
       port: "4242",
-      host: "localhost"
+      host: "localhost",
+      activePage: "settings", // Acceptable values: settings, refbox
+      turtles: [
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 1,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 2,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 3,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 4,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 5,
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          battery: 100,
+          enabled: false,
+          home: "Yellow home",
+          id: 6,
+          role: "INACTIVE",
+          team: "Magenta"
+        }
+      ]
     };
 
     this.connection = null;
   }
 
-  onSendPing() {
-    this.connection.send("ping");
-    this.setState(prev => {
-      return {
-        messages: [
-          ...prev.messages,
-          {
-            msg: `${format(new Date(), "HH:mm:ss:SS")} > Sent ping!`,
-            type: MessageTypes.INFO
-          }
-        ]
-      };
-    });
+  componentDidMount() {
+    this.handleConnectionStatusChange("mount");
   }
 
-  onReceivePong(pong) {
-    this.setState(prev => {
-      return {
-        messages: [
-          ...prev.messages,
-          {
-            msg: `${format(new Date(), "HH:mm:ss:SS")} > Received ${pong}!`,
-            type: MessageTypes.INFO
-          }
-        ]
-      };
-    });
+  componentWillUnmount() {
+    this.handleConnectionStatusChange("unmount");
   }
 
-  onError(event) {
-    const errorMessage = `Cant establish connection to ws://${
-      this.state.host
-    }:${this.state.port}/commands`;
-
-    this.setState(prev => {
-      return {
-        messages: [
-          ...prev.messages,
-          {
-            msg: `${format(
-              new Date(),
-              "HH:mm:ss:SS"
-            )} > Error: ${errorMessage}`,
-            type: MessageTypes.ERROR
-          }
-        ]
-      };
-    });
-  }
-
-  onSocketClose(code) {
-    if (this.state.isConnected) {
-      this.setState(prev => {
-        return {
-          messages: [
-            ...prev.messages,
-            {
-              msg: `${format(
-                new Date(),
-                "HH:mm:ss:SS"
-              )} > Socket closed with code ${code}!`,
-              type: MessageTypes.ERROR
-            }
-          ],
-          isConnected: !prev.isConnected
-        };
-      });
-    }
-  }
-
-  onSocketOpen() {
-    if (!this.state.isConnected) {
-      this.setState(prev => {
-        return {
-          messages: [
-            {
-              msg: `${format(
-                new Date(),
-                "HH:mm:ss:SS"
-              )} > Connection established!`,
-              type: MessageTypes.SUCCESS
-            }
-          ],
-          isConnected: !prev.isConnected
-        };
-      });
-    }
-  }
-
-  handleConnectionChange(value, name) {
-    this.setState({ [name]: value });
-  }
-
-  handleConnectionStatusChange() {
-    if (this.state.isConnected) {
+  handleConnectionStatusChange(status) {
+    if (
+      this.state.isConnected ||
+      (status === "unmount" && this.state.isConnected)
+    ) {
       this.connection.close();
-    } else {
+    } else if (status !== "unmount" && !this.state.isConnected) {
       try {
         this.connection = new WebSocket(
           `ws://${this.state.host}:${this.state.port}/commands`
@@ -252,56 +167,151 @@ class App extends Component {
     }
   }
 
+  onError(event) {
+    const errorMessage = `Cant establish connection to ws://${
+      this.state.host
+    }:${this.state.port}/commands`;
+    console.log(errorMessage);
+  }
+
+  onSend(command) {
+    const toSend = composeSendCommand(command);
+    if (this.state.isConnected) {
+      this.connection.send(toSend);
+      console.log("Sending is a success!");
+      console.log(toSend);
+    } else {
+      console.log("there is no connection at the moment.");
+    }
+  }
+
+  onReceivePong(pong) {
+    console.log(pong);
+  }
+
+  onSocketClose(code) {
+    if (this.state.isConnected) {
+      this.setState(prev => {
+        return {
+          isConnected: !prev.isConnected
+        };
+      });
+    }
+    this.forceUpdate();
+  }
+
+  onSocketOpen() {
+    if (!this.state.isConnected) {
+      this.setState(prev => {
+        return {
+          isConnected: !prev.isConnected
+        };
+      });
+    }
+    this.forceUpdate();
+  }
+
+  disableTurtle(position) {
+    this.setState((prevState, props) => {
+      const turtles = prevState.turtles;
+      turtles[position]["enabled"] = false;
+      return { turtles: turtles };
+    });
+  }
+
+  enableTurtle(position) {
+    console.log(position);
+    this.setState((prevState, props) => {
+      const turtles = prevState.turtles;
+      turtles[position]["enabled"] = true;
+      return { turtles: turtles };
+    });
+  }
+
   render() {
-    const { port, isConnected, host } = this.state;
     return (
-      <ThemeProvider theme={theme}>
-        <Header>
-          <Grid>
-            <Row center="xs">
-              <Col xs={12}>
-                <Content>
-                  <Title className="App-title">Websocket example</Title>
-                  <ConnectionWrapper>
-                    <PortConnectionInput
-                      onChange={value =>
-                        this.handleConnectionChange(value, "port")
-                      }
-                      value={port}
-                      isDisabled={isConnected}
-                      placeholder="Port"
-                    />
-                    <HostConnectionInput
-                      onChange={value =>
-                        this.handleConnectionChange(value, "host")
-                      }
-                      value={host}
-                      isDisabled={isConnected}
-                      placeholder="Host"
-                    />
-                    <StartConnectionButton
-                      onClick={() => this.handleConnectionStatusChange()}
-                      isRunning={isConnected}
-                    />
-                  </ConnectionWrapper>
-                  <MessagesList>
-                    {this.state.messages.map((message, index) => {
-                      return styleOutputMessage(message, index);
-                    })}
-                  </MessagesList>
-                  <PingButton
-                    onClick={() => this.onSendPing()}
-                    disabled={!this.state.isConnected}
-                    isDisabled={!this.state.isConnected}
-                  >
-                    send ping
-                  </PingButton>
-                </Content>
-              </Col>
-            </Row>
-          </Grid>
-        </Header>
-      </ThemeProvider>
+      <AppWrap id="AppWrap">
+        {this.state.activePage === "settings" && (
+          <div>
+            <TurtleEnableBar
+              turtles={this.state.turtles}
+              onEnable={position => {
+                this.enableTurtle(position);
+              }}
+              onDisable={position => {
+                this.disableTurtle(position);
+              }}
+            />
+
+            <Middle id="Middle">
+              <NotificationWindow
+                id="NotificationWindow"
+                backgroundColor="Tomato"
+                NotificationType="Critical Error"
+              >
+                Turtle 2 died
+              </NotificationWindow>
+              <Turtles>
+                {this.state.turtles
+                  .filter(turtle => {
+                    return turtle.enabled;
+                  })
+                  .map(turtle => {
+                    return <Turtle turtle={turtle} />;
+                  })}
+              </Turtles>
+              {showConnected(this.state.isConnected)}
+              <SRRButton
+                buttonText={getButtonText(this.state.isConnected)}
+                onClick={() => {
+                  this.handleConnectionStatusChange("mount");
+                }}
+                enabled={true}
+              />
+            </Middle>
+          </div>
+        )}
+        {this.state.activePage === "refbox" && (
+          <div>
+            <RefboxField teamColor="cyan" />
+            <RefboxField teamColor="magenta" />
+          </div>
+        )}
+        <Footer id="Footer">
+          <DefaultButton
+            buttonText={<AugmentedText>&#9658;</AugmentedText>}
+            onClick={() => {
+              this.onSend("start");
+            }}
+            enabled={true}
+          />
+          {this.state.activePage === "refbox" && (
+            <DefaultButton
+              buttonText={<AugmentedText>Settings</AugmentedText>}
+              onClick={() => {
+                this.setState({ activePage: "settings" });
+              }}
+              enabled={true}
+            />
+          )}
+          {this.state.activePage === "settings" && (
+            <DefaultButton
+              buttonText={<AugmentedText>Refbox</AugmentedText>}
+              onClick={() => {
+                this.setState({ activePage: "refbox" });
+              }}
+              enabled={true}
+            />
+          )}
+          <DefaultButton
+            buttonText={<AugmentedText>&#9724;</AugmentedText>}
+            onClick={() => {
+              this.onSend("stop");
+            }}
+            enabled={true}
+          />
+        </Footer>
+      </AppWrap>
     );
   }
 }
