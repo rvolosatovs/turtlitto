@@ -271,7 +271,12 @@ class App extends Component {
             </Middle>
           </div>
         )}
-        {this.state.activePage === "refbox" && <StyledRefBox />}
+        {this.state.activePage === "refbox" && (
+          <div>
+            <RefboxField teamColor="cyan" />
+            <RefboxField teamColor="magenta" />
+          </div>
+        )}
         <Footer id="Footer">
           <DefaultButton
             buttonText={<AugmentedText>&#9658;</AugmentedText>}
