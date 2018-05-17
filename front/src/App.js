@@ -13,8 +13,9 @@ const AppWrap = styled.div`
 `;
 
 const Middle = styled.div`
-  padding-top: 10%;
-  padding-bottom: 10%;
+  position: absolute;
+  width: 100%;
+  padding-bottom: 7%;
   display: flex;
   flex-direction: column;
 `;
@@ -22,7 +23,7 @@ const Middle = styled.div`
 const Turtles = styled.div`
   margin: 5px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
 `;
 
@@ -45,19 +46,13 @@ const DefaultButton = styled(SRRButton)`
   flex: 1;
 `;
 
-const DefaultTurtle = styled(Turtle)`
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  padding: 20px;
-  border-style: solid;
-  border: 3px 3px 3px 3px;
-`;
-
 const AugmentedText = styled.p`
   margin: 0px;
   padding: 0px;
+`;
+
+const StyledRefBox = styled(RefboxField)`
+  margin: auto;
 `;
 
 const composeSendCommand = payload => {
@@ -262,21 +257,21 @@ class App extends Component {
                     return turtle.enabled;
                   })
                   .map(turtle => {
-                    return <DefaultTurtle turtle={turtle} />;
+                    return <Turtle turtle={turtle} />;
                   })}
-                {showConnected(this.state.isConnected)}
-                <SRRButton
-                  buttonText={getButtonText(this.state.isConnected)}
-                  onClick={() => {
-                    this.handleConnectionStatusChange("mount");
-                  }}
-                  enabled={true}
-                />
               </Turtles>
+              {showConnected(this.state.isConnected)}
+              <SRRButton
+                buttonText={getButtonText(this.state.isConnected)}
+                onClick={() => {
+                  this.handleConnectionStatusChange("mount");
+                }}
+                enabled={true}
+              />
             </Middle>
           </div>
         )}
-        {this.state.activePage === "refbox" && <RefboxField />}
+        {this.state.activePage === "refbox" && <StyledRefBox />}
         <Footer id="Footer">
           <DefaultButton
             buttonText={<AugmentedText>&#9658;</AugmentedText>}

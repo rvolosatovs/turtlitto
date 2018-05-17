@@ -83,8 +83,9 @@ const RefboxStyle = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 206px);
   grid-template-rows: repeat(3, 206px);
-  margin: 10px;
-  float: left;
+  margin: auto;
+  width: 412px;
+  float: center;
 `;
 
 export default RefboxField;

@@ -46,7 +46,6 @@ const Button = styled.button`
   height: 10vmin;
   min-height: 10%;
   font-size: 4vmin;
-  min-font-size: 12px;
   flex: 1;
   margin: 1px;
   &:active {

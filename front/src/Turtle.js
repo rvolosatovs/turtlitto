@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dropdown from "./Dropdown";
 import Battery from "./Battery";
+import styled from "styled-components";
 
 const TEAM_VALUES = ["Magenta", "Cyan"];
 const HOME_VALUES = ["Yellow home", "Blue home"];
@@ -32,19 +33,19 @@ const ROLE_VALUES = [
 const Turtle = props => {
   const { battery, editable, home, id, role, team } = props.turtle;
   return (
-    <div className={props.className}>
-      <div>
+    <DefaultTurtle>
+      <batterySection>
         <Battery percentage={battery} />
-      </div>
-      <div>
+      </batterySection>
+      <subSection>
         <p>Turtle {id}</p>
-      </div>
-      <div>
+      </subSection>
+      <DropDownSection>
         <Dropdown currentValue={role} enabled={editable} values={ROLE_VALUES} />
         <Dropdown currentValue={home} enabled={editable} values={HOME_VALUES} />
         <Dropdown currentValue={team} enabled={editable} values={TEAM_VALUES} />
-      </div>
-    </div>
+      </DropDownSection>
+    </DefaultTurtle>
   );
 };
 
@@ -58,5 +59,31 @@ Turtle.propTypes = {
     team: PropTypes.string
   }).isRequired
 };
+
+const batterySection = styled.div``;
+
+const subSection = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const DropDownSection = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const DefaultTurtle = styled.div`
+  width: 90%
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding: 20px;
+  border-style: solid;
+  border: 3px 3px 3px 3px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
 
 export default Turtle;
