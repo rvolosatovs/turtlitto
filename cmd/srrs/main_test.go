@@ -76,7 +76,7 @@ func TestMain(m *testing.M) {
 func TestAll(t *testing.T) {
 	a := assert.New(t)
 
-	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost"+defaultAddr+"/state", nil)
+	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost"+defaultAddr+"/"+defaultEndpoint, nil)
 	if !a.Nil(err) {
 		t.FailNow()
 	}
