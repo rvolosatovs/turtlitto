@@ -13,8 +13,8 @@ const AppWrap = styled.div`
 `;
 
 const Middle = styled.div`
-  position: relative
-  bottom: 90%
+  padding-top: 10%;
+  padding-bottom: 10%;
 `;
 
 const Footer = styled.footer`
@@ -22,7 +22,7 @@ const Footer = styled.footer`
   background-color: white;
   bottom: 0;
   width: 100%;
-  min-height: 10%;
+  height: 10%;
   border-style: solid;
   border-width: 2px 0px 0px 0px;
   display: flex;
@@ -30,19 +30,7 @@ const Footer = styled.footer`
   margin: 0px;
 `;
 
-const StartButton = styled(SRRButton)`
-  width: 32%;
-  font-size: 5vmin;
-  flex: 1;
-`;
-
-const SettingsButton = styled(SRRButton)`
-  width: 32%;
-  font-size: 5vmin;
-  flex: 1;
-`;
-
-const StopButton = styled(SRRButton)`
+const DefaultButton = styled(SRRButton)`
   width: 32%;
   font-size: 5vmin;
   flex: 1;
@@ -256,19 +244,19 @@ class App extends Component {
                   return <Turtle turtle={turtle} />;
                 })}
               {showConnected(this.state.isConnected)}
+              <SRRButton
+                buttonText={getButtonText(this.state.isConnected)}
+                onClick={() => {
+                  this.handleConnectionStatusChange("mount");
+                }}
+                enabled={true}
+              />
             </Middle>
-            <SRRButton
-              buttonText={getButtonText(this.state.isConnected)}
-              onClick={() => {
-                this.handleConnectionStatusChange("mount");
-              }}
-              enabled={true}
-            />
           </div>
         )}
         {this.state.activePage === "refbox" && <RefboxField />}
         <Footer id="Footer">
-          <StartButton
+          <DefaultButton
             buttonText={<AugmentedText>&#9658;</AugmentedText>}
             onClick={() => {
               this.onSend("start");
@@ -276,7 +264,7 @@ class App extends Component {
             enabled={true}
           />
           {this.state.activePage === "refbox" && (
-            <SettingsButton
+            <DefaultButton
               buttonText={<AugmentedText>Settings</AugmentedText>}
               onClick={() => {
                 this.setState({ activePage: "settings" });
@@ -285,7 +273,7 @@ class App extends Component {
             />
           )}
           {this.state.activePage === "settings" && (
-            <SettingsButton
+            <DefaultButton
               buttonText={<AugmentedText>Refbox</AugmentedText>}
               onClick={() => {
                 this.setState({ activePage: "refbox" });
@@ -293,7 +281,7 @@ class App extends Component {
               enabled={true}
             />
           )}
-          <StopButton
+          <DefaultButton
             buttonText={<AugmentedText>&#9724;</AugmentedText>}
             onClick={() => {
               this.onSend("stop");
