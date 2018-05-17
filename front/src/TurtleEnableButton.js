@@ -38,7 +38,8 @@ TurtleEnableButton.propTypes = {
 };
 
 const Button = styled.button`
-  border-style: ${props => (props.isActive ? "inset" : "none")};
+  border-style: ${props => (props.isActive ? "inset" : "solid")};
+  border-color: ${props => (props.isActive ? "none" : "#ededed")};
   background-color: ${props => (props.isActive ? "silver" : "#ededed")};
   width: 16%;
   min-width: 75px;

@@ -35,7 +35,7 @@ const TurtleBar = styled(TurtleEnableBar)`
   border-style: solid;
   border-width: 0px 0px 2px 0px;
   margin-bottom: 2px;
-  background-color: black;
+  background-color: #ededed;
   position: fixed;
   z-index: 9999;
 `;
