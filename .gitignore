@@ -6,3 +6,8 @@ release
 
 node_modules
 yarn-error.log
+
+# Vim swap files
+*~
+*.swp
+*.swo
