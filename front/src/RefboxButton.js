@@ -1,9 +1,13 @@
-import React, { Component } from "react";
+import PropTypes from "prop-types";
+import React from "react";
 import styled from "styled-components";
 
 /**
  * A button part of the refbox. Does a callback to its parent to handle onClick events
- * @param {*} props Contains the background color of the button, and the text the button needs to display
+ * Props:
+ *  - children: the text the button needs to display
+ *  - color: Contains the background color of the button
+ *
  * Author: S.A. Tanja
  */
 const RefboxButton = props => {
@@ -17,6 +21,11 @@ const RefboxButton = props => {
       {props.children}
     </Button>
   );
+};
+
+RefboxButton.propTypes = {
+  color: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired
 };
 
 /**
