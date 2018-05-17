@@ -6,6 +6,7 @@ import SRRButton from "./SRRButton";
 import Turtle from "./Turtle";
 import TurtleEnableBar from "./TurtleEnableBar";
 import NotificationWindow from "./NotificationWindow";
+import RefboxField from "./RefboxField";
 
 const AppWrap = styled.div`
   height: 100vh;
@@ -29,9 +30,6 @@ const TurtleBar = styled(TurtleEnableBar)`
 const Middle = styled.div`
   padding-top: 10%;
   padding-bottom: 10%;
-`;
-const MiddleScroller = styled.div`
-  overflow-y: auto;
 `;
 
 const Footer = styled.footer`
@@ -85,6 +83,7 @@ class App extends Component {
       isConnected: false,
       port: "4242",
       host: "localhost",
+      activePage: "settings", // Acceptable values: settings, refbox
       turtles: [
         {
           battery: 100,
@@ -233,39 +232,44 @@ class App extends Component {
   render() {
     return (
       <AppWrap id="AppWrap">
-        <TurtleBar
-          turtles={this.state.turtles}
-          onEnable={position => {
-            this.enableTurtle(position);
-          }}
-          onDisable={position => {
-            this.disableTurtle(position);
-          }}
-        />
-        <Middle id="Middle">
-          <NotificationWindow
-            id="NotificationWindow"
-            backgroundColor="Tomato"
-            NotificationType="Critical Error"
-          >
-            Turtle 2 died
-          </NotificationWindow>
-          {this.state.turtles
-            .filter(turtle => {
-              return turtle.enabled;
-            })
-            .map(turtle => {
-              return <Turtle turtle={turtle} />;
-            })}
-          {showConnected(this.state.isConnected)}
-          <SRRButton
-            buttonText={getButtonText(this.state.isConnected)}
-            onClick={() => {
-              this.handleConnectionStatusChange("mount");
-            }}
-            enabled={true}
-          />
-        </Middle>
+        {this.state.activePage === "settings" && (
+          <div>
+            <TurtleBar
+              turtles={this.state.turtles}
+              onEnable={position => {
+                this.enableTurtle(position);
+              }}
+              onDisable={position => {
+                this.disableTurtle(position);
+              }}
+            />
+            <NotificationWindow
+              id="NotificationWindow"
+              backgroundColor="Tomato"
+              NotificationType="Critical Error"
+            >
+              Turtle 2 died
+            </NotificationWindow>
+            <Middle id="Middle">
+              {this.state.turtles
+                .filter(turtle => {
+                  return turtle.enabled;
+                })
+                .map(turtle => {
+                  return <Turtle turtle={turtle} />;
+                })}
+              {showConnected(this.state.isConnected)}
+              <SRRButton
+                buttonText={getButtonText(this.state.isConnected)}
+                onClick={() => {
+                  this.handleConnectionStatusChange("mount");
+                }}
+                enabled={true}
+              />
+            </Middle>
+          </div>
+        )}
+        {this.state.activePage === "refbox" && <RefboxField />}
         <Footer id="Footer">
           <DefaultButton
             buttonText={<AugmentedText>&#9658;</AugmentedText>}
@@ -274,11 +278,24 @@ class App extends Component {
             }}
             enabled={true}
           />
-          <DefaultButton
-            buttonText={<AugmentedText>Settings</AugmentedText>}
-            onClick={() => {}}
-            enabled={true}
-          />
+          {this.state.activePage === "refbox" && (
+            <DefaultButton
+              buttonText={<AugmentedText>Settings</AugmentedText>}
+              onClick={() => {
+                this.setState({ activePage: "settings" });
+              }}
+              enabled={true}
+            />
+          )}
+          {this.state.activePage === "settings" && (
+            <DefaultButton
+              buttonText={<AugmentedText>Refbox</AugmentedText>}
+              onClick={() => {
+                this.setState({ activePage: "refbox" });
+              }}
+              enabled={true}
+            />
+          )}
           <DefaultButton
             buttonText={<AugmentedText>&#9724;</AugmentedText>}
             onClick={() => {
