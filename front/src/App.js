@@ -12,21 +12,6 @@ const AppWrap = styled.div`
   height: 100vh;
 `;
 
-const TurtleBar = styled(TurtleEnableBar)`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  overflow-x: auto;
-  scrollbar: hidden;
-  align-content: space-between;
-  border-style: solid;
-  border-width: 0px 0px 2px 0px;
-  margin-bottom: 2px;
-  background-color: black;
-  position: fixed;
-  z-index: 9999;
-`;
-
 const Middle = styled.div`
   padding-top: 10%;
   padding-bottom: 10%;
@@ -239,7 +224,7 @@ class App extends Component {
       <AppWrap id="AppWrap">
         {this.state.activePage === "settings" && (
           <div>
-            <TurtleBar
+            <TurtleEnableBar
               turtles={this.state.turtles}
               onEnable={position => {
                 this.enableTurtle(position);
