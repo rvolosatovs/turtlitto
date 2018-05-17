@@ -22,11 +22,16 @@ const TurtleBar = styled(TurtleEnableBar)`
   border-width: 0px 0px 2px 0px;
   margin-bottom: 2px;
   background-color: black;
+  position: fixed;
+  z-index: 9999;
 `;
 
 const Middle = styled.div`
-  position: relative
-  bottom: 90%
+  padding-top: 10%;
+  padding-bottom: 10%;
+`;
+const MiddleScroller = styled.div`
+  overflow-y: auto;
 `;
 
 const Footer = styled.footer`
@@ -34,7 +39,7 @@ const Footer = styled.footer`
   background-color: white;
   bottom: 0;
   width: 100%;
-  min-height: 10%;
+  height: 10%;
   border-style: solid;
   border-width: 2px 0px 0px 0px;
   display: flex;
@@ -42,19 +47,7 @@ const Footer = styled.footer`
   margin: 0px;
 `;
 
-const StartButton = styled(SRRButton)`
-  width: 32%;
-  font-size: 5vmin;
-  flex: 1;
-`;
-
-const SettingsButton = styled(SRRButton)`
-  width: 32%;
-  font-size: 5vmin;
-  flex: 1;
-`;
-
-const StopButton = styled(SRRButton)`
+const DefaultButton = styled(SRRButton)`
   width: 32%;
   font-size: 5vmin;
   flex: 1;
@@ -249,14 +242,14 @@ class App extends Component {
             this.disableTurtle(position);
           }}
         />
-        <NotificationWindow
-          id="NotificationWindow"
-          backgroundColor="Tomato"
-          NotificationType="Critical Error"
-        >
-          Turtle 2 died
-        </NotificationWindow>
         <Middle id="Middle">
+          <NotificationWindow
+            id="NotificationWindow"
+            backgroundColor="Tomato"
+            NotificationType="Critical Error"
+          >
+            Turtle 2 died
+          </NotificationWindow>
           {this.state.turtles
             .filter(turtle => {
               return turtle.enabled;
@@ -265,28 +258,28 @@ class App extends Component {
               return <Turtle turtle={turtle} />;
             })}
           {showConnected(this.state.isConnected)}
+          <SRRButton
+            buttonText={getButtonText(this.state.isConnected)}
+            onClick={() => {
+              this.handleConnectionStatusChange("mount");
+            }}
+            enabled={true}
+          />
         </Middle>
-        <SRRButton
-          buttonText={getButtonText(this.state.isConnected)}
-          onClick={() => {
-            this.handleConnectionStatusChange("mount");
-          }}
-          enabled={true}
-        />
         <Footer id="Footer">
-          <StartButton
+          <DefaultButton
             buttonText={<AugmentedText>&#9658;</AugmentedText>}
             onClick={() => {
               this.onSend("start");
             }}
             enabled={true}
           />
-          <SettingsButton
+          <DefaultButton
             buttonText={<AugmentedText>Settings</AugmentedText>}
             onClick={() => {}}
             enabled={true}
           />
-          <StopButton
+          <DefaultButton
             buttonText={<AugmentedText>&#9724;</AugmentedText>}
             onClick={() => {
               this.onSend("stop");
