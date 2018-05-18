@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
