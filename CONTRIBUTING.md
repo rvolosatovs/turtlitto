@@ -142,3 +142,16 @@ In case one of the words specifies the meaning of the variable in a specific lan
 Code should be as self-explanatory as possible. However, comments should be used to respect Go formatting guidelines and to explain what can not be expressed by pure code. Comments should be English sentences, and documentation-generating comments should be closed by a period. Comments can also be used to indicate steps to take in the future (_TODOs_).
 
 * In **Go files**, comments should be added according to `golint` requirements and [Effective Go guidelines](https://golang.org/doc/effective_go.html#commentary), especially in regards to commenting exported packages, types and variables.
+
+* In **Javascript files**, comments should be added when needed. Single line comments should use `//`, but when they are placed inside a styled-component, `/* */` should be used. Multi line comments should be of the `/* */` form. React components should get a multi line comment of the `/** */` form containing its purpose, the author of the component and an ordered list of props it accepts. [PropTypes validation](https://reactjs.org/docs/typechecking-with-proptypes.html) should also be added. The following can be used as a template:
+
+```
+/**
+ * Short explanation of this components purpose
+ * Author: Your name here
+ *
+ * Props:
+ *  - prop1: explanation of first prop
+ *  - onChange: a function to call when something is changed
+ */
+```
