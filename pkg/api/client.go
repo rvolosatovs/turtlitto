@@ -87,7 +87,7 @@ func (cl *Client) do(typ MessageType, pld interface{}, v interface{}) (err error
 
 // SendCommand sends executes a global command on the TRC.
 func (cl *Client) SendCommand(c Command) error {
-	return cl.do(MessageTypeGetState, c, nil)
+	return cl.do(MessageTypeCommand, c, nil)
 }
 
 // SetState sets the state of turtles and returns the current turtle state.

@@ -1,6 +1,10 @@
 package api
 
-import "github.com/oklog/ulid"
+import (
+	"encoding/json"
+
+	"github.com/oklog/ulid"
+)
 
 type Command string
 
@@ -220,7 +224,7 @@ const (
 
 // Message is the structure exchanged between TRC and SRRS.
 type Message struct {
-	Type      MessageType `json:"type"`
-	MessageID ulid.ULID   `json:"message_id"`
-	Payload   []byte      `json:"payload,omitempty"`
+	Type      MessageType     `json:"type"`
+	MessageID ulid.ULID       `json:"message_id"`
+	Payload   json.RawMessage `json:"payload,omitempty"`
 }
