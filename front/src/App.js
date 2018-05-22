@@ -30,7 +30,7 @@ const Title = styled.h1`
 
 const MessagesList = styled.ul`
   list-style-type: none;
-  height: 40rem; // dont do that
+  height: 40rem; /* dont do that */
   margin: 0 auto;
   border: 0.2rem solid ${props => props.theme.secondary};
   background: white;
