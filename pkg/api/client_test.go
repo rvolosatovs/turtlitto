@@ -71,3 +71,138 @@ func TestState(t *testing.T) {
 		})
 	}
 }
+
+func TestSetState(t *testing.T) {
+	for i, tc := range []struct {
+		Input  map[string]*State
+		Output map[string]*State
+	}{
+		{
+			Input: map[string]*State{
+				"foo": {
+					ID:  "1",
+					CPB: CPBNo,
+				},
+				"bar": {
+					ID:           "2",
+					RefBoxRole:   RoleDefenderAssist,
+					Kinect2State: KinectStateBall,
+				},
+				"baz": {
+					ID:           "3",
+					ActiveDevPC:  uint8(42),
+					Temperature1: uint8(69),
+				},
+			},
+			Output: map[string]*State{
+				"foo": {
+					ID:  "1",
+					CPB: CPBYes,
+				},
+				"bar": {
+					ID:           "2",
+					RefBoxRole:   RoleDefenderAssist2,
+					Kinect2State: KinectStateNoBall,
+				},
+				"baz": {
+					ID:           "3",
+					ActiveDevPC:  uint8(89),
+					Temperature1: uint8(69),
+				},
+			},
+		},
+	} {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			a := assert.New(t)
+
+			var writerExec bool //used for checking whether the writer is actually executed
+
+			out := &bytes.Buffer{}
+			in := &mockWriter{
+				WriteFunc: func(b []byte) (int, error) {
+					writerExec = true
+
+					var m Message
+					err := json.Unmarshal(b, &m)
+					a.Nil(err)
+					a.NotEmpty(m.MessageID)
+					a.Equal(MessageTypeSetState, m.Type)
+
+					var ts map[string]*State
+					err = json.Unmarshal(m.Payload, &ts)
+					a.Nil(err)
+					a.Equal(ts, tc.Input)
+
+					pld, err := json.Marshal(tc.Output)
+					if err != nil {
+						panic(err)
+					}
+
+					err = json.NewEncoder(out).Encode(&Message{
+						MessageID: m.MessageID,
+						Type:      m.Type,
+						Payload:   pld,
+					})
+					if err != nil {
+						panic(err)
+					}
+					return len(b), nil
+				},
+			}
+
+			cl := NewClient(in, out)
+
+			s, err := cl.SetState(tc.Input)
+			a.Nil(err)
+			a.Equal(tc.Output, s)
+			a.True(writerExec)
+		})
+	}
+}
+
+func TestCommand(t *testing.T) {
+	for i, tc := range []struct {
+		Expected Command
+	}{
+		{
+			Expected: CommandStop,
+		},
+	} {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			a := assert.New(t)
+
+			var writerExec bool
+
+			out := &bytes.Buffer{}
+			in := &mockWriter{
+				WriteFunc: func(b []byte) (int, error) {
+					writerExec = true
+
+					var m Message
+					err := json.Unmarshal(b, &m)
+					a.Nil(err)
+					a.NotEmpty(m.MessageID)
+					a.Equal(m.Type, MessageTypeCommand)
+
+					var payload Command
+					err = json.Unmarshal(m.Payload, &payload)
+					a.Nil(err)
+					a.Equal(tc.Expected, payload)
+
+					err = json.NewEncoder(out).Encode(&Message{
+						MessageID: m.MessageID,
+						Type:      m.Type,
+					})
+					if err != nil {
+						panic(err)
+					}
+					return len(b), nil
+				},
+			}
+
+			err := NewClient(in, out).SendCommand(tc.Expected)
+			a.Nil(err)
+			a.True(writerExec)
+		})
+	}
+}
