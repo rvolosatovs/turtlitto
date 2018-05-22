@@ -95,17 +95,17 @@ const (
 type BallFound string
 
 const (
-	BallFoundYes           BallFound = "yes"
-	BallFoundCommunicatied BallFound = "communicated"
-	BallFoundNo            BallFound = "no"
+	BallFoundYes          BallFound = "yes"
+	BallFoundCommunicated BallFound = "communicated"
+	BallFoundNo           BallFound = "no"
 )
 
 type CPB string
 
 const (
-	CPBYes           CPB = "yes"
-	CPBCommunicatied CPB = "team"
-	CPBNo            CPB = "no"
+	CPBYes          CPB = "yes"
+	CPBCommunicated CPB = "team"
+	CPBNo           CPB = "no"
 )
 
 // State is the state of a particular turtle.
