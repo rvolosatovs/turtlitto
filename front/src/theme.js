@@ -12,5 +12,8 @@ export default {
   title: "#FFFFFF",
   secondary: "#d3d3d3",
   border: "#ccc",
-  shadow: "rgba(0, 0, 0, 0.17)"
+  shadow: "rgba(0, 0, 0, 0.17)",
+  turtleEnableBar: "#ededed",
+  turtleEnableButton: "#ededed",
+  turtleEnableButtonActive: "silver"
 };
