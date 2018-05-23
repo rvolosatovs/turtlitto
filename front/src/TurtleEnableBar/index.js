@@ -2,18 +2,25 @@ import React from "react";
 import TurtleEnableButton from "./TurtleEnableButton";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { buttonColor } from "../theme.js";
 
 /**
  * Simple bar with all the turtles
  * Author: S.A. Tanja
  * Author: H.E. van der Laan
  * Author: T.T.P. Franken
+ * Author: B. Afonins
+ *
+ * Props:
+ * - turtles: a list of turtles to be displayed in the bar
+ *   - id: an identificator of the turtle
+ *   - enabled: a boolean flag specifying whether the turtle is enabled
+ * - onDisable: function to call when disabling this turtle
+ * - onEnable: function to call when enabling this turtle
  */
 
 const TurtleEnableBar = props => {
   return (
-    <div className={props.className}>
+    <Bar className={props.className}>
       {props.turtles.map((turtle, position) => {
         return (
           <TurtleEnableButton
@@ -25,17 +32,22 @@ const TurtleEnableBar = props => {
           />
         );
       })}
-    </div>
+    </Bar>
   );
 };
 
 TurtleEnableBar.propTypes = {
-  turtles: PropTypes.object.isRequired,
+  turtles: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      enabled: PropTypes.bool.isRequired
+    })
+  ).isRequired,
   onDisable: PropTypes.func.isRequired,
   onEnable: PropTypes.func.isRequired
 };
 
-const TurtleBar = styled(TurtleEnableBar)`
+const Bar = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -44,9 +56,9 @@ const TurtleBar = styled(TurtleEnableBar)`
   border-style: solid;
   border-width: 0rem 0rem 0.2rem 0rem;
   margin-bottom: 0.2rem;
-  background: ${props => props.theme.buttonColor};
+  background: ${props => props.theme.turtleEnableBar};
   position: fixed;
   z-index: 1;
 `;
 
-export default TurtleBar;
+export default TurtleEnableBar;
