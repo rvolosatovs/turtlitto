@@ -2,8 +2,9 @@ package api
 
 import (
 	"encoding/json"
-
+	"errors"
 	"github.com/oklog/ulid"
+	"reflect"
 )
 
 type Command string
@@ -227,4 +228,148 @@ type Message struct {
 	Type      MessageType     `json:"type"`
 	MessageID ulid.ULID       `json:"message_id"`
 	Payload   json.RawMessage `json:"payload,omitempty"`
+}
+
+// Validator types can be checked for having a valid state.
+type Validator interface {
+	// Validate() checks whether this type is in a valid state.
+	Validate() error
+}
+
+// checks every field of the state, returning an error when any invalid field is encountered
+func (state State) Validate() error {
+	for _, field := range []Validator{
+		state.VisionStatus,
+		state.BallFound,
+		state.LocalizationStatus,
+		state.CPB,
+		state.Role,
+		state.RefBoxRole,
+		state.HomeGoal,
+		state.TeamColor,
+		state.CapacitorState,
+		state.Kinect1State,
+		state.Kinect2State,
+	} {
+		// the String() method is required, and also works for non-string Validators
+		// otherwise pointer comparision is used, and this doesn't work
+		if reflect.ValueOf(field).String() != reflect.Zero(reflect.TypeOf(field)).String() {
+			if err := field.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
+	switch {
+	case state.CamStatus > 10:
+		return rangeError("Cam status")
+	case state.RestartCountVision > 99:
+		return rangeError("Restart counter of Vision Executable")
+	case state.RestartCountWorldmodel > 99:
+		return rangeError("Restart counter of World Model")
+	case state.BatteryVoltage > 99:
+		return rangeError("Battery voltage")
+	case state.EmergencyStatus > 100:
+		return rangeError("Emergency status")
+	case state.Cpu0Load > 99:
+		return rangeError("Cpu 0 load")
+	case state.Cpu1Load > 99:
+		return rangeError("Cpu 1 load")
+	case state.ActiveDevPC > 90:
+		return rangeError("Active dev pc")
+	case state.Temperature1 > 99:
+		return rangeError("Temperature 1")
+	case state.Temperature2 > 99:
+		return rangeError("Temperature 2")
+	case state.Temperature3 > 99:
+		return rangeError("Temperature 3")
+	}
+	return nil
+}
+
+// returns an error, signalling that the given value is out of range.
+func rangeError(source string) error {
+	return errors.New(source + " out of range")
+}
+
+func (vs VisionStatus) Validate() error {
+	switch vs {
+	case VisionStatusManual, VisionStatusOn, VisionStatusOff:
+	default:
+		return errors.New("Invalid VisionStatus: got '" + string(vs) + "'")
+	}
+	return nil
+}
+
+func (bf BallFound) Validate() error {
+	switch bf {
+	case BallFoundYes, BallFoundNo, BallFoundCommunicated:
+	default:
+		return errors.New("Invalid BallFound: got '" + string(bf) + "'")
+	}
+	return nil
+}
+
+func (ls LocalizationStatus) Validate() error {
+	switch ls {
+	case LocalizationStatusOn, LocalizationStatusOff, LocalizationStatusManual:
+	default:
+		return errors.New("Invalid Localisation status: got '" + string(ls) + "'")
+	}
+	return nil
+}
+
+func (cpb CPB) Validate() error {
+	switch cpb {
+	case CPBNo, CPBYes, CPBCommunicated:
+	default:
+		return errors.New("Invalid CPB: got '" + string(cpb) + "'")
+	}
+	return nil
+}
+
+func (r Role) Validate() error {
+	switch r {
+	case RoleNone, RoleAttackerMain, RoleAttackerAssist, RoleDefenderMain,
+		RoleDefenderAssist, RoleDefenderAssist2, RoleGoalkeeper, RoleInactive:
+	default:
+		return errors.New("Invalid Role: got '" + string(r) + "'")
+	}
+	return nil
+}
+
+func (hg HomeGoal) Validate() error {
+	switch hg {
+	case HomeGoalBlue, HomeGoalYellow:
+	default:
+		return errors.New("Invalid HomeGoal: got '" + string(hg) + "'")
+	}
+	return nil
+}
+
+func (tc TeamColor) Validate() error {
+	switch tc {
+	case TeamColorCyan, TeamColorMagenta:
+	default:
+		return errors.New("Invalid Team color: got '" + string(tc) + "'")
+	}
+	return nil
+}
+
+func (cs CapacitorState) Validate() error {
+	switch cs {
+	case CapacitorStateEmpty, CapacitorStateFull, CapacitorStateNoState:
+	default:
+		return errors.New("Invalid Capacitor state: got '" + string(cs) + "'")
+	}
+	return nil
+}
+
+func (ks KinectState) Validate() error {
+	switch ks {
+	case KinectStateBall, KinectStateNoBall, KinectStateNoState:
+	default:
+		return errors.New("Invalid Kinect state: got '" + string(ks) + "'")
+	}
+	return nil
 }
