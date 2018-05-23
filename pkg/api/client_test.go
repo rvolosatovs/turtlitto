@@ -38,9 +38,13 @@ func TestState(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			a := assert.New(t)
 
+			writes := 0
+
 			out := &bytes.Buffer{}
 			in := &mockWriter{
 				WriteFunc: func(b []byte) (int, error) {
+					writes++
+
 					var m Message
 					err := json.Unmarshal(b, &m)
 					a.Nil(err)
@@ -68,6 +72,7 @@ func TestState(t *testing.T) {
 			s, err := NewClient(in, out).State()
 			a.Nil(err)
 			a.Equal(s, tc.Expected)
+			a.Equal(writes, 1)
 		})
 	}
 }
@@ -115,12 +120,12 @@ func TestSetState(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			a := assert.New(t)
 
-			var writerExec bool //used for checking whether the writer is actually executed
+			writes := 0
 
 			out := &bytes.Buffer{}
 			in := &mockWriter{
 				WriteFunc: func(b []byte) (int, error) {
-					writerExec = true
+					writes++
 
 					var m Message
 					err := json.Unmarshal(b, &m)
@@ -155,28 +160,28 @@ func TestSetState(t *testing.T) {
 			s, err := cl.SetState(tc.Input)
 			a.Nil(err)
 			a.Equal(tc.Output, s)
-			a.True(writerExec)
+			a.Equal(writes, 1)
 		})
 	}
 }
 
 func TestCommand(t *testing.T) {
 	for i, tc := range []struct {
-		Expected Command
+		Command Command
 	}{
 		{
-			Expected: CommandStop,
+			Command: CommandStop,
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			a := assert.New(t)
 
-			var writerExec bool
+			writes := 0
 
 			out := &bytes.Buffer{}
 			in := &mockWriter{
 				WriteFunc: func(b []byte) (int, error) {
-					writerExec = true
+					writes++
 
 					var m Message
 					err := json.Unmarshal(b, &m)
@@ -187,7 +192,7 @@ func TestCommand(t *testing.T) {
 					var payload Command
 					err = json.Unmarshal(m.Payload, &payload)
 					a.Nil(err)
-					a.Equal(tc.Expected, payload)
+					a.Equal(tc.Command, payload)
 
 					err = json.NewEncoder(out).Encode(&Message{
 						MessageID: m.MessageID,
@@ -200,9 +205,9 @@ func TestCommand(t *testing.T) {
 				},
 			}
 
-			err := NewClient(in, out).SendCommand(tc.Expected)
+			err := NewClient(in, out).SendCommand(tc.Command)
 			a.Nil(err)
-			a.True(writerExec)
+			a.Equal(writes, 1)
 		})
 	}
 }
