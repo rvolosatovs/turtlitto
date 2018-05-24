@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
@@ -54,45 +53,25 @@ func main() {
 		}
 		defer unixConn.Close()
 
-		cl := api.NewClient(unixConn, unixConn)
+		trcConn, err := api.Connect(api.DefaultVersion, unixConn, unixConn)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to establish connection to TRC: %s", err), http.StatusInternalServerError)
+			return
+		}
+		defer trcConn.Close()
 
-		go func() {
-			for {
-				select {
-				case <-r.Context().Done():
-					return
-				default:
-				}
+		stateCh, closeFn := trcConn.SubscribeState()
+		defer closeFn()
 
-				var cmd api.Command
-				if err := wsConn.ReadJSON(&cmd); err != nil {
-					http.Error(w, fmt.Sprintf("Failed to read command: %s", err), http.StatusBadRequest)
-					continue
-				}
-
-				if err = cl.SendCommand(cmd); err != nil {
-					http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusInternalServerError)
-					return
-				}
-			}
-		}()
-
-		for range time.Tick(time.Second) {
+		for {
 			select {
 			case <-r.Context().Done():
 				return
-			default:
-			}
-
-			st, err := cl.State()
-			if err != nil {
-				http.Error(w, fmt.Sprintf("Failed to get state from TRC: %s", err), http.StatusInternalServerError)
-				return
-			}
-
-			if err := wsConn.WriteJSON(st); err != nil {
-				http.Error(w, fmt.Sprintf("Failed to write state: %s", err), http.StatusInternalServerError)
-				return
+			case st := <-stateCh:
+				if err := wsConn.WriteJSON(st); err != nil {
+					http.Error(w, fmt.Sprintf("Failed to write state: %s", err), http.StatusInternalServerError)
+					return
+				}
 			}
 		}
 	})
