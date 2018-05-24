@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// tests whether Validate() of interface Validator correctly identifies correct and incorrect states
 func TestValidate(t *testing.T) {
 	type TestCase struct {
 		Input       Validator

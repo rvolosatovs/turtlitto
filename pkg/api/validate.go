@@ -82,6 +82,37 @@ func (v KinectState) Validate() error {
 	return nil
 }
 
+// Validate implements Validator.
+func (v Command) Validate() error {
+	switch v {
+	case CommandDroppedBall,
+		CommandStart,
+		CommandStop,
+		CommandGoIn,
+		CommandGoOut,
+		CommandKickOffMagenta,
+		CommandKickOffCyan,
+		CommandFreeKickMagenta,
+		CommandFreeKickCyan,
+		CommandGoalKickMagenta,
+		CommandGoalKickCyan,
+		CommandThrowInMagenta,
+		CommandThrowInCyan,
+		CommandCornerMagenta,
+		CommandCornerCyan,
+		CommandPenaltyMagenta,
+		CommandPenaltyCyan,
+		CommandRoleAssignerOn,
+		CommandRoleAssignerOff,
+		CommandPassDemo,
+		CommandPenaltyMode,
+		CommandBallHandlingDemo:
+	default:
+		return errors.Errorf("invalid Command: %s", v)
+	}
+	return nil
+}
+
 // rangeError returns an out-of-range error.
 func rangeError(source string) error {
 	return errors.Errorf("%s out of range", source)
@@ -124,8 +155,8 @@ func (s *TurtleState) Validate() error {
 
 // Validate implements Validator.
 func (s *State) Validate() error {
-	if s.Command != "" && s.Validate() != nil { //TODO fix this recursion
-		return s.Validate()
+	if s.Command != "" && s.Command.Validate() != nil {
+		return s.Command.Validate()
 	}
 	for _, ts := range s.Turtles {
 		if err := ts.Validate(); err != nil {

@@ -145,6 +145,11 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 
 			switch msg.Type {
 			case MessageTypePing:
+				if msg.ParentID != nil {
+					// Don't respond to a pong
+					break
+				}
+
 				if err := enc.Encode(NewMessage(MessageTypePing, nil, &msg.MessageID)); err != nil {
 					conn.errCh <- err
 					return
@@ -152,12 +157,12 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 
 			case MessageTypeState:
 				conn.stateMu.Lock()
-				st := deepcopy.Copy(conn.state).(*State)
-				if err := json.Unmarshal(msg.Payload, &st); err != nil {
+				if err := json.Unmarshal(msg.Payload, conn.state); err != nil {
 					conn.errCh <- err
+					conn.stateMu.Unlock()
 					return
 				}
-				conn.state = st
+				st := deepcopy.Copy(conn.state).(*State)
 				conn.stateMu.Unlock()
 
 				conn.stateSubsMu.RLock()
@@ -186,7 +191,7 @@ func (c *Conn) Close() error {
 	return nil
 }
 
-// State returns the current state of turtles.
+// State returns the current state of TRC and turtles.
 func (c *Conn) State() *State {
 	c.stateMu.RLock()
 	st := deepcopy.Copy(c.state).(*State)
@@ -207,6 +212,11 @@ func (c *Conn) SubscribeState() (<-chan *State, func()) {
 	}
 }
 
+// Ping is a health check command.
+func (c *Conn) Ping() error {
+	return c.sendRequest(MessageTypePing, nil)
+}
+
 func (c *Conn) SetState(st *State) error {
 	return c.sendRequest(MessageTypeState, st)
 }
@@ -225,6 +235,10 @@ func (c *Conn) SetTurtleState(id string, st *TurtleState) error {
 	})
 }
 
-func (c *Conn) Errors() chan<- error {
+func (c *Conn) Errors() <-chan error {
 	return c.errCh
+}
+
+func (c *Conn) Closed() <-chan struct{} {
+	return c.closeCh
 }
