@@ -84,10 +84,31 @@ func (c *Conn) sendRequest(typ MessageType, pld interface{}) error {
 
 func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	dec := json.NewDecoder(r)
+	dec.DisallowUnknownFields()
+	conn := &Conn{
+		version:       ver,
+		closeCh:       make(chan struct{}),
+		decoder:       dec,
+		encoder:       json.NewEncoder(w),
+		errCh:         make(chan error),
+		stateMu:       &sync.RWMutex{},
+		state:         &State{},
+		stateSubsMu:   &sync.RWMutex{},
+		stateSubs:     make(map[chan<- *State]struct{}),
+		pendingReqsMu: &sync.RWMutex{},
+		pendingReqs:   make(map[ulid.ULID]chan struct{}),
+	}
 
 	var req Message
-	if err := dec.Decode(&req); err != nil {
+	if err := conn.decoder.Decode(&req); err != nil {
 		return nil, err
+	}
+
+	if req.Type != MessageTypeHandshake {
+		return nil, errors.Errorf("Expected message of type %s, got %s", MessageTypeHandshake, req.Type)
+	}
+	if len(req.Payload) == 0 {
+		return nil, errors.New("Handshake payload is empty")
 	}
 
 	var hs Handshake
@@ -104,33 +125,21 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	case resp.Version.Minor > ver.Minor:
 		resp.Version = ver
 	}
+	conn.version = resp.Version
 
 	b, err := json.Marshal(resp)
 	if err != nil {
 		return nil, err
 	}
 
-	enc := json.NewEncoder(w)
-	if err := enc.Encode(NewMessage(req.Type, b, &req.MessageID)); err != nil {
+	if err := conn.encoder.Encode(NewMessage(req.Type, b, &req.MessageID)); err != nil {
 		return nil, err
-	}
-
-	conn := &Conn{
-		version:       resp.Version,
-		closeCh:       make(chan struct{}),
-		errCh:         make(chan error),
-		stateMu:       &sync.RWMutex{},
-		state:         &State{},
-		stateSubsMu:   &sync.RWMutex{},
-		stateSubs:     make(map[chan<- *State]struct{}),
-		pendingReqsMu: &sync.RWMutex{},
-		pendingReqs:   make(map[ulid.ULID]chan struct{}),
 	}
 
 	go func() {
 		for {
 			var msg Message
-			err := dec.Decode(&msg)
+			err := conn.decoder.Decode(&msg)
 
 			select {
 			case <-conn.closeCh:
@@ -150,7 +159,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 					break
 				}
 
-				if err := enc.Encode(NewMessage(MessageTypePing, nil, &msg.MessageID)); err != nil {
+				if err := conn.encoder.Encode(NewMessage(MessageTypePing, nil, &msg.MessageID)); err != nil {
 					conn.errCh <- err
 					return
 				}
