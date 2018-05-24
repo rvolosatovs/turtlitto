@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Turtle should match snapshot 1`] = `
+<div
+  className="sc-bxivhb ejdVNA"
+>
+  <div
+    className="sc-bdVaJa dqcnNb"
+  >
+    <svg
+      aria-hidden="true"
+      className="svg-inline--fa fa-battery-half fa-w-20 fa-rotate-270 "
+      data-icon="battery-half"
+      data-prefix="fas"
+      role="img"
+      style={Object {}}
+      viewBox="0 0 640 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-240 96H96v128h224V192z"
+        fill="currentColor"
+        style={Object {}}
+      />
+    </svg>
+    42
+    %
+  </div>
+  <div
+    className="sc-bwzfXH lopfab"
+  >
+    <p>
+      Turtle 
+      2
+    </p>
+  </div>
+  <div
+    className="sc-htpNat jxAMgd"
+  >
+    <select
+      disabled={true}
+      onChange={[Function]}
+      value="Goalkeeper"
+    >
+      <option>
+        INACTIVE
+      </option>
+      <option>
+        ROLE_NONE
+      </option>
+      <option>
+        Att main
+      </option>
+      <option>
+        Att assist
+      </option>
+      <option>
+        Def main
+      </option>
+      <option>
+        Def assist
+      </option>
+      <option>
+        Def assist 2
+      </option>
+      <option>
+        Goalkeeper
+      </option>
+    </select>
+    <select
+      disabled={true}
+      onChange={[Function]}
+      value="Blue home"
+    >
+      <option>
+        Yellow home
+      </option>
+      <option>
+        Blue home
+      </option>
+    </select>
+    <select
+      disabled={true}
+      onChange={[Function]}
+      value="Cyan"
+    >
+      <option>
+        Magenta
+      </option>
+      <option>
+        Cyan
+      </option>
+    </select>
+  </div>
+</div>
+`;
