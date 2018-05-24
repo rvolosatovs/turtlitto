@@ -15,5 +15,7 @@ export default {
   shadow: "rgba(0, 0, 0, 0.17)",
   turtleEnableBar: "#ededed",
   turtleEnableButton: "#ededed",
-  turtleEnableButtonActive: "silver"
+  turtleEnableButtonActive: "silver",
+  bottomBarButton: "#ededed",
+  bottomBarButtonActive: "silver"
 };
