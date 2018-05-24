@@ -5,7 +5,7 @@ import sinon from "sinon";
 import Turtle from ".";
 
 describe("Turtle", () => {
-  it("shows correctly", () => {
+  it("should match snapshot", () => {
     const turtle = {
       battery: 42,
       home: "Blue home",
@@ -19,40 +19,41 @@ describe("Turtle", () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  describe("can change the", () => {
-    const turtle = {
-      battery: 42,
-      home: "Blue home",
-      id: 2,
-      role: "Goalkeeper",
-      team: "Cyan"
-    };
-    let onChangeSpy = sinon.spy();
-    const wrapper = shallow(
-      <Turtle
-        turtle={turtle}
-        editable={true}
-        onChange={(...args) => onChangeSpy(args)}
-      />
-    );
+  describe("the user changes dropdown values", () => {
+    let onChangeSpy = null;
+    let wrapper = null;
 
     beforeEach(() => {
+      const turtle = {
+        battery: 42,
+        home: "Blue home",
+        id: 2,
+        role: "Goalkeeper",
+        team: "Cyan"
+      };
       onChangeSpy = sinon.spy();
+      wrapper = shallow(
+        <Turtle
+          turtle={turtle}
+          editable={true}
+          onChange={(...args) => onChangeSpy(args)}
+        />
+      );
     });
 
-    it("role", () => {
+    it("should change the role", () => {
       wrapper.find("#turtle2__role").simulate("change", "INACTIVE");
       expect(onChangeSpy.calledOnce);
       expect(onChangeSpy.calledWithExactly("role", "INACTIVE"));
     });
 
-    it("home", () => {
+    it("should change the home", () => {
       wrapper.find("#turtle2__home").simulate("change", "Yellow home");
       expect(onChangeSpy.calledOnce);
       expect(onChangeSpy.calledWithExactly("home", "Yellow home"));
     });
 
-    it("team", () => {
+    it("should change the team", () => {
       wrapper.find("#turtle2__team").simulate("change", "Magenta");
       expect(onChangeSpy.calledOnce);
       expect(onChangeSpy.calledWithExactly("team", "Magenta"));

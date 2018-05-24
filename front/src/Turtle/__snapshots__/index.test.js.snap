@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Turtle shows correctly 1`] = `
+exports[`Turtle should match snapshot 1`] = `
 <div
   className="sc-bxivhb ejdVNA"
 >
