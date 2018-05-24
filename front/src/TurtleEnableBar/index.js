@@ -58,7 +58,7 @@ const Bar = styled.div`
   border-width: 0rem 0rem 0.2rem 0rem;
   margin-bottom: 0.2rem;
   background: ${props => props.theme.turtleEnableBar};
-  position: sticky;
+  position: fixed;
   z-index: 1;
 `;
 

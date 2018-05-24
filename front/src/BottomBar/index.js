@@ -118,7 +118,7 @@ const Button = styled.button`
   background: ${props => props.theme.bottomBarButton};
   width: 100%;
   height: 50%;
-  font-size: 150%;
+  font-size: 200%;
   flex: 1;
 
   &:active {

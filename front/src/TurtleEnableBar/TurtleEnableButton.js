@@ -52,6 +52,7 @@ const Button = styled.button`
       : props.theme.turtleEnableButton};
   width: 16%;
   min-width: 7.5rem;
+  height: 10rem;
   font-size: 4rem;
   flex: 1;
   margin: 0.1rem;
