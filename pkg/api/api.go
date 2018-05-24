@@ -125,7 +125,7 @@ type State struct {
 	// AppmanStatus represents status of Appman (Off/On).
 	AppmanStatus bool `json:"appmanstatus"`
 
-	// CommStatus represents cOMM Status (On/Off).
+	// CommStatus represents COMM Status (On/Off).
 	CommStatus bool `json:"commstatus"`
 
 	// SoftwareSVNRevision represents software Revision (0 … 99999).
