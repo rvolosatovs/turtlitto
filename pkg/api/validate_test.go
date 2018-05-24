@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// tests whether Validate() of interface Validator correctly identifies correct and incorrect states
 func TestValidate(t *testing.T) {
 	type TestCase struct {
 		Input       Validator
@@ -15,39 +16,89 @@ func TestValidate(t *testing.T) {
 	}
 
 	for i, tc := range []TestCase{
-		{ // 0
-			Input: &State{
-				VisionStatus: "Manual",
-			},
-			ShouldError: true,
-		},
-		{ // 1
-			Input: &State{
-				Temperature1:    28,
-				CamStatus:       12, // too much
-				Cpu1Load:        89,
-				Cpu0Load:        87,
-				EmergencyStatus: 0,
-			},
-			ShouldError: true,
-		},
-		{ // 2
-			Input: &State{
+		{ // a simple correct turtleState
+			Input: &TurtleState{
 				EmergencyStatus: 100, // maximum
 			},
 			ShouldError: false,
 		},
-		{ // 3
-			Input: &State{
+		{ // a simple erroneous turtleState
+			Input: &TurtleState{
 				BatteryVoltage: 255, // max_uint8
 			},
 			ShouldError: true,
 		},
-		{ // 4
+		{ // a one-item State
 			Input: &State{
-				ID: "", // empty ID
+				Turtles: map[string]*TurtleState{
+					"t": {
+						VisionStatus: false,
+					},
+				},
 			},
-			ShouldError: false, // not anymore
+			ShouldError: false,
+		},
+		{ // a multi-item, multi-turtle State
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"1": {
+						Kinect1State:    KinectStateNoBall,
+						EmergencyStatus: 0,
+					},
+					"2": {
+						Kinect1State:    KinectStateBall,
+						Kinect2State:    KinectStateNoBall,
+						EmergencyStatus: 1,
+					},
+					"3": {
+						HomeGoal:        HomeGoalYellow,
+						BatteryVoltage:  28,
+						EmergencyStatus: 0,
+					},
+				},
+			},
+			ShouldError: false,
+		},
+		{ // a one-item wrong State
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"t": {
+						EmergencyStatus: 255, // too much
+					},
+				},
+			},
+			ShouldError: true,
+		},
+		{ // a one-item wrong State
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"t": {
+						RefBoxRole: "wrongRole",
+					},
+				},
+			},
+			ShouldError: true,
+		},
+		{ // a multi-item, multi-turtle wrong State
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"1": {
+						Kinect1State:    KinectStateNoBall,
+						EmergencyStatus: 0,
+					},
+					"2": {
+						Kinect1State:    KinectStateBall,
+						Kinect2State:    KinectStateNoBall,
+						EmergencyStatus: 1,
+					},
+					"3": {
+						HomeGoal:        HomeGoalYellow,
+						BatteryVoltage:  100, // too much
+						EmergencyStatus: 0,
+					},
+				},
+			},
+			ShouldError: true,
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {

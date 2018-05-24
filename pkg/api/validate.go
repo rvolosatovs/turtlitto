@@ -124,7 +124,7 @@ func (s *TurtleState) Validate() error {
 
 // Validate implements Validator.
 func (s *State) Validate() error {
-	if s.Command != "" && s.Validate() != nil {
+	if s.Command != "" && s.Validate() != nil { //TODO fix this recursion
 		return s.Validate()
 	}
 	for _, ts := range s.Turtles {

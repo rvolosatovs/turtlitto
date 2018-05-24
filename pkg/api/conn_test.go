@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	. "github.com/rvolosatovs/turtlitto/pkg/api"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type mockWriter struct {
@@ -34,11 +34,12 @@ func TestState(t *testing.T) {
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			a := assert.New(t)
+			a := require.New(t)
 
 			writes := 0
 
 			out := &bytes.Buffer{}
+			// simulates the TRC
 			in := &mockWriter{
 				WriteFunc: func(b []byte) (int, error) {
 					writes++
@@ -68,8 +69,9 @@ func TestState(t *testing.T) {
 			}
 
 			conn, err := Connect(DefaultVersion, in, out)
+
 			a.Nil(err)
-			a.Equal(s, tc.Expected)
+			a.Equal(conn.State(), tc.Expected)
 			a.Equal(writes, 1)
 		})
 	}
@@ -77,46 +79,40 @@ func TestState(t *testing.T) {
 
 func TestSetState(t *testing.T) {
 	for i, tc := range []struct {
-		Input  map[string]*State
-		Output map[string]*State
+		Input  map[string]*TurtleState
+		Output map[string]*TurtleState
 	}{
 		{
-			Input: map[string]*State{
+			Input: map[string]*TurtleState{
 				"foo": {
-					ID:  "1",
 					CPB: CPBNo,
 				},
 				"bar": {
-					ID:           "2",
 					RefBoxRole:   RoleDefenderAssist,
 					Kinect2State: KinectStateBall,
 				},
 				"baz": {
-					ID:           "3",
-					ActiveDevPC:  uint8(42),
-					Temperature1: uint8(69),
+					ActiveDevPC:    uint8(42),
+					BatteryVoltage: uint8(69),
 				},
 			},
-			Output: map[string]*State{
+			Output: map[string]*TurtleState{
 				"foo": {
-					ID:  "1",
 					CPB: CPBYes,
 				},
 				"bar": {
-					ID:           "2",
 					RefBoxRole:   RoleDefenderAssist2,
 					Kinect2State: KinectStateNoBall,
 				},
 				"baz": {
-					ID:           "3",
-					ActiveDevPC:  uint8(89),
-					Temperature1: uint8(69),
+					ActiveDevPC:    uint8(89),
+					BatteryVoltage: uint8(69),
 				},
 			},
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			a := assert.New(t)
+			a := require.New(t)
 
 			writes := 0
 
@@ -129,7 +125,7 @@ func TestSetState(t *testing.T) {
 					err := json.Unmarshal(b, &m)
 					a.Nil(err)
 					a.NotEmpty(m.MessageID)
-					a.Equal(MessageTypeSetState, m.Type)
+					a.Equal(MessageTypeState, m.Type)
 
 					var ts map[string]*State
 					err = json.Unmarshal(m.Payload, &ts)
@@ -153,9 +149,12 @@ func TestSetState(t *testing.T) {
 				},
 			}
 
-			cl := NewClient(in, out)
+			conn, err := Connect(DefaultVersion, in, out)
+			a.Nil(err)
 
-			s, err := cl.SetState(tc.Input)
+			state := &State{Turtles: tc.Input}
+			s := conn.SetState(state)
+
 			a.Nil(err)
 			a.Equal(tc.Output, s)
 			a.Equal(writes, 1)
@@ -172,7 +171,7 @@ func TestCommand(t *testing.T) {
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			a := assert.New(t)
+			a := require.New(t)
 
 			writes := 0
 
@@ -185,7 +184,7 @@ func TestCommand(t *testing.T) {
 					err := json.Unmarshal(b, &m)
 					a.Nil(err)
 					a.NotEmpty(m.MessageID)
-					a.Equal(m.Type, MessageTypeCommand)
+					a.Equal(m.Type, MessageTypeState)
 
 					var payload Command
 					err = json.Unmarshal(m.Payload, &payload)
@@ -203,12 +202,13 @@ func TestCommand(t *testing.T) {
 				},
 			}
 
-			err := NewClient(in, out).SendCommand(tc.Command)
+			conn, err := Connect(DefaultVersion, in, out)
 			a.Nil(err)
-			a.Equal(writes, 1)
-			a.Equal(s, tc.Expected)
 
-			// TODO: Check things
+			s := conn.SetCommand(tc.Command)
+
+			a.Equal(writes, 1)
+			a.Equal(s, tc.Command)
 		})
 	}
 }
