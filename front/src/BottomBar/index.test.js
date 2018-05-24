@@ -2,10 +2,51 @@ import React from "react";
 import BottomBar from ".";
 import { shallow } from "enzyme";
 import sinon from "sinon";
+import connectionTypes from "./connectionTypes";
+import pageTypes from "./pageTypes";
 
 describe("BottomBar", () => {
   const refboxPage = "refbox";
   const settingsPage = "settings";
+
+  it("should match snapshot when connected", () => {
+    const wrapper = shallow(
+      <BottomBar
+        changeActivePage={() => {}}
+        onSend={() => {}}
+        activePage={pageTypes.SETTINGS}
+        connectionStatus={connectionTypes.CONNECTED}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should match snapshot when connecting", () => {
+    const wrapper = shallow(
+      <BottomBar
+        changeActivePage={() => {}}
+        onSend={() => {}}
+        activePage={pageTypes.SETTINGS}
+        connectionStatus={connectionTypes.CONNECTING}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should match snapshot when disconnected", () => {
+    const wrapper = shallow(
+      <BottomBar
+        changeActivePage={() => {}}
+        onSend={() => {}}
+        activePage={pageTypes.SETTINGS}
+        connectionStatus={connectionTypes.DISCONNECTED}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
 
   describe("the user clicks on the start button", () => {
     it("should pass `start` to the `onSend` function", () => {
@@ -14,7 +55,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={onSendSpy}
-          activePage={refboxPage}
+          activePage={pageTypes.REFBOX}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -32,7 +74,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={onSendSpy}
-          activePage={refboxPage}
+          activePage={pageTypes.REFBOX}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -49,7 +92,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={() => {}}
-          activePage={refboxPage}
+          activePage={pageTypes.REFBOX}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -63,7 +107,8 @@ describe("BottomBar", () => {
           <BottomBar
             changeActivePage={changeActivePageSpy}
             onSend={() => {}}
-            activePage={refboxPage}
+            activePage={pageTypes.REFBOX}
+            connectionStatus={connectionTypes.CONNECTED}
           />
         );
 
@@ -81,7 +126,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={() => {}}
-          activePage={settingsPage}
+          activePage={pageTypes.SETTINGS}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -95,7 +141,8 @@ describe("BottomBar", () => {
           <BottomBar
             changeActivePage={changeActivePageSpy}
             onSend={() => {}}
-            activePage={settingsPage}
+            activePage={pageTypes.SETTINGS}
+            connectionStatus={connectionTypes.CONNECTED}
           />
         );
 
