@@ -76,16 +76,14 @@ func TestMain(m *testing.M) {
 func TestAll(t *testing.T) {
 	a := assert.New(t)
 
-	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost"+defaultAddr+"/"+defaultEndpoint, nil)
+	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost"+defaultAddr+"/"+statusEndpoint, nil)
 	if !a.Nil(err) {
 		t.FailNow()
 	}
 
 	state := map[string]*api.TurtleState{
 		"foo": {
-			BatteryVoltage: 25,
-			VisionStatus:   true,
-			HomeGoal:       api.HomeGoalBlue,
+		// TODO: add fields
 		},
 	}
 
