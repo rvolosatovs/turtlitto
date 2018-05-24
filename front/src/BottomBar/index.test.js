@@ -15,6 +15,7 @@ describe("BottomBar", () => {
           changeActivePage={() => {}}
           onSend={onSendSpy}
           activePage={refboxPage}
+          isConnected={"DISCONNECTED"}
         />
       );
 
@@ -33,6 +34,7 @@ describe("BottomBar", () => {
           changeActivePage={() => {}}
           onSend={onSendSpy}
           activePage={refboxPage}
+          isConnected={"DISCONNECTED"}
         />
       );
 
@@ -50,6 +52,7 @@ describe("BottomBar", () => {
           changeActivePage={() => {}}
           onSend={() => {}}
           activePage={refboxPage}
+          isConnected={"DISCONNECTED"}
         />
       );
 
@@ -64,6 +67,7 @@ describe("BottomBar", () => {
             changeActivePage={changeActivePageSpy}
             onSend={() => {}}
             activePage={refboxPage}
+            isConnected={"DISCONNECTED"}
           />
         );
 
@@ -82,6 +86,7 @@ describe("BottomBar", () => {
           changeActivePage={() => {}}
           onSend={() => {}}
           activePage={settingsPage}
+          isConnected={"DISCONNECTED"}
         />
       );
 
@@ -96,6 +101,7 @@ describe("BottomBar", () => {
             changeActivePage={changeActivePageSpy}
             onSend={() => {}}
             activePage={settingsPage}
+            isConnected={"DISCONNECTED"}
           />
         );
 
@@ -104,6 +110,42 @@ describe("BottomBar", () => {
         expect(changeActivePageSpy.calledOnce).toBe(true);
         expect(changeActivePageSpy.calledWithExactly("refbox")).toBe(true);
       });
+    });
+  });
+
+  describe("the color of the connection bar", () => {
+    it("should be 'tomato' if 'isConnected' is 'CONNECTED'", () => {
+      const wrapper = shallow(
+        <BottomBar
+          changeActivePage={() => {}}
+          onSend={() => {}}
+          activePage={settingsPage}
+          isConnected={"CONNECTED"}
+        />
+      );
+      expect(wrapper).toMatchSnapshot();
+    });
+    it("should be '#ffcc00' if 'isConnected' is 'CONNECTING'", () => {
+      const wrapper = shallow(
+        <BottomBar
+          changeActivePage={() => {}}
+          onSend={() => {}}
+          activePage={settingsPage}
+          isConnected={"CONNECTING"}
+        />
+      );
+      expect(wrapper).toMatchSnapshot();
+    });
+    it("should be 'green' if 'isConnected' is 'DISCONNECTED'", () => {
+      const wrapper = shallow(
+        <BottomBar
+          changeActivePage={() => {}}
+          onSend={() => {}}
+          activePage={settingsPage}
+          isConnected={"DISCONNECTED"}
+        />
+      );
+      expect(wrapper).toMatchSnapshot();
     });
   });
 });
