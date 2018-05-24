@@ -2,10 +2,51 @@ import React from "react";
 import BottomBar from ".";
 import { shallow } from "enzyme";
 import sinon from "sinon";
+import connectionTypes from "./connectionTypes";
+import pageTypes from "./pageTypes";
 
 describe("BottomBar", () => {
   const refboxPage = "refbox";
   const settingsPage = "settings";
+
+  it("should match snapshot when connected", () => {
+    const wrapper = shallow(
+      <BottomBar
+        changeActivePage={() => {}}
+        onSend={() => {}}
+        activePage={pageTypes.SETTINGS}
+        connectionStatus={connectionTypes.CONNECTED}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should match snapshot when connecting", () => {
+    const wrapper = shallow(
+      <BottomBar
+        changeActivePage={() => {}}
+        onSend={() => {}}
+        activePage={pageTypes.SETTINGS}
+        connectionStatus={connectionTypes.CONNECTING}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should match snapshot when disconnected", () => {
+    const wrapper = shallow(
+      <BottomBar
+        changeActivePage={() => {}}
+        onSend={() => {}}
+        activePage={pageTypes.SETTINGS}
+        connectionStatus={connectionTypes.DISCONNECTED}
+      />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
 
   describe("the user clicks on the start button", () => {
     it("should pass `start` to the `onSend` function", () => {
@@ -14,8 +55,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={onSendSpy}
-          activePage={refboxPage}
-          isConnected={"DISCONNECTED"}
+          activePage={pageTypes.REFBOX}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -33,8 +74,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={onSendSpy}
-          activePage={refboxPage}
-          isConnected={"DISCONNECTED"}
+          activePage={pageTypes.REFBOX}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -51,8 +92,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={() => {}}
-          activePage={refboxPage}
-          isConnected={"DISCONNECTED"}
+          activePage={pageTypes.REFBOX}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -66,8 +107,8 @@ describe("BottomBar", () => {
           <BottomBar
             changeActivePage={changeActivePageSpy}
             onSend={() => {}}
-            activePage={refboxPage}
-            isConnected={"DISCONNECTED"}
+            activePage={pageTypes.REFBOX}
+            connectionStatus={connectionTypes.CONNECTED}
           />
         );
 
@@ -85,8 +126,8 @@ describe("BottomBar", () => {
         <BottomBar
           changeActivePage={() => {}}
           onSend={() => {}}
-          activePage={settingsPage}
-          isConnected={"DISCONNECTED"}
+          activePage={pageTypes.SETTINGS}
+          connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
@@ -100,8 +141,8 @@ describe("BottomBar", () => {
           <BottomBar
             changeActivePage={changeActivePageSpy}
             onSend={() => {}}
-            activePage={settingsPage}
-            isConnected={"DISCONNECTED"}
+            activePage={pageTypes.SETTINGS}
+            connectionStatus={connectionTypes.CONNECTED}
           />
         );
 
@@ -110,42 +151,6 @@ describe("BottomBar", () => {
         expect(changeActivePageSpy.calledOnce).toBe(true);
         expect(changeActivePageSpy.calledWithExactly("refbox")).toBe(true);
       });
-    });
-  });
-
-  describe("the color of the connection bar", () => {
-    it("should be 'tomato' if 'isConnected' is 'CONNECTED'", () => {
-      const wrapper = shallow(
-        <BottomBar
-          changeActivePage={() => {}}
-          onSend={() => {}}
-          activePage={settingsPage}
-          isConnected={"CONNECTED"}
-        />
-      );
-      expect(wrapper).toMatchSnapshot();
-    });
-    it("should be '#ffcc00' if 'isConnected' is 'CONNECTING'", () => {
-      const wrapper = shallow(
-        <BottomBar
-          changeActivePage={() => {}}
-          onSend={() => {}}
-          activePage={settingsPage}
-          isConnected={"CONNECTING"}
-        />
-      );
-      expect(wrapper).toMatchSnapshot();
-    });
-    it("should be 'green' if 'isConnected' is 'DISCONNECTED'", () => {
-      const wrapper = shallow(
-        <BottomBar
-          changeActivePage={() => {}}
-          onSend={() => {}}
-          activePage={settingsPage}
-          isConnected={"DISCONNECTED"}
-        />
-      );
-      expect(wrapper).toMatchSnapshot();
     });
   });
 });

@@ -7,7 +7,7 @@ ShallowWrapper {
   Symbol(enzyme.__unrendered__): <BottomBar
     activePage="refbox"
     changeActivePage={[Function]}
-    isConnected="DISCONNECTED"
+    connectionStatus="connected"
     onSend={[Function]}
 />,
   Symbol(enzyme.__renderer__): Object {
@@ -24,20 +24,22 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          connected={false}
-          connecting={false}
-          id="connectBar"
+          background={
+                    Array [
+                              "
+                            background: ",
+                              [Function],
+                              ";
+                          ",
+                            ]
+          }
 >
           <styled.p>
-                    DISCONNECTED
+                    connected
           </styled.p>
 </styled.div>,
-        <styled.div
-          className={undefined}
->
-          <styled.div
-                    className={undefined}
-          >
+        <styled.div>
+          <styled.div>
                     <styled.button
                               enabled={true}
                               id="bottom-bar__start-button"
@@ -147,6 +149,7 @@ ShallowWrapper {
           </styled.button>
 </styled.div>,
       ],
+      "className": undefined,
     },
     "ref": null,
     "rendered": Array [
@@ -155,12 +158,16 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "background": Array [
+            "
+        background: ",
+            [Function],
+            ";
+      ",
+          ],
           "children": <styled.p>
-            DISCONNECTED
+            connected
 </styled.p>,
-          "connected": false,
-          "connecting": false,
-          "id": "connectBar",
         },
         "ref": null,
         "rendered": Object {
@@ -168,10 +175,10 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
-            "children": "DISCONNECTED",
+            "children": "connected",
           },
           "ref": null,
-          "rendered": "DISCONNECTED",
+          "rendered": "connected",
           "type": [Function],
         },
         "type": [Function],
@@ -182,9 +189,7 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "children": Array [
-            <styled.div
-              className={undefined}
->
+            <styled.div>
               <styled.button
                             enabled={true}
                             id="bottom-bar__start-button"
@@ -293,7 +298,6 @@ ShallowWrapper {
               />
 </styled.button>,
           ],
-          "className": undefined,
         },
         "ref": null,
         "rendered": Array [
@@ -374,7 +378,6 @@ ShallowWrapper {
                   />
 </styled.button>,
               ],
-              "className": undefined,
             },
             "ref": null,
             "rendered": Array [
@@ -625,20 +628,22 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            connected={false}
-            connecting={false}
-            id="connectBar"
+            background={
+                        Array [
+                                    "
+                                background: ",
+                                    [Function],
+                                    ";
+                              ",
+                                  ]
+            }
 >
             <styled.p>
-                        DISCONNECTED
+                        connected
             </styled.p>
 </styled.div>,
-          <styled.div
-            className={undefined}
->
-            <styled.div
-                        className={undefined}
-            >
+          <styled.div>
+            <styled.div>
                         <styled.button
                                     enabled={true}
                                     id="bottom-bar__start-button"
@@ -748,6 +753,7 @@ ShallowWrapper {
             </styled.button>
 </styled.div>,
         ],
+        "className": undefined,
       },
       "ref": null,
       "rendered": Array [
@@ -756,12 +762,16 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "background": Array [
+              "
+        background: ",
+              [Function],
+              ";
+      ",
+            ],
             "children": <styled.p>
-              DISCONNECTED
+              connected
 </styled.p>,
-            "connected": false,
-            "connecting": false,
-            "id": "connectBar",
           },
           "ref": null,
           "rendered": Object {
@@ -769,10 +779,10 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "children": "DISCONNECTED",
+              "children": "connected",
             },
             "ref": null,
-            "rendered": "DISCONNECTED",
+            "rendered": "connected",
             "type": [Function],
           },
           "type": [Function],
@@ -783,9 +793,7 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "children": Array [
-              <styled.div
-                className={undefined}
->
+              <styled.div>
                 <styled.button
                                 enabled={true}
                                 id="bottom-bar__start-button"
@@ -894,7 +902,6 @@ ShallowWrapper {
                 />
 </styled.button>,
             ],
-            "className": undefined,
           },
           "ref": null,
           "rendered": Array [
@@ -975,7 +982,6 @@ ShallowWrapper {
                     />
 </styled.button>,
                 ],
-                "className": undefined,
               },
               "ref": null,
               "rendered": Array [
@@ -1236,7 +1242,7 @@ ShallowWrapper {
   Symbol(enzyme.__unrendered__): <BottomBar
     activePage="settings"
     changeActivePage={[Function]}
-    isConnected="DISCONNECTED"
+    connectionStatus="connected"
     onSend={[Function]}
 />,
   Symbol(enzyme.__renderer__): Object {
@@ -1253,20 +1259,22 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          connected={false}
-          connecting={false}
-          id="connectBar"
+          background={
+                    Array [
+                              "
+                            background: ",
+                              [Function],
+                              ";
+                          ",
+                            ]
+          }
 >
           <styled.p>
-                    DISCONNECTED
+                    connected
           </styled.p>
 </styled.div>,
-        <styled.div
-          className={undefined}
->
-          <styled.div
-                    className={undefined}
-          >
+        <styled.div>
+          <styled.div>
                     <styled.button
                               enabled={true}
                               id="bottom-bar__start-button"
@@ -1376,6 +1384,7 @@ ShallowWrapper {
           </styled.button>
 </styled.div>,
       ],
+      "className": undefined,
     },
     "ref": null,
     "rendered": Array [
@@ -1384,12 +1393,16 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "background": Array [
+            "
+        background: ",
+            [Function],
+            ";
+      ",
+          ],
           "children": <styled.p>
-            DISCONNECTED
+            connected
 </styled.p>,
-          "connected": false,
-          "connecting": false,
-          "id": "connectBar",
         },
         "ref": null,
         "rendered": Object {
@@ -1397,10 +1410,10 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
-            "children": "DISCONNECTED",
+            "children": "connected",
           },
           "ref": null,
-          "rendered": "DISCONNECTED",
+          "rendered": "connected",
           "type": [Function],
         },
         "type": [Function],
@@ -1411,9 +1424,7 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "children": Array [
-            <styled.div
-              className={undefined}
->
+            <styled.div>
               <styled.button
                             enabled={true}
                             id="bottom-bar__start-button"
@@ -1522,7 +1533,6 @@ ShallowWrapper {
               />
 </styled.button>,
           ],
-          "className": undefined,
         },
         "ref": null,
         "rendered": Array [
@@ -1603,7 +1613,6 @@ ShallowWrapper {
                   />
 </styled.button>,
               ],
-              "className": undefined,
             },
             "ref": null,
             "rendered": Array [
@@ -1854,20 +1863,22 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            connected={false}
-            connecting={false}
-            id="connectBar"
+            background={
+                        Array [
+                                    "
+                                background: ",
+                                    [Function],
+                                    ";
+                              ",
+                                  ]
+            }
 >
             <styled.p>
-                        DISCONNECTED
+                        connected
             </styled.p>
 </styled.div>,
-          <styled.div
-            className={undefined}
->
-            <styled.div
-                        className={undefined}
-            >
+          <styled.div>
+            <styled.div>
                         <styled.button
                                     enabled={true}
                                     id="bottom-bar__start-button"
@@ -1977,6 +1988,7 @@ ShallowWrapper {
             </styled.button>
 </styled.div>,
         ],
+        "className": undefined,
       },
       "ref": null,
       "rendered": Array [
@@ -1985,12 +1997,16 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "background": Array [
+              "
+        background: ",
+              [Function],
+              ";
+      ",
+            ],
             "children": <styled.p>
-              DISCONNECTED
+              connected
 </styled.p>,
-            "connected": false,
-            "connecting": false,
-            "id": "connectBar",
           },
           "ref": null,
           "rendered": Object {
@@ -1998,10 +2014,10 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "children": "DISCONNECTED",
+              "children": "connected",
             },
             "ref": null,
-            "rendered": "DISCONNECTED",
+            "rendered": "connected",
             "type": [Function],
           },
           "type": [Function],
@@ -2012,9 +2028,7 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "children": Array [
-              <styled.div
-                className={undefined}
->
+              <styled.div>
                 <styled.button
                                 enabled={true}
                                 id="bottom-bar__start-button"
@@ -2123,7 +2137,6 @@ ShallowWrapper {
                 />
 </styled.button>,
             ],
-            "className": undefined,
           },
           "ref": null,
           "rendered": Array [
@@ -2204,7 +2217,6 @@ ShallowWrapper {
                     />
 </styled.button>,
                 ],
-                "className": undefined,
               },
               "ref": null,
               "rendered": Array [
@@ -2458,14 +2470,14 @@ ShallowWrapper {
 }
 `;
 
-exports[`BottomBar the color of the connection bar should be '#ffcc00' if 'isConnected' is 'CONNECTING' 1`] = `
+exports[`BottomBar should match snapshot when connected 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <BottomBar
     activePage="settings"
     changeActivePage={[Function]}
-    isConnected="CONNECTING"
+    connectionStatus="connected"
     onSend={[Function]}
 />,
   Symbol(enzyme.__renderer__): Object {
@@ -2482,20 +2494,22 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          connected={false}
-          connecting={true}
-          id="connectBar"
+          background={
+                    Array [
+                              "
+                            background: ",
+                              [Function],
+                              ";
+                          ",
+                            ]
+          }
 >
           <styled.p>
-                    CONNECTING
+                    connected
           </styled.p>
 </styled.div>,
-        <styled.div
-          className={undefined}
->
-          <styled.div
-                    className={undefined}
-          >
+        <styled.div>
+          <styled.div>
                     <styled.button
                               enabled={true}
                               id="bottom-bar__start-button"
@@ -2605,6 +2619,7 @@ ShallowWrapper {
           </styled.button>
 </styled.div>,
       ],
+      "className": undefined,
     },
     "ref": null,
     "rendered": Array [
@@ -2613,12 +2628,16 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "background": Array [
+            "
+        background: ",
+            [Function],
+            ";
+      ",
+          ],
           "children": <styled.p>
-            CONNECTING
+            connected
 </styled.p>,
-          "connected": false,
-          "connecting": true,
-          "id": "connectBar",
         },
         "ref": null,
         "rendered": Object {
@@ -2626,10 +2645,10 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
-            "children": "CONNECTING",
+            "children": "connected",
           },
           "ref": null,
-          "rendered": "CONNECTING",
+          "rendered": "connected",
           "type": [Function],
         },
         "type": [Function],
@@ -2640,9 +2659,7 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "children": Array [
-            <styled.div
-              className={undefined}
->
+            <styled.div>
               <styled.button
                             enabled={true}
                             id="bottom-bar__start-button"
@@ -2751,7 +2768,6 @@ ShallowWrapper {
               />
 </styled.button>,
           ],
-          "className": undefined,
         },
         "ref": null,
         "rendered": Array [
@@ -2832,7 +2848,6 @@ ShallowWrapper {
                   />
 </styled.button>,
               ],
-              "className": undefined,
             },
             "ref": null,
             "rendered": Array [
@@ -3083,20 +3098,22 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            connected={false}
-            connecting={true}
-            id="connectBar"
+            background={
+                        Array [
+                                    "
+                                background: ",
+                                    [Function],
+                                    ";
+                              ",
+                                  ]
+            }
 >
             <styled.p>
-                        CONNECTING
+                        connected
             </styled.p>
 </styled.div>,
-          <styled.div
-            className={undefined}
->
-            <styled.div
-                        className={undefined}
-            >
+          <styled.div>
+            <styled.div>
                         <styled.button
                                     enabled={true}
                                     id="bottom-bar__start-button"
@@ -3206,6 +3223,7 @@ ShallowWrapper {
             </styled.button>
 </styled.div>,
         ],
+        "className": undefined,
       },
       "ref": null,
       "rendered": Array [
@@ -3214,12 +3232,16 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "background": Array [
+              "
+        background: ",
+              [Function],
+              ";
+      ",
+            ],
             "children": <styled.p>
-              CONNECTING
+              connected
 </styled.p>,
-            "connected": false,
-            "connecting": true,
-            "id": "connectBar",
           },
           "ref": null,
           "rendered": Object {
@@ -3227,10 +3249,10 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "children": "CONNECTING",
+              "children": "connected",
             },
             "ref": null,
-            "rendered": "CONNECTING",
+            "rendered": "connected",
             "type": [Function],
           },
           "type": [Function],
@@ -3241,9 +3263,7 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "children": Array [
-              <styled.div
-                className={undefined}
->
+              <styled.div>
                 <styled.button
                                 enabled={true}
                                 id="bottom-bar__start-button"
@@ -3352,7 +3372,6 @@ ShallowWrapper {
                 />
 </styled.button>,
             ],
-            "className": undefined,
           },
           "ref": null,
           "rendered": Array [
@@ -3433,7 +3452,6 @@ ShallowWrapper {
                     />
 </styled.button>,
                 ],
-                "className": undefined,
               },
               "ref": null,
               "rendered": Array [
@@ -3687,14 +3705,14 @@ ShallowWrapper {
 }
 `;
 
-exports[`BottomBar the color of the connection bar should be 'green' if 'isConnected' is 'DISCONNECTED' 1`] = `
+exports[`BottomBar should match snapshot when connecting 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <BottomBar
     activePage="settings"
     changeActivePage={[Function]}
-    isConnected="DISCONNECTED"
+    connectionStatus="connecting"
     onSend={[Function]}
 />,
   Symbol(enzyme.__renderer__): Object {
@@ -3711,20 +3729,22 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          connected={false}
-          connecting={false}
-          id="connectBar"
+          background={
+                    Array [
+                              "
+                            background: ",
+                              [Function],
+                              ";
+                          ",
+                            ]
+          }
 >
           <styled.p>
-                    DISCONNECTED
+                    connecting
           </styled.p>
 </styled.div>,
-        <styled.div
-          className={undefined}
->
-          <styled.div
-                    className={undefined}
-          >
+        <styled.div>
+          <styled.div>
                     <styled.button
                               enabled={true}
                               id="bottom-bar__start-button"
@@ -3834,6 +3854,7 @@ ShallowWrapper {
           </styled.button>
 </styled.div>,
       ],
+      "className": undefined,
     },
     "ref": null,
     "rendered": Array [
@@ -3842,12 +3863,16 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "background": Array [
+            "
+        background: ",
+            [Function],
+            ";
+      ",
+          ],
           "children": <styled.p>
-            DISCONNECTED
+            connecting
 </styled.p>,
-          "connected": false,
-          "connecting": false,
-          "id": "connectBar",
         },
         "ref": null,
         "rendered": Object {
@@ -3855,10 +3880,10 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
-            "children": "DISCONNECTED",
+            "children": "connecting",
           },
           "ref": null,
-          "rendered": "DISCONNECTED",
+          "rendered": "connecting",
           "type": [Function],
         },
         "type": [Function],
@@ -3869,9 +3894,7 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "children": Array [
-            <styled.div
-              className={undefined}
->
+            <styled.div>
               <styled.button
                             enabled={true}
                             id="bottom-bar__start-button"
@@ -3980,7 +4003,6 @@ ShallowWrapper {
               />
 </styled.button>,
           ],
-          "className": undefined,
         },
         "ref": null,
         "rendered": Array [
@@ -4061,7 +4083,6 @@ ShallowWrapper {
                   />
 </styled.button>,
               ],
-              "className": undefined,
             },
             "ref": null,
             "rendered": Array [
@@ -4312,20 +4333,22 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            connected={false}
-            connecting={false}
-            id="connectBar"
+            background={
+                        Array [
+                                    "
+                                background: ",
+                                    [Function],
+                                    ";
+                              ",
+                                  ]
+            }
 >
             <styled.p>
-                        DISCONNECTED
+                        connecting
             </styled.p>
 </styled.div>,
-          <styled.div
-            className={undefined}
->
-            <styled.div
-                        className={undefined}
-            >
+          <styled.div>
+            <styled.div>
                         <styled.button
                                     enabled={true}
                                     id="bottom-bar__start-button"
@@ -4435,6 +4458,7 @@ ShallowWrapper {
             </styled.button>
 </styled.div>,
         ],
+        "className": undefined,
       },
       "ref": null,
       "rendered": Array [
@@ -4443,12 +4467,16 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "background": Array [
+              "
+        background: ",
+              [Function],
+              ";
+      ",
+            ],
             "children": <styled.p>
-              DISCONNECTED
+              connecting
 </styled.p>,
-            "connected": false,
-            "connecting": false,
-            "id": "connectBar",
           },
           "ref": null,
           "rendered": Object {
@@ -4456,10 +4484,10 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "children": "DISCONNECTED",
+              "children": "connecting",
             },
             "ref": null,
-            "rendered": "DISCONNECTED",
+            "rendered": "connecting",
             "type": [Function],
           },
           "type": [Function],
@@ -4470,9 +4498,7 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "children": Array [
-              <styled.div
-                className={undefined}
->
+              <styled.div>
                 <styled.button
                                 enabled={true}
                                 id="bottom-bar__start-button"
@@ -4581,7 +4607,6 @@ ShallowWrapper {
                 />
 </styled.button>,
             ],
-            "className": undefined,
           },
           "ref": null,
           "rendered": Array [
@@ -4662,7 +4687,6 @@ ShallowWrapper {
                     />
 </styled.button>,
                 ],
-                "className": undefined,
               },
               "ref": null,
               "rendered": Array [
@@ -4916,14 +4940,14 @@ ShallowWrapper {
 }
 `;
 
-exports[`BottomBar the color of the connection bar should be 'tomato' if 'isConnected' is 'CONNECTED' 1`] = `
+exports[`BottomBar should match snapshot when disconnected 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <BottomBar
     activePage="settings"
     changeActivePage={[Function]}
-    isConnected="CONNECTED"
+    connectionStatus="disconnected"
     onSend={[Function]}
 />,
   Symbol(enzyme.__renderer__): Object {
@@ -4940,20 +4964,22 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          connected={true}
-          connecting={false}
-          id="connectBar"
+          background={
+                    Array [
+                              "
+                            background: ",
+                              [Function],
+                              ";
+                          ",
+                            ]
+          }
 >
           <styled.p>
-                    CONNECTED
+                    disconnected
           </styled.p>
 </styled.div>,
-        <styled.div
-          className={undefined}
->
-          <styled.div
-                    className={undefined}
-          >
+        <styled.div>
+          <styled.div>
                     <styled.button
                               enabled={true}
                               id="bottom-bar__start-button"
@@ -5063,6 +5089,7 @@ ShallowWrapper {
           </styled.button>
 </styled.div>,
       ],
+      "className": undefined,
     },
     "ref": null,
     "rendered": Array [
@@ -5071,12 +5098,16 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "background": Array [
+            "
+        background: ",
+            [Function],
+            ";
+      ",
+          ],
           "children": <styled.p>
-            CONNECTED
+            disconnected
 </styled.p>,
-          "connected": true,
-          "connecting": false,
-          "id": "connectBar",
         },
         "ref": null,
         "rendered": Object {
@@ -5084,10 +5115,10 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
-            "children": "CONNECTED",
+            "children": "disconnected",
           },
           "ref": null,
-          "rendered": "CONNECTED",
+          "rendered": "disconnected",
           "type": [Function],
         },
         "type": [Function],
@@ -5098,9 +5129,7 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "children": Array [
-            <styled.div
-              className={undefined}
->
+            <styled.div>
               <styled.button
                             enabled={true}
                             id="bottom-bar__start-button"
@@ -5209,7 +5238,6 @@ ShallowWrapper {
               />
 </styled.button>,
           ],
-          "className": undefined,
         },
         "ref": null,
         "rendered": Array [
@@ -5290,7 +5318,6 @@ ShallowWrapper {
                   />
 </styled.button>,
               ],
-              "className": undefined,
             },
             "ref": null,
             "rendered": Array [
@@ -5541,20 +5568,22 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            connected={true}
-            connecting={false}
-            id="connectBar"
+            background={
+                        Array [
+                                    "
+                                background: ",
+                                    [Function],
+                                    ";
+                              ",
+                                  ]
+            }
 >
             <styled.p>
-                        CONNECTED
+                        disconnected
             </styled.p>
 </styled.div>,
-          <styled.div
-            className={undefined}
->
-            <styled.div
-                        className={undefined}
-            >
+          <styled.div>
+            <styled.div>
                         <styled.button
                                     enabled={true}
                                     id="bottom-bar__start-button"
@@ -5664,6 +5693,7 @@ ShallowWrapper {
             </styled.button>
 </styled.div>,
         ],
+        "className": undefined,
       },
       "ref": null,
       "rendered": Array [
@@ -5672,12 +5702,16 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "background": Array [
+              "
+        background: ",
+              [Function],
+              ";
+      ",
+            ],
             "children": <styled.p>
-              CONNECTED
+              disconnected
 </styled.p>,
-            "connected": true,
-            "connecting": false,
-            "id": "connectBar",
           },
           "ref": null,
           "rendered": Object {
@@ -5685,10 +5719,10 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "children": "CONNECTED",
+              "children": "disconnected",
             },
             "ref": null,
-            "rendered": "CONNECTED",
+            "rendered": "disconnected",
             "type": [Function],
           },
           "type": [Function],
@@ -5699,9 +5733,7 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "children": Array [
-              <styled.div
-                className={undefined}
->
+              <styled.div>
                 <styled.button
                                 enabled={true}
                                 id="bottom-bar__start-button"
@@ -5810,7 +5842,6 @@ ShallowWrapper {
                 />
 </styled.button>,
             ],
-            "className": undefined,
           },
           "ref": null,
           "rendered": Array [
@@ -5891,7 +5922,6 @@ ShallowWrapper {
                     />
 </styled.button>,
                 ],
-                "className": undefined,
               },
               "ref": null,
               "rendered": Array [
