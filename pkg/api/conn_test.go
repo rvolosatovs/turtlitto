@@ -20,16 +20,14 @@ func (r *mockWriter) Write(b []byte) (int, error) {
 
 func TestState(t *testing.T) {
 	for i, tc := range []struct {
-		Expected map[string]*State
+		Expected map[string]*TurtleState
 	}{
 		{
-			Expected: map[string]*State{
+			Expected: map[string]*TurtleState{
 				"foo": {
-					ID:             "foo",
 					BatteryVoltage: 42,
 				},
 				"bar": {
-					ID:       "foo",
 					HomeGoal: HomeGoalBlue,
 				},
 			},
@@ -49,7 +47,7 @@ func TestState(t *testing.T) {
 					err := json.Unmarshal(b, &m)
 					a.Nil(err)
 					a.NotEmpty(m.MessageID)
-					a.Equal(MessageTypeGetState, m.Type)
+					a.Equal(MessageTypeState, m.Type)
 					a.Nil(m.Payload)
 
 					pld, err := json.Marshal(tc.Expected)
@@ -69,7 +67,7 @@ func TestState(t *testing.T) {
 				},
 			}
 
-			s, err := NewClient(in, out).State()
+			conn, err := Connect(DefaultVersion, in, out)
 			a.Nil(err)
 			a.Equal(s, tc.Expected)
 			a.Equal(writes, 1)
@@ -208,6 +206,9 @@ func TestCommand(t *testing.T) {
 			err := NewClient(in, out).SendCommand(tc.Command)
 			a.Nil(err)
 			a.Equal(writes, 1)
+			a.Equal(s, tc.Expected)
+
+			// TODO: Check things
 		})
 	}
 }

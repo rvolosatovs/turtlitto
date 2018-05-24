@@ -81,10 +81,9 @@ func TestAll(t *testing.T) {
 		t.FailNow()
 	}
 
-	state := map[string]*api.State{
+	state := map[string]*api.TurtleState{
 		"foo": {
-			ID: "bar",
-			// TODO: add more fields
+		// TODO: add fields
 		},
 	}
 
@@ -109,14 +108,12 @@ func TestAll(t *testing.T) {
 		}
 
 		switch req.Type {
-		case api.MessageTypeSetState:
-		case api.MessageTypeGetState:
+		case api.MessageTypeState:
 			b, err := json.Marshal(state)
 			if err != nil {
 				panic(err)
 			}
 			resp.Payload = b
-		case api.MessageTypeCommand:
 		default:
 			t.Errorf("Unmatched message type: %s", req.Type)
 			return
@@ -126,7 +123,7 @@ func TestAll(t *testing.T) {
 		a.Nil(err)
 	}()
 
-	var got map[string]*api.State
+	var got map[string]*api.TurtleState
 
 	err = conn.ReadJSON(&got)
 	if !a.Nil(err) {

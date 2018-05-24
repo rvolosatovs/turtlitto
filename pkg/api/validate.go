@@ -12,71 +12,6 @@ type Validator interface {
 }
 
 // Validate implements Validator.
-func (s *State) Validate() error {
-	if s == nil {
-		return nil
-	}
-	rv := reflect.Indirect(reflect.ValueOf(s))
-	for i := 0; i < rv.NumField(); i++ {
-		fv := reflect.Indirect(rv.Field(i))
-		iface := fv.Interface()
-		if !fv.IsValid() || reflect.DeepEqual(iface, reflect.Zero(fv.Type()).Interface()) {
-			continue
-		}
-
-		v, ok := iface.(Validator)
-		if !ok {
-			continue
-		}
-
-		if err := v.Validate(); err != nil {
-			return errors.Wrapf(err, "invalid value of %s: %s", rv.Type().Field(i).Name)
-		}
-	}
-
-	switch {
-	case s.CamStatus > 10:
-		return rangeError("CamStatus")
-	case s.RestartCountVision > 99:
-		return rangeError("RestartCountVision")
-	case s.RestartCountWorldmodel > 99:
-		return rangeError("RestartCountWorldmodel")
-	case s.BatteryVoltage > 99:
-		return rangeError("BatteryVoltage")
-	case s.EmergencyStatus > 100:
-		return rangeError("EmergencyStatus")
-	case s.Cpu0Load > 99:
-		return rangeError("Cpu0Load")
-	case s.Cpu1Load > 99:
-		return rangeError("Cpu1Load")
-	case s.ActiveDevPC > 90:
-		return rangeError("ActiveDevPC")
-	case s.Temperature1 > 99:
-		return rangeError("Temperature1")
-	case s.Temperature2 > 99:
-		return rangeError("Temperature2")
-	case s.Temperature3 > 99:
-		return rangeError("Temperature3")
-	}
-	return nil
-}
-
-// rangeError returns an out-of-range error.
-func rangeError(source string) error {
-	return errors.Errorf("%s out of range", source)
-}
-
-// Validate implements Validator.
-func (v VisionStatus) Validate() error {
-	switch v {
-	case VisionStatusManual, VisionStatusOn, VisionStatusOff:
-	default:
-		return errors.Errorf("invalid VisionStatus: %s", v)
-	}
-	return nil
-}
-
-// Validate implements Validator.
 func (v BallFound) Validate() error {
 	switch v {
 	case BallFoundYes, BallFoundNo, BallFoundCommunicated:
@@ -138,21 +73,64 @@ func (v TeamColor) Validate() error {
 }
 
 // Validate implements Validator.
-func (v CapacitorState) Validate() error {
-	switch v {
-	case CapacitorStateEmpty, CapacitorStateFull, CapacitorStateNoState:
-	default:
-		return errors.Errorf("invalid CapacitorState: %s", v)
-	}
-	return nil
-}
-
-// Validate implements Validator.
 func (v KinectState) Validate() error {
 	switch v {
 	case KinectStateBall, KinectStateNoBall, KinectStateNoState:
 	default:
 		return errors.Errorf("invalid KinectState: %s", v)
+	}
+	return nil
+}
+
+// rangeError returns an out-of-range error.
+func rangeError(source string) error {
+	return errors.Errorf("%s out of range", source)
+}
+
+// Validate implements Validator.
+func (s *TurtleState) Validate() error {
+	switch {
+	case s.RestartCountVision > 99:
+		return rangeError("RestartCountVision")
+	case s.RestartCountWorldmodel > 99:
+		return rangeError("RestartCountWorldmodel")
+	case s.BatteryVoltage > 99:
+		return rangeError("BatteryVoltage")
+	case s.EmergencyStatus > 100:
+		return rangeError("EmergencyStatus")
+	case s.ActiveDevPC > 90:
+		return rangeError("ActiveDevPC")
+	}
+
+	rv := reflect.Indirect(reflect.ValueOf(s))
+	for i := 0; i < rv.NumField(); i++ {
+		fv := reflect.Indirect(rv.Field(i))
+		iface := fv.Interface()
+		if !fv.IsValid() || reflect.DeepEqual(iface, reflect.Zero(fv.Type()).Interface()) {
+			continue
+		}
+
+		v, ok := iface.(Validator)
+		if !ok {
+			continue
+		}
+
+		if err := v.Validate(); err != nil {
+			return errors.Wrapf(err, "invalid value of %s", rv.Type().Field(i).Name)
+		}
+	}
+	return nil
+}
+
+// Validate implements Validator.
+func (s *State) Validate() error {
+	if s.Command != "" && s.Validate() != nil {
+		return s.Validate()
+	}
+	for _, ts := range s.Turtles {
+		if err := ts.Validate(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

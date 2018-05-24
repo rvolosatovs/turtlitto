@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 
+	"github.com/blang/semver"
 	"github.com/oklog/ulid"
 )
 
@@ -60,28 +61,12 @@ const (
 	RoleDefenderAssist2 Role = "defender_assist2"
 )
 
-type CapacitorState string
-
-const (
-	CapacitorStateNoState CapacitorState = "no_state"
-	CapacitorStateEmpty   CapacitorState = "empty"
-	CapacitorStateFull    CapacitorState = "full"
-)
-
 type KinectState string
 
 const (
 	KinectStateNoState KinectState = "no_state"
 	KinectStateNoBall  KinectState = "no_ball"
 	KinectStateBall    KinectState = "ball"
-)
-
-type VisionStatus string
-
-const (
-	VisionStatusOff    VisionStatus = "off"
-	VisionStatusManual VisionStatus = "manual"
-	VisionStatusOn     VisionStatus = "on"
 )
 
 type LocalizationStatus string
@@ -108,13 +93,10 @@ const (
 	CPBNo           CPB = "no"
 )
 
-// State is the state of a particular turtle.
-type State struct {
-	// ID represents the ID of the turtle.
-	ID string `json:"id"`
-
-	// VisionStatus represents status of Vision Executable (Off/Manual/On).
-	VisionStatus VisionStatus `json:"visionstatus"`
+// TurtleState is the state of a particular turtle.
+type TurtleState struct {
+	// VisionStatus represents status of Vision Executable.
+	VisionStatus bool `json:"visionstatus"`
 
 	// MotionStatus represents status of Motion Executable (Off/On).
 	MotionStatus bool `json:"motionstatus"`
@@ -124,12 +106,6 @@ type State struct {
 
 	// AppmanStatus represents status of Appman (Off/On).
 	AppmanStatus bool `json:"appmanstatus"`
-
-	// CommStatus represents COMM Status (On/Off).
-	CommStatus bool `json:"commstatus"`
-
-	// SoftwareSVNRevision represents software Revision (0 … 99999).
-	SoftwareSVNRevision uint64 `json:"sofsvnrev"`
 
 	// RestartCountMotion represents restart count of Motion Executable (0 … 99).
 	RestartCountMotion uint8 `json:"restartcountmotion"`
@@ -143,8 +119,8 @@ type State struct {
 	// BallFound represents ball Found (No/Communicated/Yes).
 	BallFound BallFound `json:"ballfound"`
 
-	// LocalizationStatus represents localization Status (No/Compass Issue/Yes).
-	LocalizationStatus LocalizationStatus `json:"localizationstatus"`
+	// LocalizationStatus represents localization Status.
+	LocalizationStatus bool `json:"localizationstatus"`
 
 	// CPB represents current Ball Possessor (No/Team/Yes).
 	CPB CPB `json:"cpb"`
@@ -154,12 +130,6 @@ type State struct {
 
 	// EmergencyStatus represents emergency Status (0 100).
 	EmergencyStatus uint8 `json:"emergencystatus"`
-
-	// Cpu0Load represents load CPU0 (0 … 99).
-	Cpu0Load uint8 `json:"cpu0load"`
-
-	// Cpu1Load represents load CPU1 (0 … 99).
-	Cpu1Load uint8 `json:"cpu1load"`
 
 	// Role represents TRC Role (0 … 10).
 	Role Role `json:"role"`
@@ -182,49 +152,37 @@ type State struct {
 	// ActiveDevPC represents active DevPC controlling robot (0 … 90).
 	ActiveDevPC uint8 `json:"activedevpc"`
 
-	// Temperature1 represents temperature Motor 1 (0 … 99).
-	Temperature1 uint8 `json:"temperature_m1"`
-
-	// Temperature2 represents temperature Motor 2 (0 … 99).
-	Temperature2 uint8 `json:"temperature_m2"`
-
-	// Temperature3 represents temperature Motor 3 (0 … 99).
-	Temperature3 uint8 `json:"temperature_m3"`
-
-	// IsActive represents TRC is Active.
-	IsActive bool `json:"is_active"`
-
-	// CamStatus represents camera Status (0 … 10).
-	CamStatus uint8 `json:"cam_status"`
-
-	// LibSVNRevision represents TRC Library revision (0 … 99999).
-	LibSVNRevision uint32 `json:"libsvnrev"`
-
-	// CapacitorState represents capacitor state (No State/Empty/Full).
-	CapacitorState CapacitorState `json:"capacitorstate"`
-
 	// Kinect1State represents status of Kinect 1 (No State/No Ball/Ball).
 	Kinect1State KinectState `json:"kinect1_state"`
 
 	// Kinect2State represents status of Kinect 2 (No State/No Ball/Ball).
 	Kinect2State KinectState `json:"kinect2_state"`
-
-	// TODO: Figure out if IsActive corresponds to software being active or "robot"
-	// being active in e.g. penalty mode.
 }
 
 // Message specifies the type of the message.
 type MessageType string
 
 const (
-	MessageTypeGetState MessageType = "get_state"
-	MessageTypeSetState MessageType = "set_state"
-	MessageTypeCommand  MessageType = "command"
+	MessageTypeState     MessageType = "state"
+	MessageTypePing      MessageType = "ping"
+	MessageTypeHandshake MessageType = "handshake"
 )
+
+// Handshake represents the handshake message payload.
+type Handshake struct {
+	Version semver.Version `json:"version"`
+}
+
+// State represents the state of the TRC.
+type State struct {
+	Command Command                 `json:"command,omitempty"`
+	Turtles map[string]*TurtleState `json:"turtles,omitempty"`
+}
 
 // Message is the structure exchanged between TRC and SRRS.
 type Message struct {
 	Type      MessageType     `json:"type"`
 	MessageID ulid.ULID       `json:"message_id"`
+	ParentID  *ulid.ULID      `json:"parent_id,omitempty"`
 	Payload   json.RawMessage `json:"payload,omitempty"`
 }
