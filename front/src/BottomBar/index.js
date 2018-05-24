@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faPlay from "@fortawesome/fontawesome-free-solid/faPlay";
 import faStop from "@fortawesome/fontawesome-free-solid/faStop";
@@ -8,6 +8,25 @@ import React from "react";
 import PropTypes from "prop-types";
 import pageTypes from "./pageTypes";
 import connectionTypes from "./connectionTypes";
+
+const getConnectionStatusBackground = type => {
+  switch (type) {
+    case connectionTypes.CONNECTING:
+      return css`
+        background: ${props => props.theme.notificationWarning};
+      `;
+    case connectionTypes.CONNECTED:
+      return css`
+        background: ${props => props.theme.notificationSuccess};
+      `;
+    case connectionTypes.DISCONNECTED:
+      return css`
+        background: ${props => props.theme.notificationError};
+      `;
+    default:
+      throw new Error("Unknown connection status type");
+  }
+};
 
 /**
  * All of the props depend on the implementation in App.js. App.js should include WebSockets, with an onSend command,
@@ -25,27 +44,19 @@ import connectionTypes from "./connectionTypes";
  */
 
 const BottomBar = props => {
-  const { changeActivePage, onSend, activePage, isConnected } = props;
+  const { changeActivePage, onSend, activePage, connectionStatus } = props;
   const isSettingsPage = activePage === pageTypes.SETTINGS;
-  const connecting = isConnected === connectionTypes.CONNECTING;
-  const connected = isConnected === connectionTypes.CONNECTED;
+  const connectionStatusBackground = getConnectionStatusBackground(
+    connectionStatus
+  );
+
   return (
-    <Bar>
-      <ConnectionBar
-        id="connectBar"
-        connecting={connecting}
-        connected={connected}
-      >
-        <ConnectionStatus>
-          {connecting
-            ? connectionTypes.CONNECTING
-            : connected
-              ? connectionTypes.CONNECTED
-              : connectionTypes.DISCONNECTED}
-        </ConnectionStatus>
+    <Bar className={props.className}>
+      <ConnectionBar background={connectionStatusBackground}>
+        <ConnectionStatus>{connectionStatus}</ConnectionStatus>
       </ConnectionBar>
-      <ButtonsWrapper className={props.className}>
-        <ButtonColumn className={props.className}>
+      <ButtonsWrapper>
+        <ButtonColumn>
           <Button
             id="bottom-bar__start-button"
             onClick={() => onSend("start")}
@@ -85,7 +96,7 @@ BottomBar.propTypes = {
   onSend: PropTypes.func.isRequired,
   changeActivePage: PropTypes.func.isRequired,
   activePage: PropTypes.oneOf(Object.values(pageTypes)),
-  isConnected: PropTypes.oneOf(Object.values(connectionTypes))
+  connectionStatus: PropTypes.oneOf(Object.values(connectionTypes)).isRequired
 };
 
 const ButtonsWrapper = styled.div`
@@ -109,6 +120,7 @@ const Button = styled.button`
   height: 50%;
   font-size: 200%;
   flex: 1;
+
   &:active {
     background: ${props => props.theme.bottomBarButtonActive};
   }
@@ -118,23 +130,20 @@ const StopButton = styled.button`
   background: ${props => props.theme.bottomBarButton};
   font-size: 400%;
   flex: 1;
+
   &:active {
     background: ${props => props.theme.bottomBarButtonActive};
   }
 `;
 
 const ConnectionBar = styled.div`
-  background-color: ${props =>
-    props.connecting
-      ? props.theme.notificationWarning
-      : props.connected
-        ? props.theme.notificationSuccess
-        : props.theme.notificationError};
+  ${props => props.background};
   color: white;
   margin: 0px;
   text-align: center;
-  font-size: 75%;
-  padding: 0.2rem;
+  font-size: 1.2rem;
+  padding: 0.6rem;
+  text-transform: uppercase;
 `;
 
 const Bar = styled.div`

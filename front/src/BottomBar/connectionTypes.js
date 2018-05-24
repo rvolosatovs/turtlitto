@@ -1,5 +1,5 @@
 export default Object.freeze({
-  CONNECTING: "CONNECTING",
-  CONNECTED: "CONNECTED",
-  DISCONNECTED: "DISCONNECTED"
+  CONNECTING: "connecting",
+  CONNECTED: "connected",
+  DISCONNECTED: "disconnected"
 });
