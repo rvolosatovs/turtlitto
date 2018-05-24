@@ -83,7 +83,7 @@ func TestAll(t *testing.T) {
 
 	state := map[string]*api.TurtleState{
 		"foo": {
-		// TODO: add fields
+			// TODO: add fields
 		},
 	}
 
