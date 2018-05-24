@@ -1,158 +1,132 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NotificationWindow shows a ERROR notification 1`] = `
+exports[`NotificationWindow is error notification should match snapshot 1`] = `
 <div
-  className="sc-bdVaJa hIljtb"
+  className="sc-bdVaJa fitzTx"
 >
-  <header
-    className="sc-bwzfXH cRtiHF"
+  <div
+    className="sc-bwzfXH yjXZK"
   >
-    ERROR
-  </header>
-  <button
-    className="sc-bxivhb bfImHh"
-    onClick={[Function]}
-  >
-    <svg
-      aria-hidden="true"
-      className="svg-inline--fa fa-times fa-w-11 fa-4x "
-      color="black"
-      data-icon="times"
-      data-prefix="fas"
-      role="img"
-      style={Object {}}
-      viewBox="0 0 352 512"
-      xmlns="http://www.w3.org/2000/svg"
+    <h3
+      className="sc-htpNat gMOTmC"
     >
-      <path
-        d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-        fill="currentColor"
+      error
+    </h3>
+    <button
+      className="sc-ifAKCX hycWwR"
+      onClick={[Function]}
+    >
+      <svg
+        aria-hidden="true"
+        className="svg-inline--fa fa-times fa-w-11 fa-4x "
+        color="black"
+        data-icon="times"
+        data-prefix="fas"
+        role="img"
         style={Object {}}
-      />
-    </svg>
-  </button>
+        viewBox="0 0 352 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+          fill="currentColor"
+          style={Object {}}
+        />
+      </svg>
+    </button>
+  </div>
   <p
-    className="sc-htpNat etKPoU"
+    className="sc-bxivhb hTbClt"
   >
-    This is a very annoying and extremely long error message which is displayed in full and hopefully uses wrap correctly with extremelylongwordswhichareuninterruptedandwithoutspaceswhichevenfillstheentirebox.
+    notification message
   </p>
   <div />
 </div>
 `;
 
-exports[`NotificationWindow shows a SUCCESS notification 1`] = `
+exports[`NotificationWindow is success notification should match snapshot 1`] = `
 <div
-  className="sc-bdVaJa ipStDv"
+  className="sc-bdVaJa fitzTx"
 >
-  <header
-    className="sc-bwzfXH cRtiHF"
+  <div
+    className="sc-bwzfXH yjXZK"
   >
-    SUCCESS
-  </header>
-  <button
-    className="sc-bxivhb bfImHh"
-    onClick={[Function]}
-  >
-    <svg
-      aria-hidden="true"
-      className="svg-inline--fa fa-times fa-w-11 fa-4x "
-      color="black"
-      data-icon="times"
-      data-prefix="fas"
-      role="img"
-      style={Object {}}
-      viewBox="0 0 352 512"
-      xmlns="http://www.w3.org/2000/svg"
+    <h3
+      className="sc-htpNat gMOTmC"
     >
-      <path
-        d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-        fill="currentColor"
+      success
+    </h3>
+    <button
+      className="sc-ifAKCX hycWwR"
+      onClick={[Function]}
+    >
+      <svg
+        aria-hidden="true"
+        className="svg-inline--fa fa-times fa-w-11 fa-4x "
+        color="black"
+        data-icon="times"
+        data-prefix="fas"
+        role="img"
         style={Object {}}
-      />
-    </svg>
-  </button>
+        viewBox="0 0 352 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+          fill="currentColor"
+          style={Object {}}
+        />
+      </svg>
+    </button>
+  </div>
   <p
-    className="sc-htpNat etKPoU"
+    className="sc-bxivhb hTbClt"
   >
-    This is a very annoying and extremely long error message which is displayed in full and hopefully uses wrap correctly with extremelylongwordswhichareuninterruptedandwithoutspaceswhichevenfillstheentirebox.
+    notification message
   </p>
   <div />
 </div>
 `;
 
-exports[`NotificationWindow shows a WARNING notification 1`] = `
+exports[`NotificationWindow is warning notification should match snapshot 1`] = `
 <div
-  className="sc-bdVaJa hsqBxz"
+  className="sc-bdVaJa fitzTx"
 >
-  <header
-    className="sc-bwzfXH cRtiHF"
+  <div
+    className="sc-bwzfXH yjXZK"
   >
-    WARNING
-  </header>
-  <button
-    className="sc-bxivhb bfImHh"
-    onClick={[Function]}
-  >
-    <svg
-      aria-hidden="true"
-      className="svg-inline--fa fa-times fa-w-11 fa-4x "
-      color="black"
-      data-icon="times"
-      data-prefix="fas"
-      role="img"
-      style={Object {}}
-      viewBox="0 0 352 512"
-      xmlns="http://www.w3.org/2000/svg"
+    <h3
+      className="sc-htpNat gMOTmC"
     >
-      <path
-        d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-        fill="currentColor"
-        style={Object {}}
-      />
-    </svg>
-  </button>
-  <p
-    className="sc-htpNat etKPoU"
-  >
-    This is a very annoying and extremely long error message which is displayed in full and hopefully uses wrap correctly with extremelylongwordswhichareuninterruptedandwithoutspaceswhichevenfillstheentirebox.
-  </p>
-  <div />
-</div>
-`;
-
-exports[`NotificationWindow shows a non identified notification 1`] = `
-<div
-  className="sc-bdVaJa gwudjO"
->
-  <header
-    className="sc-bwzfXH cRtiHF"
-  />
-  <button
-    className="sc-bxivhb bfImHh"
-    onClick={[Function]}
-  >
-    <svg
-      aria-hidden="true"
-      className="svg-inline--fa fa-times fa-w-11 fa-4x "
-      color="black"
-      data-icon="times"
-      data-prefix="fas"
-      role="img"
-      style={Object {}}
-      viewBox="0 0 352 512"
-      xmlns="http://www.w3.org/2000/svg"
+      warning
+    </h3>
+    <button
+      className="sc-ifAKCX hycWwR"
+      onClick={[Function]}
     >
-      <path
-        d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-        fill="currentColor"
+      <svg
+        aria-hidden="true"
+        className="svg-inline--fa fa-times fa-w-11 fa-4x "
+        color="black"
+        data-icon="times"
+        data-prefix="fas"
+        role="img"
         style={Object {}}
-      />
-    </svg>
-  </button>
+        viewBox="0 0 352 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+          fill="currentColor"
+          style={Object {}}
+        />
+      </svg>
+    </button>
+  </div>
   <p
-    className="sc-htpNat etKPoU"
+    className="sc-bxivhb hTbClt"
   >
-    This is a very annoying and extremely long error message which is displayed in full and hopefully uses wrap correctly with extremelylongwordswhichareuninterruptedandwithoutspaceswhichevenfillstheentirebox.
+    notification message
   </p>
   <div />
 </div>
