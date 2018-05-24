@@ -17,5 +17,8 @@ export default {
   turtleEnableButton: "#ededed",
   turtleEnableButtonActive: "silver",
   bottomBarButton: "#ededed",
-  bottomBarButtonActive: "silver"
+  bottomBarButtonActive: "silver",
+  notificationSuccess: "green",
+  notificationWarning: "#ffcc00",
+  notificationError: "Tomato"
 };
