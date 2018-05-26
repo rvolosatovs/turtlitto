@@ -1,6 +1,7 @@
 package main
 
 import (
+	"compress/flate"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -87,6 +88,8 @@ func main() {
 	}()
 
 	http.HandleFunc("/"+statusEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+
 		// TODO: Check token
 
 		wsConn, err := upgrader.Upgrade(w, r, nil)
@@ -95,6 +98,9 @@ func main() {
 			return
 		}
 		defer wsConn.Close()
+
+		wsConn.EnableWriteCompression(true)
+		wsConn.SetCompressionLevel(flate.BestCompression)
 
 		trcConn, err := pool.Conn()
 		if err != nil {
@@ -124,6 +130,8 @@ func main() {
 	})
 
 	http.HandleFunc("/"+commandEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+
 		if r.Method != "PUT" {
 			http.Error(w, fmt.Sprintf("Expected a PUT request, got %s", r.Method), http.StatusBadRequest)
 			return
@@ -133,7 +141,6 @@ func main() {
 
 		dec := json.NewDecoder(r.Body)
 		dec.DisallowUnknownFields()
-		defer r.Body.Close()
 
 		var req struct {
 			Command api.Command
@@ -156,6 +163,8 @@ func main() {
 	})
 
 	http.HandleFunc("/"+turtleEndpoint+"/", func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+
 		if r.Method != "PUT" {
 			http.Error(w, fmt.Sprintf("Expected a PUT request, got %s", r.Method), http.StatusBadRequest)
 			return
@@ -171,7 +180,6 @@ func main() {
 
 		dec := json.NewDecoder(r.Body)
 		dec.DisallowUnknownFields()
-		defer r.Body.Close()
 
 		var req api.TurtleState
 		if err := dec.Decode(&req); err != nil {
@@ -192,6 +200,8 @@ func main() {
 	})
 
 	http.HandleFunc("/"+turtleEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+
 		if r.Method != "PUT" {
 			http.Error(w, fmt.Sprintf("Expected a PUT request, got %s", r.Method), http.StatusBadRequest)
 			return
