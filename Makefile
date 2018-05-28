@@ -37,7 +37,7 @@ test: go.test js.test
 
 go.test: deps
 	$(info Testing Go code...)
-	@go test -cover -v ./...
+	@go test -cover -coverprofile=coverage.txt -covermode=atomic -v ./...
 
 $(BINDIR)/srrs-linux-amd64: vendor
 	$(info Compiling $@...)
