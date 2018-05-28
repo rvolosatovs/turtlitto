@@ -108,20 +108,32 @@ func main() {
 			return
 		}
 
-		stateCh, closeFn := trcConn.SubscribeState()
+		ctx := r.Context()
+
+		changeCh, closeFn, err := trcConn.SubscribeStateChanges(ctx)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to subscribe to state changes: %s", err), http.StatusInternalServerError)
+			return
+		}
 		defer closeFn()
 
+		var oldState *api.State
 		for {
 			select {
-			case <-r.Context().Done():
+			case <-ctx.Done():
 				return
 
 			case <-trcConn.Closed():
 				http.Error(w, fmt.Sprintf("Communication with TRC closed"), http.StatusServiceUnavailable)
 				return
 
-			case st := <-stateCh:
-				if err := wsConn.WriteJSON(st); err != nil {
+			case <-changeCh:
+				st := trcConn.State(ctx)
+				// TODO: Compute diff of st and oldState
+				_ = oldState
+				diff := st
+				oldState = st
+				if err := wsConn.WriteJSON(diff); err != nil {
 					http.Error(w, fmt.Sprintf("Failed to write state: %s", err), http.StatusInternalServerError)
 					return
 				}
@@ -156,7 +168,7 @@ func main() {
 			return
 		}
 
-		if err := trcConn.SetCommand(req.Command); err != nil {
+		if err := trcConn.SetCommand(r.Context(), req.Command); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
 			return
 		}
@@ -193,7 +205,7 @@ func main() {
 			return
 		}
 
-		if err := trcConn.SetTurtleState(id, &req); err != nil {
+		if err := trcConn.SetTurtleState(r.Context(), id, &req); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
 			return
 		}
@@ -228,6 +240,7 @@ func main() {
 		}
 
 		if err := trcConn.SetState(
+			r.Context(),
 			&api.State{
 				Turtles: req.Turtles,
 			},
