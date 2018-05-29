@@ -1,53 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TurtleEnableBar should match snapshot 1`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <TurtleEnableBar
-    onDisable={[Function]}
-    onEnable={[Function]}
-    turtles={Array []}
-/>,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "class",
-    "props": Object {
-      "children": Array [],
-      "className": undefined,
-    },
-    "ref": null,
-    "rendered": Array [],
-    "type": [Function],
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "class",
-      "props": Object {
-        "children": Array [],
-        "className": undefined,
+exports[`TurtleEnableBar should match snapshot 1`] = `<styled.div />`;
+
+exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> components 1`] = `
+<TurtleEnableBar
+  onDisable={[Function]}
+  onEnable={[Function]}
+  turtles={
+    Array [
+      Object {
+        "enabled": false,
+        "id": 0,
       },
-      "ref": null,
-      "rendered": Array [],
-      "type": [Function],
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
+      Object {
+        "enabled": false,
+        "id": 1,
       },
-    },
-  },
-}
+      Object {
+        "enabled": false,
+        "id": 2,
+      },
+    ]
+  }
+>
+  <styled.div>
+    <div
+      className="sc-bwzfXH iUWGe"
+    >
+      <TurtleEnableButton
+        enabled={false}
+        id={1}
+        key="0"
+        onDisable={[Function]}
+        onEnable={[Function]}
+      >
+        <styled.button
+          isActive={false}
+          onClick={[Function]}
+        >
+          <button
+            className="sc-bdVaJa hJyMGh"
+            onClick={[Function]}
+          >
+            1
+          </button>
+        </styled.button>
+      </TurtleEnableButton>
+      <TurtleEnableButton
+        enabled={false}
+        id={2}
+        key="1"
+        onDisable={[Function]}
+        onEnable={[Function]}
+      >
+        <styled.button
+          isActive={false}
+          onClick={[Function]}
+        >
+          <button
+            className="sc-bdVaJa hJyMGh"
+            onClick={[Function]}
+          >
+            2
+          </button>
+        </styled.button>
+      </TurtleEnableButton>
+      <TurtleEnableButton
+        enabled={false}
+        id={3}
+        key="2"
+        onDisable={[Function]}
+        onEnable={[Function]}
+      >
+        <styled.button
+          isActive={false}
+          onClick={[Function]}
+        >
+          <button
+            className="sc-bdVaJa hJyMGh"
+            onClick={[Function]}
+          >
+            3
+          </button>
+        </styled.button>
+      </TurtleEnableButton>
+    </div>
+  </styled.div>
+</TurtleEnableBar>
 `;
