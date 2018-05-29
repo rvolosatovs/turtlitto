@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "fmt": "eslint --fix src/**/*.js; stylelint --fix src/**/*.{css,js}"
+    "fmt": "eslint --max-warnings 0 src/{**,}/*.js && stylelint --fix src/{**,}/*.{css,js}"
   },
   "devDependencies": {
     "enzyme": "^3.3.0",
