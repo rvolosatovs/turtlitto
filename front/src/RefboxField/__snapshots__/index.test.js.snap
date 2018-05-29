@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
+<div
+  className="sc-bwzfXH ewUyFi"
+>
+  <button
+    className="sc-bdVaJa jdWCur"
+    onClick={[Function]}
+  >
+    KO
+  </button>
+  <button
+    className="sc-bdVaJa jdWCur"
+    onClick={[Function]}
+  >
+    FK
+  </button>
+  <button
+    className="sc-bdVaJa jdWCur"
+    onClick={[Function]}
+  >
+    GK
+  </button>
+  <button
+    className="sc-bdVaJa jdWCur"
+    onClick={[Function]}
+  >
+    TI
+  </button>
+  <button
+    className="sc-bdVaJa jdWCur"
+    onClick={[Function]}
+  >
+    C
+  </button>
+  <button
+    className="sc-bdVaJa jdWCur"
+    onClick={[Function]}
+  >
+    P
+  </button>
+</div>
+`;
+
+exports[`RefboxField shows a magenta refbox field with all buttons 1`] = `
+<div
+  className="sc-bwzfXH ewUyFi"
+>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    KO
+  </button>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    FK
+  </button>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    GK
+  </button>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    TI
+  </button>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    C
+  </button>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    P
+  </button>
+</div>
+`;

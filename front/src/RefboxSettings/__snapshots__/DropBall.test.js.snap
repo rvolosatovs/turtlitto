@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DropBall shows a button with DB written on it 1`] = `
+<div
+  className="sc-bdVaJa bqQMFn"
+>
+  <button
+    className="sc-bwzfXH cpOIsp"
+    onClick={[Function]}
+  >
+    DB
+  </button>
+</div>
+`;

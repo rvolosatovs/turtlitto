@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfigDropdown shows two dropdown menus 1`] = `
+<div
+  className="sc-bdVaJa hVREz"
+>
+  <select
+    className="sc-bwzfXH cjMJAz"
+    disabled={false}
+    onChange={[Function]}
+    value=""
+  >
+    <option>
+      Practice
+    </option>
+    <option>
+      Dual team
+    </option>
+    <option>
+      Match
+    </option>
+  </select>
+  <select
+    className="sc-bwzfXH cjMJAz"
+    disabled={false}
+    onChange={[Function]}
+    value=""
+  >
+    <option>
+      Role assigner on
+    </option>
+    <option>
+      Role assigner off
+    </option>
+    <option>
+      Pass demo
+    </option>
+    <option>
+      Penalty mode
+    </option>
+    <option>
+      Ball Handling demo
+    </option>
+  </select>
+</div>
+`;

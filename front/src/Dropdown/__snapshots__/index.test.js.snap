@@ -2,6 +2,7 @@
 
 exports[`Dropdown can be changed 1`] = `
 <select
+  className={undefined}
   disabled={false}
   onChange={[Function]}
   value="test"

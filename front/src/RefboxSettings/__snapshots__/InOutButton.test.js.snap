@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InOutButton shows two buttons with go in or go out written on it 1`] = `
+<div
+  className="sc-bdVaJa hbCsQO"
+>
+  <button
+    className="sc-bwzfXH dQvgcJ"
+    onClick={[Function]}
+  >
+    Go in
+  </button>
+  <button
+    className="sc-bwzfXH dQvgcJ"
+    onClick={[Function]}
+  >
+    Go out
+  </button>
+</div>
+`;
