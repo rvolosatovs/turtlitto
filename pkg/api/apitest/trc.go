@@ -18,12 +18,13 @@ type Conn struct {
 
 type Option func(*Conn)
 
+// Connect initializes a
 // Starts a Mockup TRC that first sends the given handshake message, and handles the client message using the default handlers.
 // Special handlers ...
 // returns 1: A channel on which additional TRC messages can be sent (as in a user changing the trc.
 //					2: A channel where errors can be read from.
 //					3: Whether the initialisation encountered an error. in this case, 1 and 2 are likely nil.
-func Connect(w io.Writer, r io.Reader, handshakeMsg *api.Handshake, options ...Option) (*Conn, error) {
+func Connect(w io.Writer, r io.Reader, handshakeMsg *api.Handshake, opts ...Option) (*Conn, error) {
 	enc := json.NewEncoder(w)
 
 	// Send handshake

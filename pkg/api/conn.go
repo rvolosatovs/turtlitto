@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/json"
 	"io"
@@ -15,6 +16,10 @@ import (
 // DefaultVersion represents the default protocol version.
 var DefaultVersion = semver.MustParse("1.0.0")
 
+// ErrClosed represents an error, which occurs when the *Conn is closed.
+var ErrClosed = errors.New("Conn is closed")
+
+// NewMessage returns a new Message.
 func NewMessage(typ MessageType, pld json.RawMessage, parentID *ulid.ULID) *Message {
 	return &Message{
 		Type:      typ,
@@ -33,60 +38,37 @@ type decoder interface {
 }
 
 // Conn is a connection to TRC.
+// Conn is safe for concurrent use by multiple goroutines.
 type Conn struct {
 	version semver.Version
 
 	decoder decoder
 	encoder encoder
 
-	closeCh chan struct{}
-	errCh   chan error
+	closeChMu *sync.RWMutex
+	closeCh   chan struct{}
+
+	errCh chan error
 
 	stateMu *sync.RWMutex
 	// state is the current state of TRC.
 	state *State
 
 	stateSubsMu *sync.RWMutex
-	stateSubs   map[chan<- *State]struct{}
+	stateSubs   map[chan<- struct{}]struct{}
 
 	pendingReqsMu *sync.RWMutex
-	pendingReqs   map[ulid.ULID]chan struct{}
+	pendingReqs   map[ulid.ULID]chan *Message
 }
 
-func (c *Conn) sendRequest(typ MessageType, pld interface{}) error {
-	v, ok := pld.(Validator)
-	if ok && v.Validate() != nil {
-		return errors.Wrap(v.Validate(), "payload is invalid")
-	}
-
-	b, err := json.Marshal(pld)
-	if err != nil {
-		return err
-	}
-	msg := NewMessage(typ, b, nil)
-
-	ch := make(chan struct{})
-	c.pendingReqsMu.Lock()
-	c.pendingReqs[msg.MessageID] = ch
-	c.pendingReqsMu.Unlock()
-
-	if err := c.encoder.Encode(msg); err != nil {
-		return err
-	}
-
-	<-ch
-
-	c.pendingReqsMu.Lock()
-	delete(c.pendingReqs, msg.MessageID)
-	c.pendingReqsMu.Unlock()
-	return nil
-}
-
+// Connect establishes connection according to TRC API protocol
+// specification of version ver on w and r.
 func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
 	conn := &Conn{
 		version:       ver,
+		closeChMu:     &sync.RWMutex{},
 		closeCh:       make(chan struct{}),
 		decoder:       dec,
 		encoder:       json.NewEncoder(w),
@@ -94,9 +76,9 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		stateMu:       &sync.RWMutex{},
 		state:         &State{},
 		stateSubsMu:   &sync.RWMutex{},
-		stateSubs:     make(map[chan<- *State]struct{}),
+		stateSubs:     make(map[chan<- struct{}]struct{}),
 		pendingReqsMu: &sync.RWMutex{},
-		pendingReqs:   make(map[ulid.ULID]chan struct{}),
+		pendingReqs:   make(map[ulid.ULID]chan *Message),
 	}
 
 	var req Message
@@ -166,17 +148,21 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 
 			case MessageTypeState:
 				conn.stateMu.Lock()
-				if err := json.Unmarshal(msg.Payload, conn.state); err != nil {
-					conn.errCh <- err
+				st := deepcopy.Copy(conn.state).(*State)
+				if err := json.Unmarshal(msg.Payload, st); err != nil {
 					conn.stateMu.Unlock()
+					conn.errCh <- err
 					return
 				}
-				st := deepcopy.Copy(conn.state).(*State)
+				conn.state = st
 				conn.stateMu.Unlock()
 
 				conn.stateSubsMu.RLock()
 				for ch := range conn.stateSubs {
-					ch <- st
+					select {
+					case ch <- struct{}{}:
+					default:
+					}
 				}
 				conn.stateSubsMu.RUnlock()
 			default:
@@ -187,6 +173,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 			conn.pendingReqsMu.RLock()
 			ch, ok := conn.pendingReqs[msg.MessageID]
 			if ok {
+				ch <- &msg
 				close(ch)
 			}
 			conn.pendingReqsMu.RUnlock()
@@ -195,59 +182,142 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	return conn, nil
 }
 
+// sendRequest sends a request of type typ with payload pld and waits for the response.
+func (c *Conn) sendRequest(ctx context.Context, typ MessageType, pld interface{}) (json.RawMessage, error) {
+	c.closeChMu.RLock()
+	defer c.closeChMu.RUnlock()
+
+	select {
+	case <-c.closeCh:
+		return nil, ErrClosed
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	default:
+	}
+
+	v, ok := pld.(Validator)
+	if ok && v != nil && v.Validate() != nil {
+		return nil, errors.Wrap(v.Validate(), "payload is invalid")
+	}
+
+	b, err := json.Marshal(pld)
+	if err != nil {
+		return nil, err
+	}
+
+	msg := NewMessage(typ, b, nil)
+
+	ch := make(chan *Message, 1)
+	c.pendingReqsMu.Lock()
+	c.pendingReqs[msg.MessageID] = ch
+	c.pendingReqsMu.Unlock()
+
+	if err := c.encoder.Encode(msg); err != nil {
+		return nil, err
+	}
+
+	resp := <-ch
+
+	c.pendingReqsMu.Lock()
+	delete(c.pendingReqs, msg.MessageID)
+	c.pendingReqsMu.Unlock()
+	return resp.Payload, nil
+}
+
+// Close closes the connection.
 func (c *Conn) Close() error {
 	close(c.closeCh)
+	c.stateSubsMu.Lock()
+	for ch := range c.stateSubs {
+		delete(c.stateSubs, ch)
+		close(ch)
+	}
+	c.stateSubsMu.Unlock()
 	return nil
 }
 
 // State returns the current state of TRC and turtles.
-func (c *Conn) State() *State {
+func (c *Conn) State(_ context.Context) *State {
 	c.stateMu.RLock()
 	st := deepcopy.Copy(c.state).(*State)
 	c.stateMu.RUnlock()
 	return st
 }
 
-func (c *Conn) SubscribeState() (<-chan *State, func()) {
-	ch := make(chan *State, 1)
+// SubscribeStateChanges opens a subscription to state changes.
+// SubscribeStateChanges returns read-only channel, on which a value is sent
+// every time there is a state change and a function, which must be used to close the subscription.
+func (c *Conn) SubscribeStateChanges(ctx context.Context) (<-chan struct{}, func(), error) {
+	c.closeChMu.RLock()
+	defer c.closeChMu.RUnlock()
+
+	select {
+	case <-c.closeCh:
+		return nil, nil, ErrClosed
+	case <-ctx.Done():
+		return nil, nil, ctx.Err()
+	default:
+	}
+
 	c.stateSubsMu.Lock()
+	ch := make(chan struct{}, 1)
 	c.stateSubs[ch] = struct{}{}
 	c.stateSubsMu.Unlock()
+
 	return ch, func() {
 		c.stateSubsMu.Lock()
 		delete(c.stateSubs, ch)
 		c.stateSubsMu.Unlock()
-		close(ch)
-	}
+
+		for {
+			// Drain channel
+			select {
+			case <-ch:
+			default:
+				close(ch)
+				return
+			}
+		}
+	}, nil
 }
 
-// Ping is a health check command.
-func (c *Conn) Ping() error {
-	return c.sendRequest(MessageTypePing, nil)
+// Ping sends ping to the TRC and waits for response.
+func (c *Conn) Ping(ctx context.Context) error {
+	_, err := c.sendRequest(ctx, MessageTypePing, nil)
+	return err
 }
 
-func (c *Conn) SetState(st *State) error {
-	return c.sendRequest(MessageTypeState, st)
+// SetState sends the state to TRC and waits for response.
+func (c *Conn) SetState(ctx context.Context, st *State) error {
+	_, err := c.sendRequest(ctx, MessageTypeState, st)
+	return err
 }
 
-func (c *Conn) SetCommand(cmd Command) error {
-	return c.SetState(&State{
+// SetCommand sends a command to TRC and waits for response.
+func (c *Conn) SetCommand(ctx context.Context, cmd Command) error {
+	return c.SetState(ctx, &State{
 		Command: cmd,
 	})
 }
 
-func (c *Conn) SetTurtleState(id string, st *TurtleState) error {
-	return c.SetState(&State{
+// SetTurtleState sends a state of particular turtle to TRC and waits for response.
+func (c *Conn) SetTurtleState(ctx context.Context, id string, st *TurtleState) error {
+	return c.SetState(ctx, &State{
 		Turtles: map[string]*TurtleState{
 			id: st,
 		},
 	})
 }
 
+// Errors returns a channel, on which errors are sent.
+// There should be exactly one goroutine reading on the returned channel at all times.
 func (c *Conn) Errors() <-chan error {
 	return c.errCh
 }
 
+// Closed returns a channel that's closed when Conn is closed.
+// Successive calls to Closed return the same value.
+// There may be multiple goroutines reading on the returned channel.
 func (c *Conn) Closed() <-chan struct{} {
 	return c.closeCh
 }

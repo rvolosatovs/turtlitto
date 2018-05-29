@@ -2,6 +2,7 @@ package api_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"strconv"
 	"testing"
@@ -71,7 +72,7 @@ func TestState(t *testing.T) {
 			conn, err := Connect(DefaultVersion, in, out)
 
 			a.Nil(err)
-			a.Equal(conn.State(), tc.Expected)
+			a.Equal(conn.State(context.Background()), tc.Expected)
 			a.Equal(writes, 1)
 		})
 	}
@@ -153,7 +154,7 @@ func TestSetState(t *testing.T) {
 			a.Nil(err)
 
 			state := &State{Turtles: tc.Input}
-			s := conn.SetState(state)
+			s := conn.SetState(context.Background(), state)
 
 			a.Nil(err)
 			a.Equal(tc.Output, s)
@@ -205,7 +206,7 @@ func TestCommand(t *testing.T) {
 			conn, err := Connect(DefaultVersion, in, out)
 			a.Nil(err)
 
-			s := conn.SetCommand(tc.Command)
+			s := conn.SetCommand(context.Background(), tc.Command)
 
 			a.Equal(writes, 1)
 			a.Equal(s, tc.Command)
