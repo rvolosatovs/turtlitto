@@ -30,12 +30,18 @@ type Option func(*Conn)
 // returns 1: A channel on which additional TRC messages can be sent (as in a user changing the trc.
 //					2: A channel where errors can be read from.
 //					3: Whether the initialisation encountered an error. in this case, 1 and 2 are likely nil.
-func Connect(w io.Writer, r io.Reader, handshakeMsg *api.Message, options ...Option) (*Conn, error) {
+func Connect(w io.Writer, r io.Reader, handshakeMsg *api.Handshake, options ...Option) (*Conn, error) {
 	enc := json.NewEncoder(w)
 	dec := json.NewDecoder(r)
 
 	// start with handshake
-	if err := enc.Encode(handshakeMsg); err != nil {
+	bytes, err := json.Marshal(handshakeMsg)
+	if err != nil {
+		return nil, err
+	}
+
+	msg := api.NewMessage(api.MessageTypeHandshake, bytes, nil)
+	if err := enc.Encode(msg); err != nil {
 		return nil, err
 	}
 
@@ -122,7 +128,7 @@ func DefaultPingHandler(msg *api.Message) (*api.Message, error) {
 	return api.NewMessage(api.MessageTypePing, nil, &msg.MessageID), nil
 }
 
-func NewHandler(msg api.MessageType, handler Handler) Option {
+func WithHandler(msg api.MessageType, handler Handler) Option {
 	return func(conn *Conn) {
 		conn.handlers[msg] = handler
 	}
