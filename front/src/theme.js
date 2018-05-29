@@ -20,5 +20,9 @@ export default {
   bottomBarButtonActive: "silver",
   notificationSuccess: "green",
   notificationWarning: "#ffcc00",
-  notificationError: "Tomato"
+  notificationError: "Tomato",
+  dropBallButton: "#ededed",
+  dropBallButtonActive: "silver",
+  inOutButton: "#ededed",
+  inOutButtonActive: "silver"
 };

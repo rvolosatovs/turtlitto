@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RefboxButton shows a cyan button with KO on it 1`] = `
+<button
+  className="sc-bdVaJa jdWCur"
+  onClick={[Function]}
+/>
+`;
+
+exports[`RefboxButton shows a magenta button with P on it 1`] = `
+<button
+  className="sc-bdVaJa ldpgei"
+  onClick={[Function]}
+/>
+`;

@@ -15,6 +15,7 @@ const Dropdown = props => {
   const { currentValue, values, onChange, enabled } = props;
   return (
     <select
+      className={props.className}
       value={currentValue}
       onChange={event => {
         onChange(event.target.value);

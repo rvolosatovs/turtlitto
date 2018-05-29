@@ -38,6 +38,7 @@ exports[`Turtle should match snapshot 1`] = `
     className="sc-htpNat jxAMgd"
   >
     <select
+      className={undefined}
       disabled={true}
       onChange={[Function]}
       value="Goalkeeper"
@@ -68,6 +69,7 @@ exports[`Turtle should match snapshot 1`] = `
       </option>
     </select>
     <select
+      className={undefined}
       disabled={true}
       onChange={[Function]}
       value="Blue home"
@@ -80,6 +82,7 @@ exports[`Turtle should match snapshot 1`] = `
       </option>
     </select>
     <select
+      className={undefined}
       disabled={true}
       onChange={[Function]}
       value="Cyan"
