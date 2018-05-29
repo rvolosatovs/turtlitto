@@ -61,7 +61,7 @@ type Conn struct {
 	pendingReqs   map[ulid.ULID]chan *Message
 }
 
-// Connect establishes connection according to TRC API protocol
+// Connect establishes the SRRS-side connection according to TRC API protocol
 // specification of version ver on w and r.
 func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	dec := json.NewDecoder(r)
