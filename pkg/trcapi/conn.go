@@ -6,6 +6,7 @@ import (
 	"io"
 	"sync"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/blang/semver"
 	"github.com/mohae/deepcopy"
 	"github.com/oklog/ulid"
@@ -73,21 +74,24 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		pendingReqs:   make(map[ulid.ULID]chan *api.Message),
 	}
 
+	log.Debug("Decoding handshake message...")
 	var req api.Message
 	if err := conn.decoder.Decode(&req); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to decode handshake request message")
 	}
+	log.Debug("Handshake message decoded successfully")
 
 	if req.Type != api.MessageTypeHandshake {
-		return nil, errors.Errorf("Expected message of type %s, got %s", api.MessageTypeHandshake, req.Type)
+		return nil, errors.Errorf("expected message of type %s, got %s", api.MessageTypeHandshake, req.Type)
 	}
 	if len(req.Payload) == 0 {
-		return nil, errors.New("Handshake payload is empty")
+		return nil, errors.New("received handshake payload is empty")
 	}
 
+	log.Debug("Decoding handshake payload...")
 	var hs api.Handshake
 	if err := json.Unmarshal(req.Payload, &hs); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to decode handshake")
 	}
 
 	resp := &api.Handshake{
@@ -95,7 +99,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	}
 	switch {
 	case resp.Version.Major != ver.Major:
-		return nil, errors.New("Major version mismatch")
+		return nil, errors.New("major version mismatch")
 	case resp.Version.Minor > ver.Minor:
 		resp.Version = ver
 	}
@@ -103,7 +107,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 
 	b, err := json.Marshal(resp)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to encode handshake response message")
 	}
 
 	if err := conn.encoder.Encode(api.NewMessage(req.Type, b, &req.MessageID)); err != nil {
@@ -120,9 +124,10 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				// Don't handle err if connection is closed
 				close(conn.errCh)
 				return
+			default:
 			}
 			if err != nil {
-				conn.errCh <- errors.Wrap(err, "Failed to decode incoming message")
+				conn.errCh <- errors.Wrap(err, "failed to decode incoming message")
 				return
 			}
 
@@ -134,8 +139,8 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				}
 
 				if err := conn.encoder.Encode(api.NewMessage(api.MessageTypePing, nil, &msg.MessageID)); err != nil {
-					conn.errCh <- err
-					return
+					conn.errCh <- errors.Wrap(err, "failed to encode ping message")
+					continue
 				}
 
 			case api.MessageTypeState:
@@ -143,8 +148,8 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				st := deepcopy.Copy(conn.state).(*api.State)
 				if err := json.Unmarshal(msg.Payload, st); err != nil {
 					conn.stateMu.Unlock()
-					conn.errCh <- err
-					return
+					conn.errCh <- errors.Wrap(err, "failed to decode state message payload")
+					continue
 				}
 				conn.state = st
 				conn.stateMu.Unlock()
@@ -153,17 +158,24 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				for ch := range conn.stateSubs {
 					select {
 					case ch <- struct{}{}:
+						log.Debug("Sending status update notification...")
 					default:
+						log.Debug("Skipping update...")
 					}
 				}
 				conn.stateSubsMu.RUnlock()
 			default:
-				conn.errCh <- errors.Errorf("Unmatched message type: %s", msg.Type)
+				log.WithField("type", msg.Type).Warn("Unmatched message received")
+				conn.errCh <- errors.Errorf("unmatched message type: %s", msg.Type)
 				return
 			}
 
+			if msg.ParentID == nil {
+				continue
+			}
+
 			conn.pendingReqsMu.RLock()
-			ch, ok := conn.pendingReqs[msg.MessageID]
+			ch, ok := conn.pendingReqs[*msg.ParentID]
 			if ok {
 				ch <- &msg
 				close(ch)
@@ -199,16 +211,25 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 
 	msg := api.NewMessage(typ, b, nil)
 
+	logger := log.WithFields(log.Fields{
+		"type":       msg.Type,
+		"message_id": msg.MessageID,
+	})
+
 	ch := make(chan *api.Message, 1)
 	c.pendingReqsMu.Lock()
 	c.pendingReqs[msg.MessageID] = ch
 	c.pendingReqsMu.Unlock()
 
+	logger.Debug("Sending request to TRC...")
 	if err := c.encoder.Encode(msg); err != nil {
 		return nil, err
 	}
+	logger.Debug("Sending request to TRC succeeded")
 
+	logger.Debug("Waiting for response...")
 	resp := <-ch
+	logger.Debug("Response received")
 
 	c.pendingReqsMu.Lock()
 	delete(c.pendingReqs, msg.MessageID)

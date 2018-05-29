@@ -1,200 +1,271 @@
 package trcapi_test
 
 import (
-	"bytes"
-	"encoding/json"
-	"strconv"
-	"testing"
-
 	"context"
+	"encoding/json"
+	"io"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
 
+	log "github.com/Sirupsen/logrus"
+	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 	. "github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
+
+func init() {
+	log.SetLevel(log.DebugLevel)
+}
 
 func TestState(t *testing.T) {
 	for i, tc := range []struct {
-		Expected map[string]*api.TurtleState
+		Expected *api.State
 	}{
 		{
-			Expected: map[string]*api.TurtleState{
-				"foo": {
-					BatteryVoltage: 42,
+			Expected: &api.State{
+				Turtles: map[string]*api.TurtleState{
+					"foo": {
+						BatteryVoltage: 42,
+					},
+					"bar": {
+						HomeGoal: api.HomeGoalBlue,
+					},
 				},
-				"bar": {
-					HomeGoal: api.HomeGoalBlue,
+			},
+		},
+		{
+			Expected: &api.State{
+				Command: api.CommandBallHandlingDemo,
+				Turtles: map[string]*api.TurtleState{
+					"bar": {
+						HomeGoal: api.HomeGoalBlue,
+					},
 				},
+			},
+		},
+		{
+			Expected: &api.State{
+				Command: api.CommandCornerMagenta,
 			},
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			a := require.New(t)
+			a := assert.New(t)
 
-			writes := 0
+			srrsIn, trcOut := io.Pipe()
+			trcIn, srrsOut := io.Pipe()
 
-			// simulates the TRC
-			out := &bytes.Buffer{}
-			in := &bytes.Buffer{}
-
-			stateHandler := func(m *api.Message) (*api.Message, error) {
-				writes++
-
-				a.Nil(m.Payload)
-				pld, err := json.Marshal(tc.Expected)
-				if err != nil {
-					return nil, err
-				}
-
-				return &api.Message{
-					MessageID: m.MessageID,
-					Type:      m.Type,
-					Payload:   pld,
-				}, nil
-			}
-
-			trctest.Connect(out, in,
-				&api.Handshake{Version: DefaultVersion},
-				trctest.WithHandler(MessageTypeState, stateHandler),
+			trc := trctest.Connect(trcOut, trcIn,
+				trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
 			)
 
-			conn, err := Connect(DefaultVersion, in, out)
+			wg := &sync.WaitGroup{}
+			wg.Add(3)
 
+			go func() {
+				defer wg.Done()
+
+				for err := range trc.Errors() {
+					panic(errors.Wrap(err, "TRC error"))
+				}
+			}()
+
+			go func() {
+				defer wg.Done()
+
+				err := trc.SendHandshake(&api.Handshake{Version: DefaultVersion})
+				a.Nil(err)
+			}()
+
+			conn, err := Connect(DefaultVersion, srrsOut, srrsIn)
 			a.Nil(err)
-			a.Equal(conn.State(context.Background()), tc.Expected)
-			a.Equal(writes, 1)
+
+			go func() {
+				defer wg.Done()
+
+				for err := range conn.Errors() {
+					panic(errors.Wrap(err, "SRRS error"))
+				}
+			}()
+
+			ctx := context.Background()
+
+			st := conn.State(ctx)
+			a.Equal(&api.State{}, st)
+
+			ch, closeFn, err := conn.SubscribeStateChanges(ctx)
+			a.NoError(err)
+			a.NotNil(closeFn)
+
+			err = trc.SendState(tc.Expected)
+			a.NoError(err)
+
+			select {
+			case <-ch:
+			case <-time.After(time.Second):
+				t.Error("No update received")
+				t.FailNow()
+			}
+
+			st = conn.State(ctx)
+			a.Equal(tc.Expected, st)
+
+			a.NotPanics(func() { closeFn() })
+
+			select {
+			case <-ch:
+			case <-time.After(time.Second):
+				t.Error("Subscription channel not closed")
+				t.FailNow()
+			}
+
+			err = conn.Close()
+			a.NoError(err)
+
+			err = trc.Close()
+			a.NoError(err)
+
+			err = trcIn.Close()
+			a.NoError(err)
+
+			err = srrsIn.Close()
+			a.NoError(err)
+
+			wg.Wait()
 		})
 	}
 }
 
 func TestSetState(t *testing.T) {
 	for i, tc := range []struct {
-		Input  map[string]*api.TurtleState
-		Output map[string]*api.TurtleState
+		Input  *api.State
+		Output *api.State
 	}{
 		{
-			Input: map[string]*api.TurtleState{
-				"foo": {
-					CPB: api.CPBNo,
-				},
-				"bar": {
-					RefBoxRole:   api.RoleDefenderAssist,
-					Kinect2State: api.KinectStateBall,
-				},
-				"baz": {
-					ActiveDevPC:    uint8(42),
-					BatteryVoltage: uint8(69),
+			Input: &api.State{
+				Turtles: map[string]*api.TurtleState{
+					"foo": {
+						BatteryVoltage: 42,
+					},
+					"bar": {
+						HomeGoal: api.HomeGoalBlue,
+					},
 				},
 			},
-			Output: map[string]*api.TurtleState{
-				"foo": {
-					CPB: api.CPBYes,
-				},
-				"bar": {
-					RefBoxRole:   api.RoleDefenderAssist2,
-					Kinect2State: api.KinectStateNoBall,
-				},
-				"baz": {
-					ActiveDevPC:    uint8(89),
-					BatteryVoltage: uint8(69),
+			Output: &api.State{
+				Turtles: map[string]*api.TurtleState{
+					"bar": {
+						HomeGoal: api.HomeGoalBlue,
+					},
 				},
 			},
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			a := require.New(t)
-			writes := 0
+			a := assert.New(t)
 
-			// simulates the TRC
-			toSRRS := &bytes.Buffer{}
-			toTRC := &bytes.Buffer{}
+			srrsIn, trcOut := io.Pipe()
+			trcIn, srrsOut := io.Pipe()
 
-			stateHandler := func(m *Message) (*Message, error) {
-				var ts map[string]*State
-				err := json.Unmarshal(m.Payload, &ts)
-				a.Nil(err)
-				a.Equal(ts, tc.Input)
+			trc := trctest.Connect(trcOut, trcIn,
+				trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
+				trctest.WithHandler(api.MessageTypeState, func(msg *api.Message) (*api.Message, error) {
+					a.Nil(msg.ParentID)
+					a.NotEmpty(msg.MessageID)
 
-				pld, err := json.Marshal(tc.Output)
-				if err != nil {
-					return nil, err
-				}
-				writes++
+					in := &api.State{}
+					err := json.Unmarshal(msg.Payload, in)
+					a.NoError(err)
+					a.Equal(tc.Input, in)
 
-				return &Message{
-					MessageID: m.MessageID,
-					Type:      m.Type,
-					Payload:   pld,
-				}, nil
-			}
-
-			test.Connect(toTRC, toSRRS,
-				&Handshake{Version: DefaultVersion},
-				test.WithHandler(MessageTypeState, stateHandler),
+					b, err := json.Marshal(tc.Output)
+					if err != nil {
+						panic(err)
+					}
+					return api.NewMessage(api.MessageTypeState, b, &msg.MessageID), nil
+				}),
 			)
 
-			conn, err := Connect(DefaultVersion, toSRRS, toTRC)
-			a.Nil(err)
+			wg := &sync.WaitGroup{}
+			wg.Add(3)
 
-			state := &api.State{Turtles: tc.Input}
-			s := conn.SetState(context.Background(), state)
+			go func() {
+				defer wg.Done()
 
-			a.Nil(err)
-			a.Equal(tc.Output, s)
-			a.Equal(writes, 1)
-		})
-	}
-}
-
-func TestCommand(t *testing.T) {
-	for i, tc := range []struct {
-		Command api.Command
-	}{
-		{
-			Command: api.CommandStop,
-		},
-	} {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			a := require.New(t)
-
-			writes := 0
-
-			// simulates the TRC
-			out := &bytes.Buffer{}
-			in := &bytes.Buffer{}
-
-			stateHandler := func(m *Message) (*Message, error) {
-				var payload Command
-				err := json.Unmarshal(m.Payload, &payload)
-				a.Nil(err)
-				a.Equal(tc.Command, payload)
-
-				pld, err := json.Marshal(tc.Command)
-				if err != nil {
-					return nil, err
+				for err := range trc.Errors() {
+					panic(errors.Wrap(err, "TRC error"))
 				}
-				writes++
+			}()
 
-				return &Message{
-					MessageID: m.MessageID,
-					Type:      m.Type,
-					Payload:   pld,
-				}, nil
+			go func() {
+				defer wg.Done()
+
+				err := trc.SendHandshake(&api.Handshake{Version: DefaultVersion})
+				a.Nil(err)
+			}()
+
+			conn, err := Connect(DefaultVersion, srrsOut, srrsIn)
+			a.Nil(err)
+
+			go func() {
+				defer wg.Done()
+
+				for err := range conn.Errors() {
+					panic(errors.Wrap(err, "SRRS error"))
+				}
+			}()
+
+			ctx := context.Background()
+
+			st := conn.State(ctx)
+			a.Equal(&api.State{}, st)
+
+			ch, closeFn, err := conn.SubscribeStateChanges(ctx)
+			a.NoError(err)
+			a.NotNil(closeFn)
+
+			log.Debug("Setting state...")
+			err = conn.SetState(ctx, tc.Input)
+			a.NoError(err)
+
+			log.Debug("Waiting for state update...")
+			select {
+			case <-ch:
+			case <-time.After(time.Second):
+				t.Error("No update received")
+				t.FailNow()
 			}
 
-			test.Connect(out, in,
-				&Handshake{Version: DefaultVersion},
-				test.WithHandler(MessageTypeState, stateHandler),
-			)
+			log.Debug("Querying the state...")
+			st = conn.State(ctx)
+			a.Equal(tc.Output, st)
 
-			conn, err := Connect(DefaultVersion, in, out)
-			a.Nil(err)
+			a.NotPanics(func() { closeFn() })
 
-			s := conn.SetCommand(context.Background(), tc.Command)
+			select {
+			case <-ch:
+			case <-time.After(time.Second):
+				t.Error("Subscription channel not closed")
+				t.FailNow()
+			}
 
-			a.Equal(writes, 1)
-			a.Equal(s, tc.Command)
+			err = conn.Close()
+			a.NoError(err)
+
+			err = trc.Close()
+			a.NoError(err)
+
+			err = trcIn.Close()
+			a.NoError(err)
+
+			err = srrsIn.Close()
+			a.NoError(err)
+
+			wg.Wait()
 		})
 	}
 }

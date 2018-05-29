@@ -5,6 +5,7 @@ import (
 	"io"
 	"sync"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
@@ -29,6 +30,11 @@ func DefaultPingHandler(msg *api.Message) (*api.Message, error) {
 	return api.NewMessage(api.MessageTypePing, nil, &msg.MessageID), nil
 }
 
+// Default handler for handshake messages, replying according to the API.
+func DefaultHandshakeHandler(msg *api.Message) (*api.Message, error) {
+	return nil, nil
+}
+
 // Handler is a function, which handles a message.
 type Handler func(*api.Message) (*api.Message, error)
 
@@ -49,7 +55,7 @@ func WithHandler(t api.MessageType, h Handler) Option {
 	return func(c *Conn) {
 		_, ok := c.handlers.LoadOrStore(t, h)
 		if ok {
-			panic(errors.Errorf("Handler for message type %s is already registered", t))
+			panic(errors.Errorf("handler for message type %s is already registered", t))
 		}
 	}
 }
@@ -57,7 +63,7 @@ func WithHandler(t api.MessageType, h Handler) Option {
 func WithDefaultHandler(h Handler) Option {
 	return func(c *Conn) {
 		if c.defaultHander != nil {
-			panic(errors.New("Default handler is already set"))
+			panic(errors.New("default handler is already set"))
 		}
 		c.defaultHander = h
 	}
@@ -69,10 +75,11 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
 	conn := &Conn{
-		decoder: dec,
-		encoder: json.NewEncoder(w),
-		closeCh: make(chan struct{}),
-		errCh:   make(chan error),
+		decoder:  dec,
+		encoder:  json.NewEncoder(w),
+		closeCh:  make(chan struct{}),
+		errCh:    make(chan error),
+		handlers: &sync.Map{},
 	}
 	for _, opt := range opts {
 		opt(conn)
@@ -80,23 +87,31 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 
 	if conn.defaultHander == nil {
 		conn.defaultHander = func(msg *api.Message) (*api.Message, error) {
-			return nil, errors.Errorf("Unmatched handler for type %s", msg.Type)
+			return nil, errors.Errorf("unmatched handler for type %s", msg.Type)
 		}
 	}
 
 	go func() {
 		for {
 			var msg api.Message
+			log.Debug("TRC decoding message...")
 			err := conn.decoder.Decode(&msg)
+			logger := log.WithFields(log.Fields{
+				"type":       msg.Type,
+				"message_id": msg.MessageID,
+				"parent_id":  msg.ParentID,
+			})
+			logger.Debug("TRC decoded message")
 
 			select {
 			case <-conn.closeCh:
 				// Don't handle err if connection is closed
 				close(conn.errCh)
 				return
+			default:
 			}
 			if err != nil {
-				conn.errCh <- errors.Wrap(err, "Failed to decode incoming message")
+				conn.errCh <- errors.Wrap(err, "failed to decode incoming message")
 				return
 			}
 
@@ -108,12 +123,21 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 				h = v.(Handler)
 			}
 
+			logger.Debug("Executing handler...")
 			resp, err := h(&msg)
 			if err != nil {
+				logger.WithError(err).Debug("Executing handler failed")
 				conn.errCh <- err
 				return
 			}
+			logger.Debug("Executing handler succeeded")
 
+			if resp == nil {
+				logger.Debug("No response returned by handler")
+				continue
+			}
+
+			logger.Debug("Sending response to SRRS")
 			if err := conn.encoder.Encode(resp); err != nil {
 				conn.errCh <- err
 				return
