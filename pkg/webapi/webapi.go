@@ -97,10 +97,8 @@ func CommandHandler(pool *trcapi.Pool) http.HandlerFunc {
 		dec := json.NewDecoder(r.Body)
 		dec.DisallowUnknownFields()
 
-		var req struct {
-			Command api.Command
-		}
-		if err := dec.Decode(&req); err != nil {
+		var cmd api.Command
+		if err := dec.Decode(&cmd); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to read command: %s", err), http.StatusBadRequest)
 			return
 		}
@@ -111,14 +109,14 @@ func CommandHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
-		if err := trcConn.SetCommand(r.Context(), req.Command); err != nil {
+		if err := trcConn.SetCommand(r.Context(), cmd); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
 			return
 		}
 	}
 }
 
-func TurtlesHandler(pool *trcapi.Pool) http.HandlerFunc {
+func TurtleHandler(pool *trcapi.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
@@ -133,10 +131,8 @@ func TurtlesHandler(pool *trcapi.Pool) http.HandlerFunc {
 		dec.DisallowUnknownFields()
 		defer r.Body.Close()
 
-		var req struct {
-			Turtles map[string]*api.TurtleState
-		}
-		if err := dec.Decode(&req); err != nil {
+		var st map[string]*api.TurtleState
+		if err := dec.Decode(&st); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to read states: %s", err), http.StatusBadRequest)
 			return
 		}
@@ -147,57 +143,9 @@ func TurtlesHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
-		if err := trcConn.SetState(
-			r.Context(),
-			&api.State{
-				Turtles: req.Turtles,
-			},
-		); err != nil {
+		if err := trcConn.SetTurtleState(r.Context(), st); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
 			return
 		}
 	}
-}
-
-func TurtlesIDHandler(pool *trcapi.Pool, parseID func(r *http.Request) string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		defer r.Body.Close()
-
-		if r.Method != "PUT" {
-			http.Error(w, fmt.Sprintf("Expected a PUT request, got %s", r.Method), http.StatusBadRequest)
-			return
-		}
-
-		// TODO: Check token
-		id := parseID(r)
-		if id == "" {
-			http.Error(w, fmt.Sprintf("An ID must be specified"), http.StatusBadRequest)
-			return
-		}
-
-		dec := json.NewDecoder(r.Body)
-		dec.DisallowUnknownFields()
-
-		var req api.TurtleState
-		if err := dec.Decode(&req); err != nil {
-			http.Error(w, fmt.Sprintf("Failed to read state: %s", err), http.StatusBadRequest)
-			return
-		}
-
-		trcConn, err := pool.Conn()
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Failed to establish connection to TRC: %s", err), http.StatusInternalServerError)
-			return
-		}
-
-		if err := trcConn.SetTurtleState(r.Context(), id, &req); err != nil {
-			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
-			return
-		}
-	}
-}
-
-type Option func(*Server)
-
-type Server struct {
 }

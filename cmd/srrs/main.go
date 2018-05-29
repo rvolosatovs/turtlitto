@@ -8,7 +8,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -108,10 +107,7 @@ func main() {
 
 	http.HandleFunc("/"+stateEndpoint, webapi.StateHandler(pool))
 	http.HandleFunc("/"+commandEndpoint, webapi.CommandHandler(pool))
-	http.HandleFunc("/"+turtleEndpoint+"/", webapi.TurtlesHandler(pool))
-	http.HandleFunc("/"+turtleEndpoint, webapi.TurtlesIDHandler(pool, func(r *http.Request) string {
-		return strings.TrimPrefix(r.URL.Path, "/"+turtleEndpoint+"/")
-	}))
+	http.HandleFunc("/"+turtleEndpoint+"/", webapi.TurtleHandler(pool))
 
 	if *static != "" {
 		http.Handle("/", http.FileServer(http.Dir(*static)))

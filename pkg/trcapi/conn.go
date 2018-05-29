@@ -293,11 +293,12 @@ func (c *Conn) SetCommand(ctx context.Context, cmd api.Command) error {
 }
 
 // SetTurtleState sends a state of particular turtle to TRC and waits for response.
-func (c *Conn) SetTurtleState(ctx context.Context, id string, st *api.TurtleState) error {
+func (c *Conn) SetTurtleState(ctx context.Context, st map[string]*api.TurtleState) error {
+	if len(st) == 0 {
+		return errors.New("Empty state specified")
+	}
 	return c.SetState(ctx, &api.State{
-		Turtles: map[string]*api.TurtleState{
-			id: st,
-		},
+		Turtles: st,
 	})
 }
 
