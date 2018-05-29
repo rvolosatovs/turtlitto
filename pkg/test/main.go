@@ -121,3 +121,9 @@ func DefaultStateHandler(msg *api.Message) (*api.Message, error) {
 func DefaultPingHandler(msg *api.Message) (*api.Message, error) {
 	return api.NewMessage(api.MessageTypePing, nil, &msg.MessageID), nil
 }
+
+func NewHandler(msg api.MessageType, handler Handler) Option {
+	return func(conn *Conn) {
+		conn.handlers[msg] = handler
+	}
+}
