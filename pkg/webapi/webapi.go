@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
@@ -46,10 +47,17 @@ func StateHandler(pool *trcapi.Pool) http.HandlerFunc {
 		}
 		defer closeFn()
 
-		var oldState *api.State
+		oldState := trcConn.State(ctx)
+
+		log.Debug("Sending current state on the WebSocket...")
+		if err := wsConn.WriteJSON(oldState); err != nil {
+			http.Error(w, fmt.Sprintf("Failed to write state: %s", err), http.StatusInternalServerError)
+			return
+		}
 		for {
 			select {
 			case <-ctx.Done():
+				log.Debug("Context done")
 				return
 
 			case <-trcConn.Closed():
@@ -57,15 +65,19 @@ func StateHandler(pool *trcapi.Pool) http.HandlerFunc {
 				return
 
 			case <-changeCh:
+				log.Debug("State change acknowledged")
+
 				st := trcConn.State(ctx)
 				// TODO: Compute diff of st and oldState
 				_ = oldState
 				diff := st
 				oldState = st
+				log.Debug("Sending state diff on the WebSocket...")
 				if err := wsConn.WriteJSON(diff); err != nil {
 					http.Error(w, fmt.Sprintf("Failed to write state: %s", err), http.StatusInternalServerError)
 					return
 				}
+				log.Debug("Sending state diff on the WebSocket succeeded")
 			}
 		}
 	}
