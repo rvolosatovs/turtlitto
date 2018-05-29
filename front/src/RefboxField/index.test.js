@@ -33,5 +33,6 @@ describe("RefboxField", () => {
         isPenalty={true}
       />
     );
+    expect(component.toJSON()).toMatchSnapshot();
   });
 });
