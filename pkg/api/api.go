@@ -1,6 +1,7 @@
 package api
 
 import (
+	"crypto/rand"
 	"encoding/json"
 
 	"github.com/blang/semver"
@@ -185,4 +186,14 @@ type Message struct {
 	MessageID ulid.ULID       `json:"message_id"`
 	ParentID  *ulid.ULID      `json:"parent_id,omitempty"`
 	Payload   json.RawMessage `json:"payload,omitempty"`
+}
+
+// NewMessage returns a new Message.
+func NewMessage(typ MessageType, pld json.RawMessage, parentID *ulid.ULID) *Message {
+	return &Message{
+		Type:      typ,
+		MessageID: ulid.MustNew(ulid.Now(), rand.Reader),
+		ParentID:  parentID,
+		Payload:   pld,
+	}
 }

@@ -1,8 +1,7 @@
-package api
+package trcapi
 
 import (
 	"context"
-	"crypto/rand"
 	"encoding/json"
 	"io"
 	"sync"
@@ -11,6 +10,7 @@ import (
 	"github.com/mohae/deepcopy"
 	"github.com/oklog/ulid"
 	"github.com/pkg/errors"
+	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
 // DefaultVersion represents the default protocol version.
@@ -19,20 +19,12 @@ var DefaultVersion = semver.MustParse("1.0.0")
 // ErrClosed represents an error, which occurs when the *Conn is closed.
 var ErrClosed = errors.New("Conn is closed")
 
-// NewMessage returns a new Message.
-func NewMessage(typ MessageType, pld json.RawMessage, parentID *ulid.ULID) *Message {
-	return &Message{
-		Type:      typ,
-		MessageID: ulid.MustNew(ulid.Now(), rand.Reader),
-		ParentID:  parentID,
-		Payload:   pld,
-	}
-}
-
+// encoder encodes values.
 type encoder interface {
 	Encode(v interface{}) (err error)
 }
 
+// decoder decodes values.
 type decoder interface {
 	Decode(v interface{}) (err error)
 }
@@ -52,13 +44,13 @@ type Conn struct {
 
 	stateMu *sync.RWMutex
 	// state is the current state of TRC.
-	state *State
+	state *api.State
 
 	stateSubsMu *sync.RWMutex
 	stateSubs   map[chan<- struct{}]struct{}
 
 	pendingReqsMu *sync.RWMutex
-	pendingReqs   map[ulid.ULID]chan *Message
+	pendingReqs   map[ulid.ULID]chan *api.Message
 }
 
 // Connect establishes the SRRS-side connection according to TRC API protocol
@@ -74,31 +66,31 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		encoder:       json.NewEncoder(w),
 		errCh:         make(chan error),
 		stateMu:       &sync.RWMutex{},
-		state:         &State{},
+		state:         &api.State{},
 		stateSubsMu:   &sync.RWMutex{},
 		stateSubs:     make(map[chan<- struct{}]struct{}),
 		pendingReqsMu: &sync.RWMutex{},
-		pendingReqs:   make(map[ulid.ULID]chan *Message),
+		pendingReqs:   make(map[ulid.ULID]chan *api.Message),
 	}
 
-	var req Message
+	var req api.Message
 	if err := conn.decoder.Decode(&req); err != nil {
 		return nil, err
 	}
 
-	if req.Type != MessageTypeHandshake {
-		return nil, errors.Errorf("Expected message of type %s, got %s", MessageTypeHandshake, req.Type)
+	if req.Type != api.MessageTypeHandshake {
+		return nil, errors.Errorf("Expected message of type %s, got %s", api.MessageTypeHandshake, req.Type)
 	}
 	if len(req.Payload) == 0 {
 		return nil, errors.New("Handshake payload is empty")
 	}
 
-	var hs Handshake
+	var hs api.Handshake
 	if err := json.Unmarshal(req.Payload, &hs); err != nil {
 		return nil, err
 	}
 
-	resp := &Handshake{
+	resp := &api.Handshake{
 		Version: hs.Version,
 	}
 	switch {
@@ -114,13 +106,13 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		return nil, err
 	}
 
-	if err := conn.encoder.Encode(NewMessage(req.Type, b, &req.MessageID)); err != nil {
+	if err := conn.encoder.Encode(api.NewMessage(req.Type, b, &req.MessageID)); err != nil {
 		return nil, err
 	}
 
 	go func() {
 		for {
-			var msg Message
+			var msg api.Message
 			err := conn.decoder.Decode(&msg)
 
 			select {
@@ -130,25 +122,25 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				return
 			}
 			if err != nil {
-				conn.errCh <- err
+				conn.errCh <- errors.Wrap(err, "Failed to decode incoming message")
 				return
 			}
 
 			switch msg.Type {
-			case MessageTypePing:
+			case api.MessageTypePing:
 				if msg.ParentID != nil {
 					// Don't respond to a pong
 					break
 				}
 
-				if err := conn.encoder.Encode(NewMessage(MessageTypePing, nil, &msg.MessageID)); err != nil {
+				if err := conn.encoder.Encode(api.NewMessage(api.MessageTypePing, nil, &msg.MessageID)); err != nil {
 					conn.errCh <- err
 					return
 				}
 
-			case MessageTypeState:
+			case api.MessageTypeState:
 				conn.stateMu.Lock()
-				st := deepcopy.Copy(conn.state).(*State)
+				st := deepcopy.Copy(conn.state).(*api.State)
 				if err := json.Unmarshal(msg.Payload, st); err != nil {
 					conn.stateMu.Unlock()
 					conn.errCh <- err
@@ -183,7 +175,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 }
 
 // sendRequest sends a request of type typ with payload pld and waits for the response.
-func (c *Conn) sendRequest(ctx context.Context, typ MessageType, pld interface{}) (json.RawMessage, error) {
+func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interface{}) (json.RawMessage, error) {
 	c.closeChMu.RLock()
 	defer c.closeChMu.RUnlock()
 
@@ -195,7 +187,7 @@ func (c *Conn) sendRequest(ctx context.Context, typ MessageType, pld interface{}
 	default:
 	}
 
-	v, ok := pld.(Validator)
+	v, ok := pld.(api.Validator)
 	if ok && v != nil && v.Validate() != nil {
 		return nil, errors.Wrap(v.Validate(), "payload is invalid")
 	}
@@ -205,9 +197,9 @@ func (c *Conn) sendRequest(ctx context.Context, typ MessageType, pld interface{}
 		return nil, err
 	}
 
-	msg := NewMessage(typ, b, nil)
+	msg := api.NewMessage(typ, b, nil)
 
-	ch := make(chan *Message, 1)
+	ch := make(chan *api.Message, 1)
 	c.pendingReqsMu.Lock()
 	c.pendingReqs[msg.MessageID] = ch
 	c.pendingReqsMu.Unlock()
@@ -237,9 +229,9 @@ func (c *Conn) Close() error {
 }
 
 // State returns the current state of TRC and turtles.
-func (c *Conn) State(_ context.Context) *State {
+func (c *Conn) State(_ context.Context) *api.State {
 	c.stateMu.RLock()
-	st := deepcopy.Copy(c.state).(*State)
+	st := deepcopy.Copy(c.state).(*api.State)
 	c.stateMu.RUnlock()
 	return st
 }
@@ -283,27 +275,27 @@ func (c *Conn) SubscribeStateChanges(ctx context.Context) (<-chan struct{}, func
 
 // Ping sends ping to the TRC and waits for response.
 func (c *Conn) Ping(ctx context.Context) error {
-	_, err := c.sendRequest(ctx, MessageTypePing, nil)
+	_, err := c.sendRequest(ctx, api.MessageTypePing, nil)
 	return err
 }
 
 // SetState sends the state to TRC and waits for response.
-func (c *Conn) SetState(ctx context.Context, st *State) error {
-	_, err := c.sendRequest(ctx, MessageTypeState, st)
+func (c *Conn) SetState(ctx context.Context, st *api.State) error {
+	_, err := c.sendRequest(ctx, api.MessageTypeState, st)
 	return err
 }
 
 // SetCommand sends a command to TRC and waits for response.
-func (c *Conn) SetCommand(ctx context.Context, cmd Command) error {
-	return c.SetState(ctx, &State{
+func (c *Conn) SetCommand(ctx context.Context, cmd api.Command) error {
+	return c.SetState(ctx, &api.State{
 		Command: cmd,
 	})
 }
 
 // SetTurtleState sends a state of particular turtle to TRC and waits for response.
-func (c *Conn) SetTurtleState(ctx context.Context, id string, st *TurtleState) error {
-	return c.SetState(ctx, &State{
-		Turtles: map[string]*TurtleState{
+func (c *Conn) SetTurtleState(ctx context.Context, id string, st *api.TurtleState) error {
+	return c.SetState(ctx, &api.State{
+		Turtles: map[string]*api.TurtleState{
 			id: st,
 		},
 	})

@@ -8,9 +8,10 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
 )
 
-func StateHandler(pool *api.Pool) http.HandlerFunc {
+func StateHandler(pool *trcapi.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
@@ -70,7 +71,7 @@ func StateHandler(pool *api.Pool) http.HandlerFunc {
 	}
 }
 
-func CommandHandler(pool *api.Pool) http.HandlerFunc {
+func CommandHandler(pool *trcapi.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
@@ -105,7 +106,7 @@ func CommandHandler(pool *api.Pool) http.HandlerFunc {
 	}
 }
 
-func TurtlesHandler(pool *api.Pool) http.HandlerFunc {
+func TurtlesHandler(pool *trcapi.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
@@ -146,7 +147,7 @@ func TurtlesHandler(pool *api.Pool) http.HandlerFunc {
 	}
 }
 
-func TurtlesIDHandler(pool *api.Pool, parseID func(r *http.Request) string) http.HandlerFunc {
+func TurtlesIDHandler(pool *trcapi.Pool, parseID func(r *http.Request) string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
@@ -186,5 +187,5 @@ func TurtlesIDHandler(pool *api.Pool, parseID func(r *http.Request) string) http
 
 type Option func(*Server)
 
-type Server struct{
+type Server struct {
 }

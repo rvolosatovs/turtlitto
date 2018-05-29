@@ -1,9 +1,10 @@
-package test
+package trctest
 
 import (
 	"encoding/json"
 	"io"
 
+	"github.com/oklog/ulid"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
@@ -27,120 +28,122 @@ func DefaultPingHandler(msg *api.Message) (*api.Message, error) {
 	return api.NewMessage(api.MessageTypePing, nil, &msg.MessageID), nil
 }
 
+// Handler is a function, which handles a message.
 type Handler func(*api.Message) (*api.Message, error)
 
 type Conn struct {
-	sendCh    chan *api.Message
-	errCh     chan error
-	handshake *api.Handshake
-	handlers  map[api.MessageType]Handler
+	decoder interface{ Decode(v interface{}) error }
+	encoder interface{ Encode(v interface{}) error }
+
+	errCh   chan error
+	closeCh chan struct{}
+
+	handlers      map[api.MessageType]Handler
+	defaultHander Handler
 }
 
 type Option func(*Conn)
 
-func WithHandler(msg api.MessageType, handler Handler) Option {
+func WithHandler(msg api.MessageType, h Handler) Option {
 	return func(c *Conn) {
-		c.handlers[msg] = handler
+		c.handlers[msg] = h
 	}
 }
 
-func WithHandshake(hs *api.Handshake) Option {
+func WithDefaultHandler(h Handler) Option {
 	return func(c *Conn) {
-		c.handshake = hs
+		c.defaultHander = h
 	}
 }
 
 // Connect establishes the TRC-side connection according to TRC API protocol
 // specification of version ver on w and r.
 func Connect(w io.Writer, r io.Reader, opts ...Option) (*Conn, error) {
-	conn := &Conn{
-		errCh:  make(chan error, 1),
-		sendCh: make(chan *api.Message, 1),
-	}
-	for _, opt := range opts {
-		opt(trc)
-	}
-
-	// Send handshake
-	b, err := json.Marshal(handshakeMsg)
-	if err != nil {
-		return nil, err
-	}
-
-	enc := json.NewEncoder(w)
-	if err := enc.Encode(api.NewMessage(
-		api.MessageTypeHandshake,
-		b,
-		nil,
-	)); err != nil {
-		return nil, err
-	}
-
-	var resp api.Message
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
-	if err := dec.Decode(&resp); err != nil {
-		return nil, err
+	conn := &Conn{
+		decoder: dec,
+		encoder: json.NewEncoder(w),
+		closeCh: make(chan struct{}),
+		errCh:   make(chan error),
 	}
-	if resp.Type != api.MessageTypeHandshake {
-		return nil, errors.New("Reply was not an handshake")
-	}
-
-	var hs api.Handshake
-	if err := json.Unmarshal(resp.Payload, &hs); err != nil {
-		return nil, err
+	for _, opt := range opts {
+		opt(conn)
 	}
 
-	go handleIncoming(dec, enc, trc.handlers, trc.errCh)
+	if conn.defaultHander == nil {
+		conn.defaultHander = func(msg *api.Message) (*api.Message, error) {
+			return nil, errors.Errorf("Unmatched handler for type %s", msg.Type)
+		}
+	}
 
-	// send possible external messages to client
 	go func() {
-		for msg := range trc.sendCh {
-			if err := enc.Encode(msg); err != nil {
-				trc.errCh <- err
+		for {
+			var msg api.Message
+			err := conn.decoder.Decode(&msg)
+
+			select {
+			case <-conn.closeCh:
+				// Don't handle err if connection is closed
+				close(conn.errCh)
+				return
+			}
+			if err != nil {
+				conn.errCh <- errors.Wrap(err, "Failed to decode incoming message")
+				return
+			}
+
+			h, ok := conn.handlers[msg.Type]
+			if !ok {
+				h = conn.defaultHander
+			}
+
+			resp, err := h(&msg)
+			if err != nil {
+				conn.errCh <- err
+				return
+			}
+
+			if err := conn.encoder.Encode(resp); err != nil {
+				conn.errCh <- err
+				return
 			}
 		}
 	}()
-
-	return trc, nil
+	return conn, nil
 }
 
-func (c *Conn) Errors() {
-
+// Ping sends ping to the TRC and waits for response.
+func (c *Conn) Ping() error {
+	return c.encoder.Encode(api.NewMessage(api.MessageTypePing, nil, nil))
 }
 
-// routine for handling incoming messages using the specified handlers.
-func handleIncoming(dec *json.Decoder, enc *json.Encoder, handlers map[api.MessageType]Handler, errChan chan<- error) {
-	for {
-		var msg api.Message
-		if err := dec.Decode(&msg); err != nil {
-			errChan <- errors.Wrap(err, "Could not decode incoming message")
-			return
-		}
-
-		han, ok := handlers[msg.Type]
-		if !ok {
-			errChan <- errors.Errorf("Unknown message: %s", msg)
-		}
-
-		reply, err := han(&msg)
-		if err != nil {
-			errChan <- errors.Wrap(err, "Handler error")
-		}
-
-		enc.Encode(reply)
+// SetState sends the state to TRC and waits for response.
+func (c *Conn) SendState(st *api.State, parent *ulid.ULID) error {
+	b, err := json.Marshal(st)
+	if err != nil {
+		return err
 	}
+	return c.encoder.Encode(api.NewMessage(api.MessageTypeState, b, parent))
+}
+
+// SendHandshake sends handshake message.
+func (c *Conn) SendHandshake(hs *api.Handshake) error {
+	b, err := json.Marshal(hs)
+	if err != nil {
+		return err
+	}
+	return c.encoder.Encode(api.NewMessage(api.MessageTypeHandshake, b, nil))
+}
+
+// Close closes the connection.
+func (c *Conn) Close() error {
+	close(c.closeCh)
+	return nil
 }
 
 // Errors returns a channel, on which errors are sent.
 // There should be exactly one goroutine reading on the returned channel at all times.
 func (c *Conn) Errors() <-chan error {
 	return c.errCh
-}
-
-// Closed returns a channel that's closed when Conn is closed.
-// Successive calls to Closed return the same value.
-// There may be multiple goroutines reading on the returned channel.
-func (c *Conn) Closed() <-chan struct{} {
-	return c.closeCh
 }
