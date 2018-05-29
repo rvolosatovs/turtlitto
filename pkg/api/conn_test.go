@@ -2,22 +2,15 @@ package api_test
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"strconv"
 	"testing"
 
+	"context"
 	. "github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	"github.com/stretchr/testify/require"
 )
-
-type mockWriter struct {
-	WriteFunc func(b []byte) (int, error)
-}
-
-func (r *mockWriter) Write(b []byte) (int, error) {
-	return r.WriteFunc(b)
-}
 
 func TestState(t *testing.T) {
 	for i, tc := range []struct {
@@ -39,35 +32,30 @@ func TestState(t *testing.T) {
 
 			writes := 0
 
-			out := &bytes.Buffer{}
 			// simulates the TRC
-			in := &mockWriter{
-				WriteFunc: func(b []byte) (int, error) {
-					writes++
+			out := &bytes.Buffer{}
+			in := &bytes.Buffer{}
 
-					var m Message
-					err := json.Unmarshal(b, &m)
-					a.Nil(err)
-					a.NotEmpty(m.MessageID)
-					a.Equal(MessageTypeState, m.Type)
-					a.Nil(m.Payload)
+			stateHandler := func(m *Message) (*Message, error) {
+				writes++
 
-					pld, err := json.Marshal(tc.Expected)
-					if err != nil {
-						panic(err)
-					}
+				a.Nil(m.Payload)
+				pld, err := json.Marshal(tc.Expected)
+				if err != nil {
+					return nil, err
+				}
 
-					err = json.NewEncoder(out).Encode(&Message{
-						MessageID: m.MessageID,
-						Type:      m.Type,
-						Payload:   pld,
-					})
-					if err != nil {
-						panic(err)
-					}
-					return len(b), nil
-				},
+				return &Message{
+					MessageID: m.MessageID,
+					Type:      m.Type,
+					Payload:   pld,
+				}, nil
 			}
+
+			test.Connect(out, in,
+				&Handshake{Version: DefaultVersion},
+				test.WithHandler(MessageTypeState, stateHandler),
+			)
 
 			conn, err := Connect(DefaultVersion, in, out)
 
@@ -114,43 +102,37 @@ func TestSetState(t *testing.T) {
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			a := require.New(t)
-
 			writes := 0
 
-			out := &bytes.Buffer{}
-			in := &mockWriter{
-				WriteFunc: func(b []byte) (int, error) {
-					writes++
+			// simulates the TRC
+			toSRRS := &bytes.Buffer{}
+			toTRC := &bytes.Buffer{}
 
-					var m Message
-					err := json.Unmarshal(b, &m)
-					a.Nil(err)
-					a.NotEmpty(m.MessageID)
-					a.Equal(MessageTypeState, m.Type)
+			stateHandler := func(m *Message) (*Message, error) {
+				var ts map[string]*State
+				err := json.Unmarshal(m.Payload, &ts)
+				a.Nil(err)
+				a.Equal(ts, tc.Input)
 
-					var ts map[string]*State
-					err = json.Unmarshal(m.Payload, &ts)
-					a.Nil(err)
-					a.Equal(ts, tc.Input)
+				pld, err := json.Marshal(tc.Output)
+				if err != nil {
+					return nil, err
+				}
+				writes++
 
-					pld, err := json.Marshal(tc.Output)
-					if err != nil {
-						panic(err)
-					}
-
-					err = json.NewEncoder(out).Encode(&Message{
-						MessageID: m.MessageID,
-						Type:      m.Type,
-						Payload:   pld,
-					})
-					if err != nil {
-						panic(err)
-					}
-					return len(b), nil
-				},
+				return &Message{
+					MessageID: m.MessageID,
+					Type:      m.Type,
+					Payload:   pld,
+				}, nil
 			}
 
-			conn, err := Connect(DefaultVersion, in, out)
+			test.Connect(toTRC, toSRRS,
+				&Handshake{Version: DefaultVersion},
+				test.WithHandler(MessageTypeState, stateHandler),
+			)
+
+			conn, err := Connect(DefaultVersion, toSRRS, toTRC)
 			a.Nil(err)
 
 			state := &State{Turtles: tc.Input}
@@ -176,32 +158,33 @@ func TestCommand(t *testing.T) {
 
 			writes := 0
 
+			// simulates the TRC
 			out := &bytes.Buffer{}
-			in := &mockWriter{
-				WriteFunc: func(b []byte) (int, error) {
-					writes++
+			in := &bytes.Buffer{}
 
-					var m Message
-					err := json.Unmarshal(b, &m)
-					a.Nil(err)
-					a.NotEmpty(m.MessageID)
-					a.Equal(m.Type, MessageTypeState)
+			stateHandler := func(m *Message) (*Message, error) {
+				var payload Command
+				err := json.Unmarshal(m.Payload, &payload)
+				a.Nil(err)
+				a.Equal(tc.Command, payload)
 
-					var payload Command
-					err = json.Unmarshal(m.Payload, &payload)
-					a.Nil(err)
-					a.Equal(tc.Command, payload)
+				pld, err := json.Marshal(tc.Command)
+				if err != nil {
+					return nil, err
+				}
+				writes++
 
-					err = json.NewEncoder(out).Encode(&Message{
-						MessageID: m.MessageID,
-						Type:      m.Type,
-					})
-					if err != nil {
-						panic(err)
-					}
-					return len(b), nil
-				},
+				return &Message{
+					MessageID: m.MessageID,
+					Type:      m.Type,
+					Payload:   pld,
+				}, nil
 			}
+
+			test.Connect(out, in,
+				&Handshake{Version: DefaultVersion},
+				test.WithHandler(MessageTypeState, stateHandler),
+			)
 
 			conn, err := Connect(DefaultVersion, in, out)
 			a.Nil(err)
