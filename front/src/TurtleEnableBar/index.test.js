@@ -34,6 +34,7 @@ describe("TurtleEnableBar", () => {
         onDisable={() => {}}
       />
     );
+    expect(wrapper).toMatchSnapshot();
 
     expect(wrapper.find(TurtleEnableButton).length).toBe(turtles.length);
   });

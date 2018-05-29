@@ -1,3 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TurtleEnableBar should match snapshot 1`] = `<styled.div />`;
+
+exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> components 1`] = `
+<TurtleEnableBar
+  onDisable={[Function]}
+  onEnable={[Function]}
+  turtles={
+    Array [
+      Object {
+        "enabled": false,
+        "id": 0,
+      },
+      Object {
+        "enabled": false,
+        "id": 1,
+      },
+      Object {
+        "enabled": false,
+        "id": 2,
+      },
+    ]
+  }
+>
+  <styled.div>
+    <div
+      className="sc-bwzfXH iUWGe"
+    >
+      <TurtleEnableButton
+        enabled={false}
+        id={1}
+        key="0"
+        onDisable={[Function]}
+        onEnable={[Function]}
+      >
+        <styled.button
+          isActive={false}
+          onClick={[Function]}
+        >
+          <button
+            className="sc-bdVaJa hJyMGh"
+            onClick={[Function]}
+          >
+            1
+          </button>
+        </styled.button>
+      </TurtleEnableButton>
+      <TurtleEnableButton
+        enabled={false}
+        id={2}
+        key="1"
+        onDisable={[Function]}
+        onEnable={[Function]}
+      >
+        <styled.button
+          isActive={false}
+          onClick={[Function]}
+        >
+          <button
+            className="sc-bdVaJa hJyMGh"
+            onClick={[Function]}
+          >
+            2
+          </button>
+        </styled.button>
+      </TurtleEnableButton>
+      <TurtleEnableButton
+        enabled={false}
+        id={3}
+        key="2"
+        onDisable={[Function]}
+        onEnable={[Function]}
+      >
+        <styled.button
+          isActive={false}
+          onClick={[Function]}
+        >
+          <button
+            className="sc-bdVaJa hJyMGh"
+            onClick={[Function]}
+          >
+            3
+          </button>
+        </styled.button>
+      </TurtleEnableButton>
+    </div>
+  </styled.div>
+</TurtleEnableBar>
+`;
