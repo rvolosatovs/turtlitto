@@ -2,17 +2,10 @@ package test
 
 import (
 	"encoding/json"
-	"flag"
-	"os"
-	"path/filepath"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
-	"io"
-)
-
-var (
-	sock = flag.String("socket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
 )
 
 type Handler func(*api.Message) (*api.Message, error)
@@ -32,32 +25,33 @@ type Option func(*Conn)
 //					3: Whether the initialisation encountered an error. in this case, 1 and 2 are likely nil.
 func Connect(w io.Writer, r io.Reader, handshakeMsg *api.Handshake, options ...Option) (*Conn, error) {
 	enc := json.NewEncoder(w)
-	dec := json.NewDecoder(r)
 
-	// start with handshake
-	bytes, err := json.Marshal(handshakeMsg)
+	// Send handshake
+	b, err := json.Marshal(handshakeMsg)
 	if err != nil {
 		return nil, err
 	}
 
-	msg := api.NewMessage(api.MessageTypeHandshake, bytes, nil)
+	msg := api.NewMessage(api.MessageTypeHandshake, b, nil)
 	if err := enc.Encode(msg); err != nil {
 		return nil, err
 	}
 
 	var resp api.Message
-	var hs api.Handshake
+	dec := json.NewDecoder(r)
+	dec.DisallowUnknownFields()
 	if err := dec.Decode(&resp); err != nil {
 		return nil, err
 	}
 	if resp.Type != api.MessageTypeHandshake {
 		return nil, errors.New("Reply was not an handshake")
 	}
+
+	var hs api.Handshake
 	if err := json.Unmarshal(resp.Payload, &hs); err != nil {
 		return nil, err
 	}
 
-	// init mock TRC
 	trc := &Conn{
 		errCh:  make(chan error),
 		sendCh: make(chan *api.Message),
@@ -67,7 +61,7 @@ func Connect(w io.Writer, r io.Reader, handshakeMsg *api.Handshake, options ...O
 		},
 	}
 
-	for _, opt := range options {
+	for _, opt := range opts {
 		opt(trc)
 	}
 
