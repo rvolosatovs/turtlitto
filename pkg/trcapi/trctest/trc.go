@@ -3,8 +3,8 @@ package trctest
 import (
 	"encoding/json"
 	"io"
+	"sync"
 
-	"github.com/oklog/ulid"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
@@ -16,6 +16,7 @@ func DefaultStateHandler(msg *api.Message) (*api.Message, error) {
 		return nil, err
 	}
 
+	// TODO: Generate random
 	b, err := json.Marshal(&api.State{})
 	if err != nil {
 		return nil, err
@@ -38,27 +39,33 @@ type Conn struct {
 	errCh   chan error
 	closeCh chan struct{}
 
-	handlers      map[api.MessageType]Handler
+	handlers      *sync.Map
 	defaultHander Handler
 }
 
 type Option func(*Conn)
 
-func WithHandler(msg api.MessageType, h Handler) Option {
+func WithHandler(t api.MessageType, h Handler) Option {
 	return func(c *Conn) {
-		c.handlers[msg] = h
+		_, ok := c.handlers.LoadOrStore(t, h)
+		if ok {
+			panic(errors.Errorf("Handler for message type %s is already registered", t))
+		}
 	}
 }
 
 func WithDefaultHandler(h Handler) Option {
 	return func(c *Conn) {
+		if c.defaultHander != nil {
+			panic(errors.New("Default handler is already set"))
+		}
 		c.defaultHander = h
 	}
 }
 
 // Connect establishes the TRC-side connection according to TRC API protocol
 // specification of version ver on w and r.
-func Connect(w io.Writer, r io.Reader, opts ...Option) (*Conn, error) {
+func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
 	conn := &Conn{
@@ -93,9 +100,12 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) (*Conn, error) {
 				return
 			}
 
-			h, ok := conn.handlers[msg.Type]
+			var h Handler
+			v, ok := conn.handlers.Load(msg.Type)
 			if !ok {
 				h = conn.defaultHander
+			} else {
+				h = v.(Handler)
 			}
 
 			resp, err := h(&msg)
@@ -110,7 +120,7 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) (*Conn, error) {
 			}
 		}
 	}()
-	return conn, nil
+	return conn
 }
 
 // Ping sends ping to the TRC and waits for response.
@@ -119,12 +129,12 @@ func (c *Conn) Ping() error {
 }
 
 // SetState sends the state to TRC and waits for response.
-func (c *Conn) SendState(st *api.State, parent *ulid.ULID) error {
+func (c *Conn) SendState(st *api.State) error {
 	b, err := json.Marshal(st)
 	if err != nil {
 		return err
 	}
-	return c.encoder.Encode(api.NewMessage(api.MessageTypeState, b, parent))
+	return c.encoder.Encode(api.NewMessage(api.MessageTypeState, b, nil))
 }
 
 // SendHandshake sends handshake message.
