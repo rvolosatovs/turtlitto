@@ -4,17 +4,27 @@ import (
 	"encoding/json"
 	"flag"
 	"io"
-	"log"
 	"net"
 	"os"
 	"path/filepath"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
 var (
 	sock = flag.String("socket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
 )
+
+func init() {
+	log.SetLevel(log.InfoLevel)
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors:      true,
+		DisableTimestamp: true,
+		QuoteEmptyFields: true,
+	})
+	log.SetOutput(os.Stdout)
+}
 
 func main() {
 	flag.Parse()
