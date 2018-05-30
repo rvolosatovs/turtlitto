@@ -16,9 +16,9 @@ import styled from "styled-components";
  * - percentage: battery percentage
  */
 const Battery = props => {
-  const percentage = props.percentage;
+  const { percentage, className } = props;
   return (
-    <Section>
+    <Section className={className}>
       {getBatteryIcon(percentage)}
       <CurrentBatteryIndicator>{percentage}%</CurrentBatteryIndicator>
     </Section>

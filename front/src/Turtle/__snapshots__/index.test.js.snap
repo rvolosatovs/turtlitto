@@ -2,32 +2,40 @@
 
 exports[`Turtle should match snapshot 1`] = `
 <div
-  className="sc-bxivhb ejdVNA"
+  className="sc-EHOje ljVEBm"
 >
   <div
-    className="sc-bdVaJa dqcnNb"
+    className="sc-htpNat hgzLeo"
   >
-    <svg
-      aria-hidden="true"
-      className="svg-inline--fa fa-battery-half fa-w-20 fa-rotate-270 "
-      data-icon="battery-half"
-      data-prefix="fas"
-      role="img"
-      style={Object {}}
-      viewBox="0 0 640 512"
-      xmlns="http://www.w3.org/2000/svg"
+    <div
+      className="sc-bdVaJa bxcuYP"
     >
-      <path
-        d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-240 96H96v128h224V192z"
-        fill="currentColor"
+      <svg
+        aria-hidden="true"
+        className="svg-inline--fa fa-battery-half fa-w-20 fa-2x fa-rotate-270 "
+        data-icon="battery-half"
+        data-prefix="fas"
+        role="img"
         style={Object {}}
-      />
-    </svg>
-    42
-    %
+        viewBox="0 0 640 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-240 96H96v128h224V192z"
+          fill="currentColor"
+          style={Object {}}
+        />
+      </svg>
+      <span
+        className="sc-bwzfXH oPoDs"
+      >
+        42
+        %
+      </span>
+    </div>
   </div>
   <div
-    className="sc-bwzfXH lopfab"
+    className="sc-bxivhb iEdzFZ"
   >
     <p>
       Turtle 
@@ -35,7 +43,7 @@ exports[`Turtle should match snapshot 1`] = `
     </p>
   </div>
   <div
-    className="sc-htpNat jxAMgd"
+    className="sc-ifAKCX dprcPE"
   >
     <select
       className={undefined}

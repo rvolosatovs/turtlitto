@@ -36,7 +36,9 @@ const Turtle = props => {
   const { editable, onChange } = props;
   return (
     <DefaultTurtle>
-      <Battery percentage={battery} />
+      <BatterySection>
+        <Battery percentage={battery} />
+      </BatterySection>
       <SubSection>
         <p>Turtle {id}</p>
       </SubSection>
@@ -85,28 +87,35 @@ Turtle.propTypes = {
   onChange: PropTypes.func
 };
 
+const BatterySection = styled.div`
+  flex-basis: 35%;
+`;
+
 const SubSection = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 35%;
 `;
 
 const DropDownSection = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
+  justify-content: space-between;
+  flex-basis: 30%;
 `;
 
 const DefaultTurtle = styled.div`
   width: 90%;
-  margin: 0.2rem auto;
-  padding: 2rem;
+  margin: 0 auto;
+  padding: 1.5rem 0;
   border-style: solid;
   border: 0.25rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  font-size: 4rem;
+  font-size: 2rem;
 `;
 
 export default Turtle;
