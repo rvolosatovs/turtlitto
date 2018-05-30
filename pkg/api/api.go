@@ -73,9 +73,9 @@ const (
 type LocalizationStatus string
 
 const (
-	LocalizationStatusOff    LocalizationStatus = "off"
-	LocalizationStatusManual LocalizationStatus = "compass_issue"
-	LocalizationStatusOn     LocalizationStatus = "on"
+	LocalizationStatusNoLocalization LocalizationStatus = "no_localization"
+	LocalizationStatusCompassError   LocalizationStatus = "compass_error"
+	LocalizationStatusLocalization   LocalizationStatus = "localization"
 )
 
 type BallFound string
@@ -97,67 +97,67 @@ const (
 // TurtleState is the state of a particular turtle.
 type TurtleState struct {
 	// VisionStatus represents status of Vision Executable.
-	VisionStatus bool `json:"visionstatus"`
+	VisionStatus *bool `json:"visionstatus,omitempty"`
 
 	// MotionStatus represents status of Motion Executable (Off/On).
-	MotionStatus bool `json:"motionstatus"`
+	MotionStatus *bool `json:"motionstatus,omitempty"`
 
 	// WorldmodelStatus represents status of Worldmodel Executable (Off/On).
-	WorldmodelStatus bool `json:"worldmodelstatus"`
+	WorldmodelStatus *bool `json:"worldmodelstatus,omitempty"`
 
 	// AppmanStatus represents status of Appman (Off/On).
-	AppmanStatus bool `json:"appmanstatus"`
+	AppmanStatus *bool `json:"appmanstatus,omitempty"`
 
 	// RestartCountMotion represents restart count of Motion Executable (0 … 99).
-	RestartCountMotion uint8 `json:"restartcountmotion"`
+	RestartCountMotion uint8 `json:"restartcountmotion,omitempty"`
 
 	// RestartCountVision represents restart count of Vision Executable (0 … 99).
-	RestartCountVision uint8 `json:"restartcountvision"`
+	RestartCountVision uint8 `json:"restartcountvision,omitempty"`
 
 	// RestartCountWorldmodel represents restart count of Worldmodel Executable (0 … 99).
-	RestartCountWorldmodel uint8 `json:"restartcountworldmodel"`
+	RestartCountWorldmodel uint8 `json:"restartcountworldmodel,omitempty"`
 
 	// BallFound represents ball Found (No/Communicated/Yes).
-	BallFound BallFound `json:"ballfound"`
+	BallFound BallFound `json:"ballfound,omitempty"`
 
 	// LocalizationStatus represents localization Status.
-	LocalizationStatus bool `json:"localizationstatus"`
+	LocalizationStatus LocalizationStatus `json:"localizationstatus,omitempty"`
 
 	// CPB represents current Ball Possessor (No/Team/Yes).
-	CPB CPB `json:"cpb"`
+	CPB CPB `json:"cpb,omitempty"`
 
 	// BatteryVoltage represents battery Voltage (0 … 99).
-	BatteryVoltage uint8 `json:"batteryvoltage"`
+	BatteryVoltage uint8 `json:"batteryvoltage,omitempty"`
 
 	// EmergencyStatus represents emergency Status (0 100).
-	EmergencyStatus uint8 `json:"emergencystatus"`
+	EmergencyStatus uint8 `json:"emergencystatus,omitempty"`
 
 	// Role represents TRC Role (0 … 10).
-	Role Role `json:"role"`
+	Role Role `json:"role,omitempty"`
 
 	// RefBoxRole represents TRC RefboxRole (0 … 10).
-	RefBoxRole Role `json:"refboxrole"`
+	RefBoxRole Role `json:"refboxrole,omitempty"`
 
 	// RobotInField represents TRC Robot In Field (0/1).
-	RobotInField bool `json:"robotinfield"`
+	RobotInField *bool `json:"robotinfield,omitempty"`
 
 	// RobotEmergencyButton represents TRC Robot Emergency Button pressed (0/1).
-	RobotEmergencyButton bool `json:"robotembutton"`
+	RobotEmergencyButton *bool `json:"robotembutton,omitempty"`
 
 	// HomeGoal represents robot’s HomeGoal (Yellow/Blue).
-	HomeGoal HomeGoal `json:"homegoal"`
+	HomeGoal HomeGoal `json:"homegoal,omitempty"`
 
 	// TeamColor represents robot’s Teamcolor (Magenta/Cyan).
-	TeamColor TeamColor `json:"teamcolor"`
+	TeamColor TeamColor `json:"teamcolor,omitempty"`
 
 	// ActiveDevPC represents active DevPC controlling robot (0 … 90).
-	ActiveDevPC uint8 `json:"activedevpc"`
+	ActiveDevPC uint8 `json:"activedevpc,omitempty"`
 
 	// Kinect1State represents status of Kinect 1 (No State/No Ball/Ball).
-	Kinect1State KinectState `json:"kinect1_state"`
+	Kinect1State KinectState `json:"kinect1_state,omitempty"`
 
 	// Kinect2State represents status of Kinect 2 (No State/No Ball/Ball).
-	Kinect2State KinectState `json:"kinect2_state"`
+	Kinect2State KinectState `json:"kinect2_state,omitempty"`
 }
 
 // Message specifies the type of the message.

@@ -31,7 +31,7 @@ func TestValidate(t *testing.T) {
 			Input: &State{
 				Turtles: map[string]*TurtleState{
 					"t": {
-						VisionStatus: false,
+						BallFound: BallFoundCommunicated,
 					},
 				},
 			},

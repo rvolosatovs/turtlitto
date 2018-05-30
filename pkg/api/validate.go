@@ -24,7 +24,7 @@ func (v BallFound) Validate() error {
 // Validate implements Validator.
 func (v LocalizationStatus) Validate() error {
 	switch v {
-	case LocalizationStatusOn, LocalizationStatusOff, LocalizationStatusManual:
+	case LocalizationStatusLocalization, LocalizationStatusNoLocalization, LocalizationStatusCompassError:
 	default:
 		return errors.Errorf("invalid LocalizationStatus: %s", v)
 	}
@@ -136,12 +136,11 @@ func (s *TurtleState) Validate() error {
 	rv := reflect.Indirect(reflect.ValueOf(s))
 	for i := 0; i < rv.NumField(); i++ {
 		fv := reflect.Indirect(rv.Field(i))
-		iface := fv.Interface()
-		if !fv.IsValid() || reflect.DeepEqual(iface, reflect.Zero(fv.Type()).Interface()) {
+		if !fv.IsValid() || reflect.DeepEqual(fv.Interface(), reflect.Zero(fv.Type()).Interface()) {
 			continue
 		}
 
-		v, ok := iface.(Validator)
+		v, ok := fv.Interface().(Validator)
 		if !ok {
 			continue
 		}
