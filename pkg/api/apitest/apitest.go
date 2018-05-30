@@ -105,24 +105,35 @@ func RandomTurtleState() *api.TurtleState {
 		api.RoleGoalkeeper,
 		api.RoleInactive,
 		api.RoleNone,}
+	var refroles = []api.RefBoxRole{
+		api.RefBoxRole1,
+		api.RefBoxRole2,
+		api.RefBoxRole3,
+		api.RefBoxRole4,
+		api.RefBoxRole5,
+		api.RefBoxRole6}
+
+	var locstat = []api.LocalizationStatus{api.LocalizationStatusCompassError,
+	api.LocalizationStatusLocalization,
+	api.LocalizationStatusNoLocalization}
 
 	var turtstate api.TurtleState = api.TurtleState{
-		rand.Intn(2)==0,
-		rand.Intn(2)==0,
-		rand.Intn(2)==0,
-		rand.Intn(2)==0,
+		RandomBool(),
+		RandomBool(),
+		RandomBool(),
+		RandomBool(),
 		uint8(rand.Intn(100)),
 		uint8(rand.Intn(100)),
 		uint8(rand.Intn(100)),
 		ballfound[rand.Intn(len(ballfound))],
-		rand.Intn(2)==0,
+		locstat[rand.Intn(len(locstat))],
 		cpb[rand.Intn(len(cpb))],
 		uint8(rand.Intn(100)),
 		uint8(rand.Intn(101)),
 		roles[rand.Intn(len(roles))],
-		roles[rand.Intn(len(roles))],
-		rand.Intn(2)==0,
-		rand.Intn(2)==0,
+		refroles[rand.Intn(len(refroles))],
+		RandomBool(),
+		RandomBool(),
 		homegoals[rand.Intn(len(homegoals))],
 		teams[rand.Intn(len(teams))],
 		uint8(rand.Intn(100)),
@@ -130,6 +141,11 @@ func RandomTurtleState() *api.TurtleState {
 		kinectstates[rand.Intn(len(kinectstates))]}
 
 		return &turtstate
+}
+
+func RandomBool() *bool{
+	val := rand.Int() % 2 == 0
+	return &val
 }
 
 func Must(v interface{}, err error) interface{}{
