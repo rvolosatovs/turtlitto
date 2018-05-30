@@ -44,6 +44,8 @@ exports[`NotificationWindow is error notification should match snapshot 1`] = `
 </div>
 `;
 
+exports[`NotificationWindow is null should not render anything 1`] = `null`;
+
 exports[`NotificationWindow is success notification should match snapshot 1`] = `
 <div
   className="sc-bdVaJa fitzTx"

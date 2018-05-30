@@ -95,8 +95,21 @@ class App extends Component {
     });
   }
 
+  onNotificationDismiss() {
+    this.setState(prev => {
+      return {
+        notifications: prev.notifications.slice(1)
+      };
+    });
+  }
+
+  getNextNotification() {
+    const { notifications } = this.state;
+    return notifications.length > 0 ? notifications[0] : null;
+  }
+
   render() {
-    const { activePage, turtles, connectionStatus, notifications } = this.state;
+    const { activePage, turtles, connectionStatus } = this.state;
     return (
       <ThemeProvider theme={theme}>
         <div style={{ height: "100vh" }}>
@@ -114,23 +127,10 @@ class App extends Component {
               }
             />
           )}
-          {notifications.map((notification, index) => {
-            return (
-              <NotificationWindow
-                key={index}
-                {...notification}
-                onDismiss={() =>
-                  this.setState(oldState => {
-                    return {
-                      notifications: oldState.notifications.filter(
-                        n => n !== notification
-                      )
-                    };
-                  })
-                }
-              />
-            );
-          })}
+          <NotificationWindow
+            onDismiss={() => this.onNotificationDismiss()}
+            notification={this.getNextNotification()}
+          />
           <BottomBar
             activePage={activePage}
             changeActivePage={page => this.setState({ activePage: page })}
