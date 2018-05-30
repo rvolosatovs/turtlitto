@@ -31,8 +31,8 @@ script:
   - make
   - git diff --exit-code
   - make test
-  - bash <(curl -s https://codecov.io/bash) -cF SRRS -f "!front/*"
-  - bash <(curl -s https://codecov.io/bash) -cF SRRC -f "front/*"
+  - bash <(curl -s https://codecov.io/bash) -cF SRRS -f coverage.txt
+  - bash <(curl -s https://codecov.io/bash) -cF SRRC
 
 after_success:
   - make docker
