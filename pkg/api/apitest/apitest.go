@@ -1,12 +1,13 @@
 package apitest
 
 import (
-	"github.com/rvolosatovs/turtlitto/pkg/api"
-	"math/rand"
 	crand "crypto/rand"
-	"github.com/oklog/ulid"
-	"github.com/blang/semver"
 	"encoding/json"
+	"math/rand"
+
+	"github.com/blang/semver"
+	"github.com/oklog/ulid"
+	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
 func RandomMessage() api.Message {
@@ -15,7 +16,7 @@ func RandomMessage() api.Message {
 	msg.MessageID = *RandomULID()
 
 	var pld interface{}
-	switch msg.Type{
+	switch msg.Type {
 	case api.MessageTypeHandshake:
 		pld = *RandomHandshake()
 	case api.MessageTypeState:
@@ -27,7 +28,9 @@ func RandomMessage() api.Message {
 	}
 
 	b, err := json.Marshal(pld)
-	if err!=nil{panic("could not marshall payload ")}
+	if err != nil {
+		panic("could not marshall payload ")
+	}
 
 	msg.Payload = b
 	return msg
@@ -38,10 +41,13 @@ func RandomMessageType() *api.MessageType {
 	return &vals[rand.Intn(len(vals))]
 }
 
-func RandomHandshake() *api.Handshake{
+func RandomHandshake() *api.Handshake {
 	//TODO: Proper way of creating handshakes
 	vers := string(rand.Intn(10)) + "." + string(rand.Intn(10)) + "." + string(rand.Intn(10))
-	ver, err := semver.Make(vers); if err!=nil{panic("could not parse version")}
+	ver, err := semver.Make(vers)
+	if err != nil {
+		panic("could not parse version")
+	}
 	return &api.Handshake{ver}
 }
 
@@ -61,7 +67,7 @@ func RandomState() *api.State {
 	return &pld
 }
 
-func RandomCommand() *api.Command{
+func RandomCommand() *api.Command {
 	var cmds = []api.Command{
 		api.CommandDroppedBall,
 		api.CommandStart,
@@ -92,9 +98,9 @@ func RandomCommand() *api.Command{
 
 func RandomTurtleState() *api.TurtleState {
 	var ballfound = []api.BallFound{api.BallFoundCommunicated, api.BallFoundYes, api.BallFoundYes}
-	var cpb = []api.CPB{api.CPBCommunicated,api.CPBNo,api.CPBYes}
-	var homegoals = []api.HomeGoal{api.HomeGoalBlue,api.HomeGoalYellow}
-	var teams = []api.TeamColor{api.TeamColorCyan,api.TeamColorMagenta}
+	var cpb = []api.CPB{api.CPBCommunicated, api.CPBNo, api.CPBYes}
+	var homegoals = []api.HomeGoal{api.HomeGoalBlue, api.HomeGoalYellow}
+	var teams = []api.TeamColor{api.TeamColorCyan, api.TeamColorMagenta}
 	var kinectstates = []api.KinectState{api.KinectStateBall, api.KinectStateNoBall, api.KinectStateNoState}
 	var roles = []api.Role{
 		api.RoleAttackerAssist,
@@ -104,7 +110,7 @@ func RandomTurtleState() *api.TurtleState {
 		api.RoleDefenderMain,
 		api.RoleGoalkeeper,
 		api.RoleInactive,
-		api.RoleNone,}
+		api.RoleNone}
 	var refroles = []api.RefBoxRole{
 		api.RefBoxRole1,
 		api.RefBoxRole2,
@@ -114,8 +120,8 @@ func RandomTurtleState() *api.TurtleState {
 		api.RefBoxRole6}
 
 	var locstat = []api.LocalizationStatus{api.LocalizationStatusCompassError,
-	api.LocalizationStatusLocalization,
-	api.LocalizationStatusNoLocalization}
+		api.LocalizationStatusLocalization,
+		api.LocalizationStatusNoLocalization}
 
 	var turtstate api.TurtleState = api.TurtleState{
 		RandomBool(),
@@ -140,16 +146,17 @@ func RandomTurtleState() *api.TurtleState {
 		kinectstates[rand.Intn(len(kinectstates))],
 		kinectstates[rand.Intn(len(kinectstates))]}
 
-		return &turtstate
+	return &turtstate
 }
 
-func RandomBool() *bool{
-	val := rand.Int() % 2 == 0
+func RandomBool() *bool {
+	val := rand.Int()%2 == 0
 	return &val
 }
 
-func Must(v interface{}, err error) interface{}{
-	if err!=nil{panic("something went wrong")}
+func Must(v interface{}, err error) interface{} {
+	if err != nil {
+		panic(err)
+	}
 	return v
 }
-
