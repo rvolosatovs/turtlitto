@@ -3,8 +3,8 @@ import Battery from ".";
 import renderer from "react-test-renderer";
 
 describe("Battery", () => {
-  it("shows a full battery on 100%", () => {
-    const component = renderer.create(<Battery percentage={100} />);
+  it("shows a full battery on 99%", () => {
+    const component = renderer.create(<Battery percentage={99} />);
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
