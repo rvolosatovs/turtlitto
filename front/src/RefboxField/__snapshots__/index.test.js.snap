@@ -85,3 +85,28 @@ exports[`RefboxField shows a magenta refbox field with all buttons 1`] = `
   </button>
 </div>
 `;
+
+exports[`RefboxField shows a magenta refbox with penalty buttons 1`] = `
+<div
+  className="sc-bwzfXH eubhZo"
+>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    Soft
+  </button>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    Medium
+  </button>
+  <button
+    className="sc-bdVaJa ldpgei"
+    onClick={[Function]}
+  >
+    Hard
+  </button>
+</div>
+`;

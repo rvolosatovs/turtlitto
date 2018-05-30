@@ -6,9 +6,6 @@ import connectionTypes from "./connectionTypes";
 import pageTypes from "./pageTypes";
 
 describe("BottomBar", () => {
-  const refboxPage = "refbox";
-  const settingsPage = "settings";
-
   it("should match snapshot when connected", () => {
     const wrapper = shallow(
       <BottomBar
