@@ -62,6 +62,17 @@ const (
 	RoleDefenderAssist2 Role = "defender_assist2"
 )
 
+type RefBoxRole string
+
+const (
+	RefBoxRole1 RefBoxRole = "role_1"
+	RefBoxRole2 RefBoxRole = "role_2"
+	RefBoxRole3 RefBoxRole = "role_3"
+	RefBoxRole4 RefBoxRole = "role_4"
+	RefBoxRole5 RefBoxRole = "role_5"
+	RefBoxRole6 RefBoxRole = "role_6"
+)
+
 type KinectState string
 
 const (
@@ -136,7 +147,7 @@ type TurtleState struct {
 	Role Role `json:"role,omitempty"`
 
 	// RefBoxRole represents TRC RefboxRole (0 … 10).
-	RefBoxRole Role `json:"refboxrole,omitempty"`
+	RefBoxRole RefBoxRole `json:"refboxrole,omitempty"`
 
 	// RobotInField represents TRC Robot In Field (0/1).
 	RobotInField *bool `json:"robotinfield,omitempty"`

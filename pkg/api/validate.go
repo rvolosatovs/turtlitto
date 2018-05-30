@@ -53,6 +53,16 @@ func (v Role) Validate() error {
 }
 
 // Validate implements Validator.
+func (v RefBoxRole) Validate() error {
+	switch v {
+	case RefBoxRole1, RefBoxRole2, RefBoxRole3, RefBoxRole4, RefBoxRole5, RefBoxRole6:
+	default:
+		return errors.Errorf("invalid RefBoxRole: %s", v)
+	}
+	return nil
+}
+
+// Validate implements Validator.
 func (v HomeGoal) Validate() error {
 	switch v {
 	case HomeGoalBlue, HomeGoalYellow:

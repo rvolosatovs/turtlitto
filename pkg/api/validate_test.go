@@ -1,7 +1,6 @@
 package api_test
 
 import (
-	"strconv"
 	"testing"
 
 	. "github.com/rvolosatovs/turtlitto/pkg/api"
@@ -10,24 +9,28 @@ import (
 
 func TestValidate(t *testing.T) {
 	type TestCase struct {
+		Name        string
 		Input       Validator
 		ShouldError bool
 	}
 
-	for i, tc := range []TestCase{
-		{ // a simple correct turtleState
+	for _, tc := range []TestCase{
+		{
+			Name: "a simple correct turtleState",
 			Input: &TurtleState{
 				EmergencyStatus: 100, // maximum
 			},
 			ShouldError: false,
 		},
-		{ // a simple erroneous turtleState
+		{
+			Name: "a simple erroneous turtleState",
 			Input: &TurtleState{
 				BatteryVoltage: 255, // max_uint8
 			},
 			ShouldError: true,
 		},
-		{ // a one-item State
+		{
+			Name: "a one-item State",
 			Input: &State{
 				Turtles: map[string]*TurtleState{
 					"t": {
@@ -37,7 +40,8 @@ func TestValidate(t *testing.T) {
 			},
 			ShouldError: false,
 		},
-		{ // a multi-item, multi-turtle State
+		{
+			Name: "a multi-item, multi-turtle State",
 			Input: &State{
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -58,7 +62,8 @@ func TestValidate(t *testing.T) {
 			},
 			ShouldError: false,
 		},
-		{ // a one-item wrong State
+		{
+			Name: "a one-item wrong EmergencyStatus TurtleState",
 			Input: &State{
 				Turtles: map[string]*TurtleState{
 					"t": {
@@ -68,7 +73,8 @@ func TestValidate(t *testing.T) {
 			},
 			ShouldError: true,
 		},
-		{ // a one-item wrong State
+		{
+			Name: "a one-item wrong RefBoxRole TurtleState",
 			Input: &State{
 				Turtles: map[string]*TurtleState{
 					"t": {
@@ -78,7 +84,8 @@ func TestValidate(t *testing.T) {
 			},
 			ShouldError: true,
 		},
-		{ // a multi-item, multi-turtle wrong State
+		{
+			Name: "a multi-item, multi-turtle wrong State",
 			Input: &State{
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -100,7 +107,7 @@ func TestValidate(t *testing.T) {
 			ShouldError: true,
 		},
 	} {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
+		t.Run(tc.Name, func(t *testing.T) {
 			err := tc.Input.Validate()
 			if tc.ShouldError {
 				assert.NotNil(t, err)
