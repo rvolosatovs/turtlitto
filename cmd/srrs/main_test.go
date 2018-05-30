@@ -1,19 +1,19 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"log"
 	"net"
 	"os"
 	"path/filepath"
-	"sync"
 	"testing"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
-	"github.com/stretchr/testify/assert"
+	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
+	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -42,6 +42,10 @@ func init() {
 func TestMain(m *testing.M) {
 	if err := flag.Set("socket", unixSockPath); err != nil {
 		log.Fatalf("Failed to set `socket` to %s: %s", unixSockPath, err)
+	}
+
+	if err := flag.Set("debug", "true"); err != nil {
+		log.Fatalf("Failed to set `debug`: %s", err)
 	}
 
 	log.Print("Starting SRRS in goroutine...")
@@ -74,65 +78,56 @@ func TestMain(m *testing.M) {
 }
 
 func TestAll(t *testing.T) {
-	a := assert.New(t)
+	a := require.New(t)
 
-	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost"+defaultAddr+"/"+defaultEndpoint, nil)
-	if !a.Nil(err) {
-		t.FailNow()
-	}
+	wsAddr := "ws://localhost" + defaultAddr + "/" + stateEndpoint
+	log.WithField("addr", wsAddr).Debug("Opening a WebSocket...")
+	wsConn, _, err := websocket.DefaultDialer.Dial(wsAddr, nil)
+	a.NoError(err)
+	log.Debug("WebSocket opened")
 
-	state := map[string]*api.State{
-		"foo": {
-			ID: "bar",
-			// TODO: add more fields
-		},
-	}
+	log.Debug("Waiting for connection on Unix socket...")
+	unixConn, err := unixSock.Accept()
+	a.NoError(err)
+	log.Debug("Connection on Unix socket received")
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	log.Debug("Establishing mock TRC connection...")
+	trc := trctest.Connect(unixConn, unixConn)
+	log.Debug("Mock TRC connection established")
 
-		c, err := unixSock.Accept()
+	log.Debug("Sending handshake...")
+	err = trc.SendHandshake(&api.Handshake{
+		Version: trcapi.DefaultVersion,
+	})
+	a.NoError(err)
+	log.Debug("Handshake sent")
+
+	var got api.State
+	log.Debug("Receiving nil state on WebSocket...")
+	err = wsConn.ReadJSON(&got)
+	a.Nil(err)
+	a.Equal(api.State{}, got)
+	log.Debug("Nil state received on WebSocket")
+
+	for i := 0; i < 10; i++ {
+		// TODO: generate
+		state := &api.State{
+			Turtles: map[string]*api.TurtleState{
+				"foo": {},
+			},
+		}
+
+		log.Debug("Sending random state...")
+		err = trc.SendState(state)
+		a.NoError(err)
+		log.Debug("Random state sent")
+
+		got := &api.State{}
+		log.Debug("Receiving random state on WebSocket...")
+		err = wsConn.ReadJSON(got)
 		a.Nil(err)
-
-		var req api.Message
-
-		err = json.NewDecoder(c).Decode(&req)
-		if !a.Nil(err) {
-			return
-		}
-
-		resp := &api.Message{
-			MessageID: req.MessageID,
-			Type:      req.Type,
-		}
-
-		switch req.Type {
-		case api.MessageTypeSetState:
-		case api.MessageTypeGetState:
-			b, err := json.Marshal(state)
-			if err != nil {
-				panic(err)
-			}
-			resp.Payload = b
-		case api.MessageTypeCommand:
-		default:
-			t.Errorf("Unmatched message type: %s", req.Type)
-			return
-		}
-
-		err = json.NewEncoder(c).Encode(resp)
-		a.Nil(err)
-	}()
-
-	var got map[string]*api.State
-
-	err = conn.ReadJSON(&got)
-	if !a.Nil(err) {
-		t.FailNow()
+		a.Equal(got, state)
+		log.Debug("Random state received on WebSocket")
 	}
-	a.Equal(state, got)
-
-	wg.Wait()
+	// TODO: check setting of commands
 }

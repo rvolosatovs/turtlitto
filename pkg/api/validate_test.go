@@ -1,7 +1,6 @@
 package api_test
 
 import (
-	"strconv"
 	"testing"
 
 	. "github.com/rvolosatovs/turtlitto/pkg/api"
@@ -10,47 +9,105 @@ import (
 
 func TestValidate(t *testing.T) {
 	type TestCase struct {
+		Name        string
 		Input       Validator
 		ShouldError bool
 	}
 
-	for i, tc := range []TestCase{
-		{ // 0
-			Input: &State{
-				VisionStatus: "Manual",
-			},
-			ShouldError: true,
-		},
-		{ // 1
-			Input: &State{
-				Temperature1:    28,
-				CamStatus:       12, // too much
-				Cpu1Load:        89,
-				Cpu0Load:        87,
-				EmergencyStatus: 0,
-			},
-			ShouldError: true,
-		},
-		{ // 2
-			Input: &State{
+	for _, tc := range []TestCase{
+		{
+			Name: "a simple correct turtleState",
+			Input: &TurtleState{
 				EmergencyStatus: 100, // maximum
 			},
 			ShouldError: false,
 		},
-		{ // 3
-			Input: &State{
+		{
+			Name: "a simple erroneous turtleState",
+			Input: &TurtleState{
 				BatteryVoltage: 255, // max_uint8
 			},
 			ShouldError: true,
 		},
-		{ // 4
+		{
+			Name: "a one-item State",
 			Input: &State{
-				ID: "", // empty ID
+				Turtles: map[string]*TurtleState{
+					"t": {
+						BallFound: BallFoundCommunicated,
+					},
+				},
 			},
-			ShouldError: false, // not anymore
+			ShouldError: false,
+		},
+		{
+			Name: "a multi-item, multi-turtle State",
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"1": {
+						Kinect1State:    KinectStateNoBall,
+						EmergencyStatus: 0,
+					},
+					"2": {
+						Kinect1State:    KinectStateBall,
+						Kinect2State:    KinectStateNoBall,
+						EmergencyStatus: 1,
+					},
+					"3": {
+						HomeGoal:        HomeGoalYellow,
+						BatteryVoltage:  28,
+						EmergencyStatus: 0,
+					},
+				},
+			},
+			ShouldError: false,
+		},
+		{
+			Name: "a one-item wrong EmergencyStatus TurtleState",
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"t": {
+						EmergencyStatus: 255, // too much
+					},
+				},
+			},
+			ShouldError: true,
+		},
+		{
+			Name: "a one-item wrong RefBoxRole TurtleState",
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"t": {
+						RefBoxRole: "wrongRole",
+					},
+				},
+			},
+			ShouldError: true,
+		},
+		{
+			Name: "a multi-item, multi-turtle wrong State",
+			Input: &State{
+				Turtles: map[string]*TurtleState{
+					"1": {
+						Kinect1State:    KinectStateNoBall,
+						EmergencyStatus: 0,
+					},
+					"2": {
+						Kinect1State:    KinectStateBall,
+						Kinect2State:    KinectStateNoBall,
+						EmergencyStatus: 1,
+					},
+					"3": {
+						HomeGoal:        HomeGoalYellow,
+						BatteryVoltage:  100, // too much
+						EmergencyStatus: 0,
+					},
+				},
+			},
+			ShouldError: true,
 		},
 	} {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
+		t.Run(tc.Name, func(t *testing.T) {
 			err := tc.Input.Validate()
 			if tc.ShouldError {
 				assert.NotNil(t, err)
