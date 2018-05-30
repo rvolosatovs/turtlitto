@@ -23,6 +23,7 @@ it("renders without crashing", () => {
           team: "Magenta"
         }
       ]}
+      onTurtleEnableChange={() => {}}
     />
   );
   expect(wrapper).toMatchSnapshot();

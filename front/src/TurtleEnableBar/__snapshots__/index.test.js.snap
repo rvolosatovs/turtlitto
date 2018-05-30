@@ -4,8 +4,7 @@ exports[`TurtleEnableBar should match snapshot 1`] = `<styled.div />`;
 
 exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> components 1`] = `
 <TurtleEnableBar
-  onDisable={[Function]}
-  onEnable={[Function]}
+  onTurtleEnableChange={[Function]}
   turtles={
     Array [
       Object {
@@ -31,8 +30,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
         enabled={false}
         id={1}
         key="0"
-        onDisable={[Function]}
-        onEnable={[Function]}
+        onTurtleEnableChange={[Function]}
       >
         <styled.button
           isActive={false}
@@ -50,8 +48,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
         enabled={false}
         id={2}
         key="1"
-        onDisable={[Function]}
-        onEnable={[Function]}
+        onTurtleEnableChange={[Function]}
       >
         <styled.button
           isActive={false}
@@ -69,8 +66,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
         enabled={false}
         id={3}
         key="2"
-        onDisable={[Function]}
-        onEnable={[Function]}
+        onTurtleEnableChange={[Function]}
       >
         <styled.button
           isActive={false}

@@ -15,7 +15,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      activePage: "refbox",
+      activePage: "settings",
       connectionStatus: "connected",
       turtles: [
         {
@@ -28,7 +28,7 @@ class App extends Component {
         },
         {
           id: 2,
-          enabled: true,
+          enabled: false,
           battery: 42,
           home: "Yellow home",
           role: "INACTIVE",
@@ -44,7 +44,7 @@ class App extends Component {
         },
         {
           id: 4,
-          enabled: true,
+          enabled: false,
           battery: 100,
           home: "Yellow home",
           role: "INACTIVE",
@@ -78,6 +78,23 @@ class App extends Component {
     console.log(`Sent: ${message}`);
   }
 
+  onTurtleEnableChange(position) {
+    this.setState(prev => {
+      const turtles = prev.turtles.map((turtle, index) => {
+        if (index === position) {
+          return {
+            ...turtle,
+            enabled: !turtle.enabled
+          };
+        }
+
+        return turtle;
+      });
+
+      return { turtles };
+    });
+  }
+
   render() {
     const { activePage, turtles, connectionStatus, notifications } = this.state;
     return (
@@ -89,10 +106,18 @@ class App extends Component {
               <RefboxSettings />
             </div>
           )}
-          {activePage === "settings" && <Settings turtles={turtles} />}
-          {notifications.map(notification => {
+          {activePage === "settings" && (
+            <Settings
+              turtles={turtles}
+              onTurtleEnableChange={position =>
+                this.onTurtleEnableChange(position)
+              }
+            />
+          )}
+          {notifications.map((notification, index) => {
             return (
               <NotificationWindow
+                key={index}
                 {...notification}
                 onDismiss={() =>
                   this.setState(oldState => {

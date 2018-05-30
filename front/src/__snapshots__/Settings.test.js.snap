@@ -3,25 +3,16 @@
 exports[`renders without crashing 1`] = `
 <div>
   <TurtleEnableBar
-    onDisable={[Function]}
-    onEnable={[Function]}
+    onTurtleEnableChange={[Function]}
     turtles={
       Array [
         Object {
-          "battery": 66,
           "enabled": true,
-          "home": "Yellow home",
           "id": 1,
-          "role": "INACTIVE",
-          "team": "Magenta",
         },
         Object {
-          "battery": 42,
           "enabled": false,
-          "home": "Yellow home",
           "id": 2,
-          "role": "INACTIVE",
-          "team": "Magenta",
         },
       ]
     }
