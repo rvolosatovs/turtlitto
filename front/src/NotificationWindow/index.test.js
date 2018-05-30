@@ -1,59 +1,47 @@
 import React from "react";
 import NotificationWindow from ".";
 import notificationTypes from "./notificationTypes";
-import renderer from "react-test-renderer";
+import { shallow } from "enzyme";
 
 describe("NotificationWindow", () => {
-  describe("is success notification", () => {
-    it("should match snapshot", () => {
-      const notification = {
-        notificationType: notificationTypes.SUCCESS,
-        message: "notification message"
-      };
-      const component = renderer.create(
-        <NotificationWindow notification={notification} onDismiss={() => {}} />
-      );
-      let tree = component.toJSON();
-      expect(tree).toMatchSnapshot();
-    });
+  it("should display a success notification", () => {
+    const notification = {
+      notificationType: notificationTypes.SUCCESS,
+      message: "notification message"
+    };
+    const wrapper = shallow(
+      <NotificationWindow notification={notification} onDismiss={() => {}} />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 
-  describe("is warning notification", () => {
-    it("should match snapshot", () => {
-      const notification = {
-        notificationType: notificationTypes.WARNING,
-        message: "notification message"
-      };
-      const component = renderer.create(
-        <NotificationWindow notification={notification} onDismiss={() => {}} />
-      );
-      let tree = component.toJSON();
-      expect(tree).toMatchSnapshot();
-    });
+  it("should display a warning notification", () => {
+    const notification = {
+      notificationType: notificationTypes.WARNING,
+      message: "notification message"
+    };
+    const wrapper = shallow(
+      <NotificationWindow notification={notification} onDismiss={() => {}} />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 
-  describe("is error notification", () => {
-    it("should match snapshot", () => {
-      const notification = {
-        notificationType: notificationTypes.ERROR,
-        message: "notification message"
-      };
-      const component = renderer.create(
-        <NotificationWindow notification={notification} onDismiss={() => {}} />
-      );
-      let tree = component.toJSON();
-      expect(tree).toMatchSnapshot();
-    });
+  it("should display an error notification", () => {
+    const notification = {
+      notificationType: notificationTypes.ERROR,
+      message: "notification message"
+    };
+    const wrapper = shallow(
+      <NotificationWindow notification={notification} onDismiss={() => {}} />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 
-  describe("is null", () => {
-    it("should not render anything", () => {
-      const notification = null;
-      const component = renderer.create(
-        <NotificationWindow notification={notification} onDismiss={() => {}} />
-      );
-      let tree = component.toJSON();
-      expect(tree).toMatchSnapshot();
-    });
+  it("should not render anything", () => {
+    const notification = null;
+    const wrapper = shallow(
+      <NotificationWindow notification={notification} onDismiss={() => {}} />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 });

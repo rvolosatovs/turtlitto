@@ -2,15 +2,18 @@
 
 exports[`Dropdown can be changed 1`] = `
 <select
-  className={undefined}
   disabled={false}
   onChange={[Function]}
   value="test"
 >
-  <option>
+  <option
+    key="test"
+  >
     test
   </option>
-  <option>
+  <option
+    key="test2"
+  >
     test2
   </option>
 </select>

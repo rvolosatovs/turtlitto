@@ -1,38 +1,36 @@
 import React from "react";
 import RefboxField from ".";
-import renderer from "react-test-renderer";
+import { shallow } from "enzyme";
 
 describe("RefboxField", () => {
   it("shows a cyan refbox field with all buttons", () => {
-    const component = renderer.create(
+    const wrapper = shallow(
       <RefboxField
         teamColor="cyan"
         onClick={(tag, color) => {}}
         isPenalty={false}
       />
     );
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
   it("shows a magenta refbox field with all buttons", () => {
-    const component = renderer.create(
+    const wrapper = shallow(
       <RefboxField
         teamColor="magenta"
         onClick={(tag, color) => {}}
         isPenalty={false}
       />
     );
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
   it("shows a magenta refbox with penalty buttons", () => {
-    const component = renderer.create(
+    const wrapper = shallow(
       <RefboxField
         teamColor="magenta"
         onClick={(tag, color) => {}}
         isPenalty={true}
       />
     );
-    expect(component.toJSON()).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 });

@@ -1,80 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RefboxSettings shows the settings including two dropdown menus and three buttons 1`] = `
-<div
-  className="sc-gzVnrw cBZbbr"
->
-  <div
-    className="sc-htpNat bltaMY"
-  >
-    <button
-      className="sc-bxivhb dnVqPf"
+<styled.div>
+  <DropBall
+    onClick={[Function]}
+  />
+  <styled.div>
+    <InOutButton
       onClick={[Function]}
-    >
-      DB
-    </button>
-  </div>
-  <div
-    className="sc-bZQynM YUiQs"
-  >
-    <div
-      className="sc-ifAKCX Ltidv"
-    >
-      <button
-        className="sc-EHOje cPzwAe"
-        onClick={[Function]}
-      >
-        Go in
-      </button>
-      <button
-        className="sc-EHOje cPzwAe"
-        onClick={[Function]}
-      >
-        Go out
-      </button>
-    </div>
-    <div
-      className="sc-bdVaJa hVREz"
-    >
-      <select
-        className="sc-bwzfXH cjMJAz"
-        disabled={false}
-        onChange={[Function]}
-        value="Whatever"
-      >
-        <option>
-          Practice
-        </option>
-        <option>
-          Dual team
-        </option>
-        <option>
-          Match
-        </option>
-      </select>
-      <select
-        className="sc-bwzfXH cjMJAz"
-        disabled={false}
-        onChange={[Function]}
-        value="Whatever"
-      >
-        <option>
-          Role assigner on
-        </option>
-        <option>
-          Role assigner off
-        </option>
-        <option>
-          Pass demo
-        </option>
-        <option>
-          Penalty mode
-        </option>
-        <option>
-          Ball Handling demo
-        </option>
-      </select>
-    </div>
-  </div>
-</div>
+    />
+    <ConfigDropdown
+      onChange={[Function]}
+      value="Whatever"
+    />
+  </styled.div>
+</styled.div>
 `;

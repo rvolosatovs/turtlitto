@@ -1,46 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ConfigDropdown shows two dropdown menus 1`] = `
-<div
-  className="sc-bdVaJa hVREz"
->
-  <select
-    className="sc-bwzfXH cjMJAz"
-    disabled={false}
+<styled.div>
+  <Styled(Dropdown)
+    currentValue=""
+    enabled={true}
     onChange={[Function]}
-    value=""
-  >
-    <option>
-      Practice
-    </option>
-    <option>
-      Dual team
-    </option>
-    <option>
-      Match
-    </option>
-  </select>
-  <select
-    className="sc-bwzfXH cjMJAz"
-    disabled={false}
+    values={
+      Array [
+        "Practice",
+        "Dual team",
+        "Match",
+      ]
+    }
+  />
+  <Styled(Dropdown)
+    currentValue=""
+    enabled={true}
     onChange={[Function]}
-    value=""
-  >
-    <option>
-      Role assigner on
-    </option>
-    <option>
-      Role assigner off
-    </option>
-    <option>
-      Pass demo
-    </option>
-    <option>
-      Penalty mode
-    </option>
-    <option>
-      Ball Handling demo
-    </option>
-  </select>
-</div>
+    values={
+      Array [
+        "Role assigner on",
+        "Role assigner off",
+        "Pass demo",
+        "Penalty mode",
+        "Ball Handling demo",
+      ]
+    }
+  />
+</styled.div>
 `;

@@ -1,13 +1,10 @@
 import React from "react";
 import ConfigDropdown from "./ConfigDropdown";
-import renderer from "react-test-renderer";
+import { shallow } from "enzyme";
 
 describe("ConfigDropdown", () => {
   it("shows two dropdown menus", () => {
-    const component = renderer.create(
-      <ConfigDropdown value="" onChange={() => {}} />
-    );
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    const wrapper = shallow(<ConfigDropdown value="" onChange={() => {}} />);
+    expect(wrapper).toMatchSnapshot();
   });
 });
