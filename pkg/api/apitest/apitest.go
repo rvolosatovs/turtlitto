@@ -161,8 +161,7 @@ func randomBool() *bool {
 	return &val
 }
 
-//
-func Must(v interface{}, err error) interface{} {
+func must(v interface{}, err error) interface{} {
 	if err != nil {
 		panic(err)
 	}
