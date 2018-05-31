@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import "./App.css";
 import "normalize.css";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 
 import BottomBar from "./BottomBar";
@@ -9,6 +9,18 @@ import NotificationWindow from "./NotificationWindow";
 import RefboxField from "./RefboxField";
 import RefboxSettings from "./RefboxSettings";
 import Settings from "./Settings";
+import TurtleEnableBar from "./TurtleEnableBar";
+
+const Container = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ScrollableContent = styled.div`
+  flex: 1;
+  overflow-y: auto;
+`;
 
 class App extends Component {
   constructor(props) {
@@ -112,7 +124,7 @@ class App extends Component {
     const { activePage, turtles, connectionStatus } = this.state;
     return (
       <ThemeProvider theme={theme}>
-        <div style={{ height: "100vh" }}>
+        <Container>
           {activePage === "refbox" && (
             <div>
               <RefboxField />
@@ -120,12 +132,22 @@ class App extends Component {
             </div>
           )}
           {activePage === "settings" && (
-            <Settings
-              turtles={turtles}
-              onTurtleEnableChange={position =>
-                this.onTurtleEnableChange(position)
-              }
-            />
+            <Fragment>
+              <TurtleEnableBar
+                turtles={turtles.map(turtle => {
+                  return {
+                    id: turtle.id,
+                    enabled: turtle.enabled
+                  };
+                })}
+                onTurtleEnableChange={position =>
+                  this.onTurtleEnableChange(position)
+                }
+              />
+              <ScrollableContent>
+                <Settings turtles={turtles.filter(turtle => turtle.enabled)} />
+              </ScrollableContent>
+            </Fragment>
           )}
           <NotificationWindow
             onDismiss={() => this.onNotificationDismiss()}
@@ -137,7 +159,7 @@ class App extends Component {
             onSend={message => this.onSend(message)}
             connectionStatus={connectionStatus}
           />
-        </div>
+        </Container>
       </ThemeProvider>
     );
   }

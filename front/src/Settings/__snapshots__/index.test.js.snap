@@ -2,21 +2,6 @@
 
 exports[`renders without crashing 1`] = `
 <div>
-  <TurtleEnableBar
-    onTurtleEnableChange={[Function]}
-    turtles={
-      Array [
-        Object {
-          "enabled": true,
-          "id": 1,
-        },
-        Object {
-          "enabled": false,
-          "id": 2,
-        },
-      ]
-    }
-  />
   <Turtle
     editable={true}
     key="1"
@@ -27,6 +12,21 @@ exports[`renders without crashing 1`] = `
         "enabled": true,
         "home": "Yellow home",
         "id": 1,
+        "role": "INACTIVE",
+        "team": "Magenta",
+      }
+    }
+  />
+  <Turtle
+    editable={true}
+    key="2"
+    onChange={[Function]}
+    turtle={
+      Object {
+        "battery": 42,
+        "enabled": false,
+        "home": "Yellow home",
+        "id": 2,
         "role": "INACTIVE",
         "team": "Magenta",
       }

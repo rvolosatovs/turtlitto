@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Turtle from "./Turtle";
-import TurtleEnableBar from "./TurtleEnableBar";
+import Turtle from "../Turtle";
 
 /**
  * Show the settings of all turtles.
@@ -12,34 +11,22 @@ import TurtleEnableBar from "./TurtleEnableBar";
  * - onTurtleEnableChange: function to call when the turtle enable button is pressed
  */
 const Settings = props => {
-  const { turtles, onTurtleEnableChange } = props;
+  const { turtles } = props;
   return (
     <div>
-      <TurtleEnableBar
-        turtles={turtles.map(turtle => {
-          return {
-            id: turtle.id,
-            enabled: turtle.enabled
-          };
-        })}
-        onTurtleEnableChange={onTurtleEnableChange}
-      />
-      {turtles
-        .filter(turtle => turtle.enabled)
-        .map(turtle => (
-          <Turtle
-            key={turtle.id}
-            turtle={turtle}
-            editable
-            onChange={(changedProp, newValue) => {} /* TODO: turtle update */}
-          />
-        ))}
+      {turtles.map(turtle => (
+        <Turtle
+          key={turtle.id}
+          turtle={turtle}
+          editable
+          onChange={(changedProp, newValue) => {} /* TODO: turtle update */}
+        />
+      ))}
     </div>
   );
 };
 
 Settings.propTypes = {
-  onTurtleEnableChange: PropTypes.func.isRequired,
   turtles: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
