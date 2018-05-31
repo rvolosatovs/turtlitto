@@ -2,7 +2,7 @@
 
 exports[`RefboxSettings shows the settings including two dropdown menus and three buttons 1`] = `
 <styled.div>
-  <DropBall
+  <Styled(DropBall)
     onClick={[Function]}
   />
   <styled.div>

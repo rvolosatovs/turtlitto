@@ -162,8 +162,12 @@ class App extends Component {
         <Container>
           {activePage === "refbox" && (
             <div>
-              <RefboxField />
-              <RefboxSettings />
+              <RefboxField onClick={(tag, teamColor) => {}} />
+              <RefboxSettings
+                onClickDropBall={() => {}}
+                onClickInOut={prop => {}}
+                onChange={(type, value) => {}}
+              />
             </div>
           )}
           {activePage === "settings" && (
@@ -180,7 +184,10 @@ class App extends Component {
                 }
               />
               <ScrollableContent>
-                <Settings turtles={turtles.filter(turtle => turtle.enabled)} />
+                <Settings
+                  turtles={turtles.filter(turtle => turtle.enabled)}
+                  onChange={() => {}}
+                />
               </ScrollableContent>
             </Fragment>
           )}

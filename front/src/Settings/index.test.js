@@ -5,6 +5,7 @@ import Settings from ".";
 it("renders without crashing", () => {
   const wrapper = shallow(
     <Settings
+      onChange={() => {}}
       turtles={[
         {
           id: 1,

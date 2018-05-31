@@ -24,5 +24,9 @@ export default {
   dropBallButton: "#ededed",
   dropBallButtonActive: "silver",
   inOutButton: "#ededed",
-  inOutButtonActive: "silver"
+  inOutButtonActive: "silver",
+  refboxMagenta: "magenta",
+  refboxCyan: "cyan",
+  refboxMagentaActive: "magenta",
+  refboxCyanActive: "cyan"
 };
