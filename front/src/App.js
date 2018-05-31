@@ -1,306 +1,165 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import "./App.css";
 import "normalize.css";
-import { Grid, Row, Col } from "react-flexbox-grid";
-import styled, { css, ThemeProvider } from "styled-components";
-import format from "date-fns/format";
+import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 
-import StartButton from "./StartButton";
-import InputField from "./InputField";
+import BottomBar from "./BottomBar";
+import NotificationWindow from "./NotificationWindow";
+import RefboxField from "./RefboxField";
+import RefboxSettings from "./RefboxSettings";
+import Settings from "./Settings";
+import TurtleEnableBar from "./TurtleEnableBar";
 
-const Header = styled.header`
-  height: 100vh;
-  background: ${props => props.theme.background};
-`;
-
-const Content = styled.div`
-  margin: 0;
+const Container = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: space-around;
-  justify-content: center;
-  height: 100%;
 `;
 
-const Title = styled.h1`
-  font-size: 3.6rem;
-  color: ${props => props.theme.title};
+const ScrollableContent = styled.div`
+  flex: 1;
+  overflow-y: auto;
 `;
-
-const MessagesList = styled.ul`
-  list-style-type: none;
-  height: 40rem; /* dont do that */
-  margin: 0 auto;
-  border: 0.2rem solid ${props => props.theme.secondary};
-  background: white;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  text-align: left;
-  padding: 0.6rem;
-  width: 80%;
-`;
-
-const Message = styled.li`
-  font-size: 1.5rem;
-  padding: 0.5rem 0;
-`;
-
-const InfoMessage = Message.extend`
-  color: ${props => props.theme.info};
-`;
-
-const ErrorMessage = Message.extend`
-  color: ${props => props.theme.error};
-`;
-
-const SuccessMessage = Message.extend`
-  color: ${props => props.theme.success};
-`;
-
-const PingButton = styled.button`
-  padding: 0.5rem 1rem;
-  border-radius: 1.5rem;
-  text-transform: uppercase;
-  border: 0.2rem solid
-    ${props =>
-      props.isDisabled
-        ? props.theme.baseButtonDisabled
-        : props.theme.baseButton};
-  font-size: 2rem;
-  background: transparent;
-  color: ${props =>
-    props.isDisabled ? props.theme.baseButtonDisabled : props.theme.baseButton};
-  transition: 0.15s ease transform;
-  margin-top: 2rem;
-  max-width: 13rem;
-  align-self: center;
-
-  &:hover {
-    ${props =>
-      props.isDisabled
-        ? ""
-        : css`
-            transform: translate(0, -0.2rem);
-          `};
-  }
-
-  &:active {
-    transform: translate(0, 0.3rem);
-  }
-`;
-
-const ConnectionWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  width: 80%;
-  align-self: center;
-`;
-
-const PortConnectionInput = styled(InputField)`
-  flex-basis: 70%;
-`;
-
-const HostConnectionInput = styled(InputField)`
-  flex-basis: 70%;
-`;
-
-const StartConnectionButton = styled(StartButton)`
-  flex-basis: 25%;
-`;
-
-const MessageTypes = Object.freeze({ INFO: 1, ERROR: 2, SUCCESS: 3 });
-
-const styleOutputMessage = (message, key) => {
-  switch (message.type) {
-    case MessageTypes.INFO:
-      return <InfoMessage key={key}>{message.msg}</InfoMessage>;
-    case MessageTypes.ERROR:
-      return <ErrorMessage key={key}>{message.msg}</ErrorMessage>;
-    case MessageTypes.SUCCESS:
-      return <SuccessMessage key={key}>{message.msg}</SuccessMessage>;
-    default:
-      throw new Error("Unknown message type");
-  }
-};
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      messages: [],
-      isConnected: false,
-      port: "4242",
-      host: "localhost"
+      activePage: "settings",
+      connectionStatus: "connected",
+      turtles: [
+        {
+          id: 1,
+          enabled: false,
+          battery: 66,
+          home: "Yellow home",
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          id: 2,
+          enabled: false,
+          battery: 42,
+          home: "Yellow home",
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          id: 3,
+          enabled: false,
+          battery: 42,
+          home: "Yellow home",
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          id: 4,
+          enabled: false,
+          battery: 100,
+          home: "Yellow home",
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          id: 5,
+          enabled: false,
+          battery: 4,
+          home: "Yellow home",
+          role: "INACTIVE",
+          team: "Magenta"
+        },
+        {
+          id: 6,
+          enabled: false,
+          battery: 0,
+          home: "Yellow home",
+          role: "INACTIVE",
+          team: "Magenta"
+        }
+      ],
+      notifications: [
+        { notificationType: "error", message: "Pants on fire" },
+        { notificationType: "success", message: "Rendering Notifications" }
+      ]
     };
-
-    this.connection = null;
   }
 
-  onSendPing() {
-    this.connection.send("ping");
+  onSend(message) {
+    console.log(`Sent: ${message}`);
+  }
+
+  onTurtleEnableChange(position) {
     this.setState(prev => {
-      return {
-        messages: [
-          ...prev.messages,
-          {
-            msg: `${format(new Date(), "HH:mm:ss:SS")} > Sent ping!`,
-            type: MessageTypes.INFO
-          }
-        ]
-      };
-    });
-  }
+      const turtles = prev.turtles.map((turtle, index) => {
+        if (index === position) {
+          return {
+            ...turtle,
+            enabled: !turtle.enabled
+          };
+        }
 
-  onReceivePong(pong) {
-    this.setState(prev => {
-      return {
-        messages: [
-          ...prev.messages,
-          {
-            msg: `${format(new Date(), "HH:mm:ss:SS")} > Received ${pong}!`,
-            type: MessageTypes.INFO
-          }
-        ]
-      };
-    });
-  }
-
-  onError(event) {
-    const errorMessage = `Cant establish connection to ws://${
-      this.state.host
-    }:${this.state.port}/commands`;
-
-    this.setState(prev => {
-      return {
-        messages: [
-          ...prev.messages,
-          {
-            msg: `${format(
-              new Date(),
-              "HH:mm:ss:SS"
-            )} > Error: ${errorMessage}`,
-            type: MessageTypes.ERROR
-          }
-        ]
-      };
-    });
-  }
-
-  onSocketClose(code) {
-    if (this.state.isConnected) {
-      this.setState(prev => {
-        return {
-          messages: [
-            ...prev.messages,
-            {
-              msg: `${format(
-                new Date(),
-                "HH:mm:ss:SS"
-              )} > Socket closed with code ${code}!`,
-              type: MessageTypes.ERROR
-            }
-          ],
-          isConnected: !prev.isConnected
-        };
+        return turtle;
       });
-    }
+
+      return { turtles };
+    });
   }
 
-  onSocketOpen() {
-    if (!this.state.isConnected) {
-      this.setState(prev => {
-        return {
-          messages: [
-            {
-              msg: `${format(
-                new Date(),
-                "HH:mm:ss:SS"
-              )} > Connection established!`,
-              type: MessageTypes.SUCCESS
-            }
-          ],
-          isConnected: !prev.isConnected
-        };
-      });
-    }
+  onNotificationDismiss() {
+    this.setState(prev => {
+      return {
+        notifications: prev.notifications.slice(1)
+      };
+    });
   }
 
-  handleConnectionChange(value, name) {
-    this.setState({ [name]: value });
-  }
-
-  handleConnectionStatusChange() {
-    if (this.state.isConnected) {
-      this.connection.close();
-    } else {
-      try {
-        this.connection = new WebSocket(
-          `ws://${this.state.host}:${this.state.port}/commands`
-        );
-        this.connection.onclose = event => this.onSocketClose(event.code);
-        this.connection.onmessage = event => this.onReceivePong(event.data);
-        this.connection.onerror = event => this.onError(event);
-        this.connection.onopen = event => this.onSocketOpen();
-      } catch (e) {
-        this.onError(e.message);
-      }
-    }
+  getNextNotification() {
+    const { notifications } = this.state;
+    return notifications.length > 0 ? notifications[0] : null;
   }
 
   render() {
-    const { port, isConnected, host } = this.state;
+    const { activePage, turtles, connectionStatus } = this.state;
     return (
       <ThemeProvider theme={theme}>
-        <Header>
-          <Grid>
-            <Row center="xs">
-              <Col xs={12}>
-                <Content>
-                  <Title className="App-title">Websocket example</Title>
-                  <ConnectionWrapper>
-                    <PortConnectionInput
-                      onChange={value =>
-                        this.handleConnectionChange(value, "port")
-                      }
-                      value={port}
-                      isDisabled={isConnected}
-                      placeholder="Port"
-                    />
-                    <HostConnectionInput
-                      onChange={value =>
-                        this.handleConnectionChange(value, "host")
-                      }
-                      value={host}
-                      isDisabled={isConnected}
-                      placeholder="Host"
-                    />
-                    <StartConnectionButton
-                      onClick={() => this.handleConnectionStatusChange()}
-                      isRunning={isConnected}
-                    />
-                  </ConnectionWrapper>
-                  <MessagesList>
-                    {this.state.messages.map((message, index) => {
-                      return styleOutputMessage(message, index);
-                    })}
-                  </MessagesList>
-                  <PingButton
-                    onClick={() => this.onSendPing()}
-                    disabled={!this.state.isConnected}
-                    isDisabled={!this.state.isConnected}
-                  >
-                    send ping
-                  </PingButton>
-                </Content>
-              </Col>
-            </Row>
-          </Grid>
-        </Header>
+        <Container>
+          {activePage === "refbox" && (
+            <div>
+              <RefboxField />
+              <RefboxSettings />
+            </div>
+          )}
+          {activePage === "settings" && (
+            <Fragment>
+              <TurtleEnableBar
+                turtles={turtles.map(turtle => {
+                  return {
+                    id: turtle.id,
+                    enabled: turtle.enabled
+                  };
+                })}
+                onTurtleEnableChange={position =>
+                  this.onTurtleEnableChange(position)
+                }
+              />
+              <ScrollableContent>
+                <Settings turtles={turtles.filter(turtle => turtle.enabled)} />
+              </ScrollableContent>
+            </Fragment>
+          )}
+          <NotificationWindow
+            onDismiss={() => this.onNotificationDismiss()}
+            notification={this.getNextNotification()}
+          />
+          <BottomBar
+            activePage={activePage}
+            changeActivePage={page => this.setState({ activePage: page })}
+            onSend={message => this.onSend(message)}
+            connectionStatus={connectionStatus}
+          />
+        </Container>
       </ThemeProvider>
     );
   }

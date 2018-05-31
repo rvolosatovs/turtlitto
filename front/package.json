@@ -4,7 +4,9 @@
   "private": true,
   "description": "SRR frontend application",
   "jest": {
-    "snapshotSerializers": ["enzyme-to-json/serializer"]
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.8",

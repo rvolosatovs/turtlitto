@@ -2,11 +2,11 @@
 
 exports[`Battery shows a 1/4 full battery on 25% 1`] = `
 <div
-  className="sc-bdVaJa dqcnNb"
+  className="sc-bdVaJa bxcuYP"
 >
   <svg
     aria-hidden="true"
-    className="svg-inline--fa fa-battery-quarter fa-w-20 fa-rotate-270 "
+    className="svg-inline--fa fa-battery-quarter fa-w-20 fa-2x fa-rotate-270 "
     data-icon="battery-quarter"
     data-prefix="fas"
     role="img"
@@ -20,18 +20,22 @@ exports[`Battery shows a 1/4 full battery on 25% 1`] = `
       style={Object {}}
     />
   </svg>
-  25
-  %
+  <span
+    className="sc-bwzfXH oPoDs"
+  >
+    25
+    %
+  </span>
 </div>
 `;
 
 exports[`Battery shows a 3/4 full battery on 75% 1`] = `
 <div
-  className="sc-bdVaJa dqcnNb"
+  className="sc-bdVaJa bxcuYP"
 >
   <svg
     aria-hidden="true"
-    className="svg-inline--fa fa-battery-three-quarters fa-w-20 fa-rotate-270 "
+    className="svg-inline--fa fa-battery-three-quarters fa-w-20 fa-2x fa-rotate-270 "
     data-icon="battery-three-quarters"
     data-prefix="fas"
     role="img"
@@ -45,18 +49,22 @@ exports[`Battery shows a 3/4 full battery on 75% 1`] = `
       style={Object {}}
     />
   </svg>
-  75
-  %
+  <span
+    className="sc-bwzfXH oPoDs"
+  >
+    75
+    %
+  </span>
 </div>
 `;
 
 exports[`Battery shows a full battery on 100% 1`] = `
 <div
-  className="sc-bdVaJa dqcnNb"
+  className="sc-bdVaJa bxcuYP"
 >
   <svg
     aria-hidden="true"
-    className="svg-inline--fa fa-battery-full fa-w-20 fa-rotate-270 "
+    className="svg-inline--fa fa-battery-full fa-w-20 fa-2x fa-rotate-270 "
     data-icon="battery-full"
     data-prefix="fas"
     role="img"
@@ -70,18 +78,22 @@ exports[`Battery shows a full battery on 100% 1`] = `
       style={Object {}}
     />
   </svg>
-  100
-  %
+  <span
+    className="sc-bwzfXH oPoDs"
+  >
+    100
+    %
+  </span>
 </div>
 `;
 
 exports[`Battery shows a half full battery on 50% 1`] = `
 <div
-  className="sc-bdVaJa dqcnNb"
+  className="sc-bdVaJa bxcuYP"
 >
   <svg
     aria-hidden="true"
-    className="svg-inline--fa fa-battery-half fa-w-20 fa-rotate-270 "
+    className="svg-inline--fa fa-battery-half fa-w-20 fa-2x fa-rotate-270 "
     data-icon="battery-half"
     data-prefix="fas"
     role="img"
@@ -95,18 +107,22 @@ exports[`Battery shows a half full battery on 50% 1`] = `
       style={Object {}}
     />
   </svg>
-  50
-  %
+  <span
+    className="sc-bwzfXH oPoDs"
+  >
+    50
+    %
+  </span>
 </div>
 `;
 
 exports[`Battery shows an empty battery on 0% 1`] = `
 <div
-  className="sc-bdVaJa dqcnNb"
+  className="sc-bdVaJa bxcuYP"
 >
   <svg
     aria-hidden="true"
-    className="svg-inline--fa fa-battery-empty fa-w-20 fa-rotate-270 "
+    className="svg-inline--fa fa-battery-empty fa-w-20 fa-2x fa-rotate-270 "
     color="red"
     data-icon="battery-empty"
     data-prefix="fas"
@@ -121,7 +137,11 @@ exports[`Battery shows an empty battery on 0% 1`] = `
       style={Object {}}
     />
   </svg>
-  0
-  %
+  <span
+    className="sc-bwzfXH oPoDs"
+  >
+    0
+    %
+  </span>
 </div>
 `;

@@ -14,21 +14,20 @@ import PropTypes from "prop-types";
  * - turtles: a list of turtles to be displayed in the bar
  *   - id: an identificator of the turtle
  *   - enabled: a boolean flag specifying whether the turtle is enabled
- * - onDisable: function to call when disabling this turtle
- * - onEnable: function to call when enabling this turtle
+ * - onTurtleEnableChange: function to call when the turtle enable button is pressed
  */
 
 const TurtleEnableBar = props => {
+  const { className, onTurtleEnableChange } = props;
   return (
-    <Bar className={props.className}>
+    <Bar className={className}>
       {props.turtles.map((turtle, position) => {
         return (
           <TurtleEnableButton
             key={turtle.id}
             enabled={turtle.enabled}
             id={position + 1}
-            onEnable={() => props.onEnable(position)}
-            onDisable={() => props.onDisable(position)}
+            onTurtleEnableChange={() => onTurtleEnableChange(position)}
           />
         );
       })}
@@ -43,8 +42,7 @@ TurtleEnableBar.propTypes = {
       enabled: PropTypes.bool.isRequired
     })
   ).isRequired,
-  onDisable: PropTypes.func.isRequired,
-  onEnable: PropTypes.func.isRequired
+  onTurtleEnableChange: PropTypes.func.isRequired
 };
 
 const Bar = styled.div`
@@ -58,8 +56,6 @@ const Bar = styled.div`
   border-width: 0rem 0rem 0.2rem 0rem;
   margin-bottom: 0.2rem;
   background: ${props => props.theme.turtleEnableBar};
-  position: sticky;
-  z-index: 1;
 `;
 
 export default TurtleEnableBar;

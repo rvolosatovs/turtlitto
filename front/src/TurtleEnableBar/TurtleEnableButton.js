@@ -2,13 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const onClick = (enabled, onEnable, onDisable) => {
-  if (enabled) {
-    onDisable();
-  } else {
-    onEnable();
-  }
-};
 /**
  * A button that keeps track whether the turtle is enabled
  * Is reflected to the user in terms in terms of button appearance
@@ -18,18 +11,17 @@ const onClick = (enabled, onEnable, onDisable) => {
  *
  * Props:
  * - enabled: a boolean flag specifying whether is enabled or not
- * - onDisable: function to call when disabling this turtle
- * - onEnable: function to call when enabling this turtle
+ * - onTurtleEnableChange: function to call when the turtle enable button is pressed
  * - id: identificator of a turtle
  */
 const TurtleEnableButton = props => {
-  const { enabled, onDisable, onEnable, id, className } = props;
+  const { enabled, id, className, onTurtleEnableChange } = props;
 
   return (
     <Button
       className={className}
       isActive={enabled}
-      onClick={() => onClick(enabled, onEnable, onDisable)}
+      onClick={onTurtleEnableChange}
     >
       {id}
     </Button>
@@ -38,8 +30,7 @@ const TurtleEnableButton = props => {
 
 TurtleEnableButton.propTypes = {
   enabled: PropTypes.bool.isRequired,
-  onDisable: PropTypes.func.isRequired,
-  onEnable: PropTypes.func.isRequired
+  onTurtleEnableChange: PropTypes.func.isRequired
 };
 
 const Button = styled.button`
@@ -50,11 +41,11 @@ const Button = styled.button`
     props.isActive
       ? props.theme.turtleEnableButtonActive
       : props.theme.turtleEnableButton};
-  width: 16%;
-  min-width: 7.5rem;
   font-size: 4rem;
-  flex: 1;
-  margin: 0.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
 `;
 
 export default TurtleEnableButton;

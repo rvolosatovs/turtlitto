@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders without crashing 1`] = `
+<div>
+  <Turtle
+    editable={true}
+    key="1"
+    onChange={[Function]}
+    turtle={
+      Object {
+        "battery": 66,
+        "enabled": true,
+        "home": "Yellow home",
+        "id": 1,
+        "role": "INACTIVE",
+        "team": "Magenta",
+      }
+    }
+  />
+  <Turtle
+    editable={true}
+    key="2"
+    onChange={[Function]}
+    turtle={
+      Object {
+        "battery": 42,
+        "enabled": false,
+        "home": "Yellow home",
+        "id": 2,
+        "role": "INACTIVE",
+        "team": "Magenta",
+      }
+    }
+  />
+</div>
+`;

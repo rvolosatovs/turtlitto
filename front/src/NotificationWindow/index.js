@@ -70,33 +70,41 @@ const getBackground = type => {
  * Author: B. Afonins
  *
  * Props:
- * - notificationType: the title and color selection
  * - onDismiss: pass a function that causes the component to no longer be rendered
- * - message: the message of the notification window
  * - children: possible extra elements that could be included (buttons, etc)
+ * - notification: the notification to display, can be null
+ *  - message: the message of the notification
+ *  - notificationType: the type of the notification
  */
 const NotificationWindow = props => {
-  const background = getBackground(props.notificationType);
+  const { onDismiss, notification } = props;
 
-  return (
-    <Window background={background}>
-      <ToolBar>
-        <Title>{props.notificationType}</Title>
-        <CloseButton onClick={() => props.onDismiss()}>
-          <FontAwesomeIcon icon={faTimes} color="black" size="4x" />
-        </CloseButton>
-      </ToolBar>
-      <Text>{props.message}</Text>
-      <div>{props.children}</div>
-    </Window>
-  );
+  if (notification) {
+    const background = getBackground(notification.notificationType);
+    return (
+      <Window background={background}>
+        <ToolBar>
+          <Title>{notification.notificationType}</Title>
+          <CloseButton onClick={onDismiss}>
+            <FontAwesomeIcon icon={faTimes} color="black" size="4x" />
+          </CloseButton>
+        </ToolBar>
+        <Text>{notification.message}</Text>
+        <div>{props.children}</div>
+      </Window>
+    );
+  } else {
+    return null;
+  }
 };
 
 NotificationWindow.propTypes = {
-  notificationType: PropTypes.oneOf(Object.values(notificationTypes))
-    .isRequired,
   onDismiss: PropTypes.func.isRequired,
-  message: PropTypes.string.isRequired
+  notification: PropTypes.shape({
+    message: PropTypes.string.isRequired,
+    notificationType: PropTypes.oneOf(Object.values(notificationTypes))
+      .isRequired
+  })
 };
 
 export default NotificationWindow;

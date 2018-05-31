@@ -6,7 +6,7 @@ import TurtleEnableButton from "./TurtleEnableButton";
 describe("TurtleEnableBar", () => {
   it("should match snapshot", () => {
     const wrapper = shallow(
-      <TurtleEnableBar turtles={[]} onEnable={() => {}} onDisable={() => {}} />
+      <TurtleEnableBar turtles={[]} onTurtleEnableChange={() => {}} />
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -28,11 +28,7 @@ describe("TurtleEnableBar", () => {
       }
     ];
     const wrapper = mount(
-      <TurtleEnableBar
-        turtles={turtles}
-        onEnable={() => {}}
-        onDisable={() => {}}
-      />
+      <TurtleEnableBar turtles={turtles} onTurtleEnableChange={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();
 
