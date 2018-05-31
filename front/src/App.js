@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 
 import BottomBar from "./BottomBar";
+import connectionTypes from "./BottomBar/connectionTypes";
 import NotificationWindow from "./NotificationWindow";
 import RefboxField from "./RefboxField";
 import RefboxSettings from "./RefboxSettings";
@@ -28,7 +29,7 @@ class App extends Component {
 
     this.state = {
       activePage: "settings",
-      connectionStatus: "connected",
+      connectionStatus: connectionTypes.DISCONNECTED,
       turtles: [
         {
           id: 1,
@@ -84,6 +85,40 @@ class App extends Component {
         { notificationType: "success", message: "Rendering Notifications" }
       ]
     };
+    this.connection = null;
+  }
+
+  componentDidMount() {
+    const l = window.location;
+    this.connection = new WebSocket(
+      `${l.protocol === "https:" ? "wss" : "ws"}://${l.host}/api/v1/state`
+    );
+    this.connection.onclose = event => this.onConnectionClose(event);
+    this.connection.onerror = event => this.onConnectionError(event);
+    this.connection.onmessage = event => this.onConnectionMessage(event);
+    this.connection.onopen = event => this.onConnectionOpen(event);
+
+    this.setState({ connectionStatus: connectionTypes.CONNECTING });
+  }
+
+  componentWillUnmount() {
+    this.connection.close();
+  }
+
+  onConnectionClose(event) {
+    this.setState({ connectionStatus: connectionTypes.DISCONNECTED });
+  }
+
+  onConnectionError(event) {
+    this.setState({ connectionStatus: connectionTypes.DISCONNECTED });
+  }
+
+  onConnectionMessage(event) {
+    console.log(event); // TODO: something useful with this message
+  }
+
+  onConnectionOpen(event) {
+    this.setState({ connectionStatus: connectionTypes.CONNECTED });
   }
 
   onSend(message) {
