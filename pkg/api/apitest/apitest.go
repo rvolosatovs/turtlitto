@@ -37,13 +37,13 @@ func RandomMessage() api.Message {
 	return msg
 }
 
-// RandomMessageType randomly returns one of the possible MessageTypes.
+//RandomMessageType randomly returns one of the possible MessageTypes.
 func RandomMessageType() *api.MessageType {
 	vals := []api.MessageType{api.MessageTypeState, api.MessageTypePing, api.MessageTypeHandshake}
 	return &vals[rand.Intn(len(vals))]
 }
 
-//RandomHandshake returns a Handshake with randomly generated version string (within v0.0.0 - v9.9.9)
+//RandomHandshake returns a Handshake with randomly generated version string (within v0.0.0 - v9.9.9).
 func RandomHandshake() *api.Handshake {
 	//TODO: Proper way of creating handshakes
 	vers := string(rand.Intn(10)) + "." + string(rand.Intn(10)) + "." + string(rand.Intn(10))
@@ -72,7 +72,7 @@ func RandomState() *api.State {
 	return &pld
 }
 
-//RandomCommand returns one of the possible Commands of type Command.
+//RandomCommand returns one of the possible Commands of type Command at random.
 func RandomCommand() *api.Command {
 	var cmds = []api.Command{
 		api.CommandDroppedBall,
