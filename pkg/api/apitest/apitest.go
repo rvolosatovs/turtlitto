@@ -10,7 +10,7 @@ import (
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
-//Returns a message with randomly generated fields, within boundaries of the specifications
+//RandomMessage returns a message with randomly generated fields, within boundaries of the specifications.
 func RandomMessage() api.Message {
 	var msg = api.Message{}
 	msg.Type = *RandomMessageType()
@@ -37,13 +37,13 @@ func RandomMessage() api.Message {
 	return msg
 }
 
-// Randomly returns one of the possible MessageTypes
+// RandomMessageType randomly returns one of the possible MessageTypes.
 func RandomMessageType() *api.MessageType {
 	vals := []api.MessageType{api.MessageTypeState, api.MessageTypePing, api.MessageTypeHandshake}
 	return &vals[rand.Intn(len(vals))]
 }
 
-//Returns a Handshake with randomly generated version string (within v0.0.0 - v9.9.9)
+//RandomHandshake returns a Handshake with randomly generated version string (within v0.0.0 - v9.9.9)
 func RandomHandshake() *api.Handshake {
 	//TODO: Proper way of creating handshakes
 	vers := string(rand.Intn(10)) + "." + string(rand.Intn(10)) + "." + string(rand.Intn(10))
@@ -54,13 +54,13 @@ func RandomHandshake() *api.Handshake {
 	return &api.Handshake{ver}
 }
 
-//Returns a random, valid ULID
+//RandomULID returns a random, valid ULID.
 func RandomULID() *ulid.ULID {
 	newulid := ulid.MustNew(ulid.Now(), crand.Reader)
 	return &newulid
 }
 
-//Returns a full state existing of a RandomCommand and a RandomTurtleState
+//RandomState returns a full state existing of a RandomCommand and a RandomTurtleState.
 func RandomState() *api.State {
 	var pld api.State
 	pld.Command = *RandomCommand()
@@ -72,7 +72,7 @@ func RandomState() *api.State {
 	return &pld
 }
 
-//Returns one of the possible Commands of type Command
+//RandomCommand returns one of the possible Commands of type Command.
 func RandomCommand() *api.Command {
 	var cmds = []api.Command{
 		api.CommandDroppedBall,
@@ -102,7 +102,7 @@ func RandomCommand() *api.Command {
 	return &cmd
 }
 
-//Returns a TurtleState with fields randomly filled within specification boundaries
+//RandomTurtleState returns a TurtleState with fields randomly filled within specification boundaries.
 func RandomTurtleState() *api.TurtleState {
 	var ballfound = []api.BallFound{api.BallFoundCommunicated, api.BallFoundYes, api.BallFoundYes}
 	var cpb = []api.CPB{api.CPBCommunicated, api.CPBNo, api.CPBYes}
