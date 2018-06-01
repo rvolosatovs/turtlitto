@@ -1,5 +1,4 @@
 import React from "react";
-import ConfigDropdown from "./ConfigDropdown";
 import DropBall from "./DropBall";
 import InOutButton from "./InOutButton";
 import styled from "styled-components";
@@ -10,7 +9,6 @@ import PropTypes from "prop-types";
  * - Drop ball
  * - Go in
  * - Go out
- * - Selectors (Match selector & Role / demo selector), see ConfigDropdown.js
  *
  * Author: G.W. van der Heijden
  * Author: S.A. Tanja
@@ -19,7 +17,6 @@ import PropTypes from "prop-types";
  * Props:
  * - onClickDropBall: a function on what to do when DropBall is pressed
  * - onClickInOut: a function on what to do when InOutButton is pressed
- * - onChange: a function on what to do when a dropdown is changed
  */
 const RefboxSettings = props => {
   return (
@@ -33,12 +30,6 @@ const RefboxSettings = props => {
         <InOutButton
           onClick={prop => {
             props.onClickInOut(prop);
-          }}
-        />
-        <ConfigDropdown
-          value="Whatever"
-          onChange={(type, value) => {
-            props.onChange(type, value);
           }}
         />
       </ButtonBlockWrapper>
