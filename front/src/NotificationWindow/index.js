@@ -20,21 +20,14 @@ const ToolBar = styled.div`
   align-items: center;
 `;
 
-const Title = styled.h3`
+const Text = styled.p`
   text-align: center;
   font-size: 4rem;
-  text-transform: uppercase;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-grow: 1;
   margin: 0;
-`;
-
-const Text = styled.p`
   padding: 0 1rem;
-  text-align: center;
-  font-size: 3rem;
   overflow-wrap: break-word;
 `;
 
@@ -84,12 +77,11 @@ const NotificationWindow = props => {
     return (
       <Window background={background}>
         <ToolBar>
-          <Title>{notification.notificationType}</Title>
-          <CloseButton onClick={onDismiss}>
+          <Text>{props.message}</Text>
+          <CloseButton onClick={() => onDismiss()}>
             <FontAwesomeIcon icon={faTimes} color="black" size="4x" />
           </CloseButton>
         </ToolBar>
-        <Text>{notification.message}</Text>
         <div>{props.children}</div>
       </Window>
     );

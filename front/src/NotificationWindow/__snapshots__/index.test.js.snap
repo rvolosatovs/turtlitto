@@ -13,9 +13,7 @@ exports[`NotificationWindow should display a success notification 1`] = `
   }
 >
   <styled.div>
-    <styled.h3>
-      success
-    </styled.h3>
+    <styled.p />
     <styled.button
       onClick={[Function]}
     >
@@ -51,9 +49,6 @@ exports[`NotificationWindow should display a success notification 1`] = `
       />
     </styled.button>
   </styled.div>
-  <styled.p>
-    notification message
-  </styled.p>
   <div />
 </styled.div>
 `;
@@ -71,9 +66,7 @@ exports[`NotificationWindow should display a warning notification 1`] = `
   }
 >
   <styled.div>
-    <styled.h3>
-      warning
-    </styled.h3>
+    <styled.p />
     <styled.button
       onClick={[Function]}
     >
@@ -109,9 +102,6 @@ exports[`NotificationWindow should display a warning notification 1`] = `
       />
     </styled.button>
   </styled.div>
-  <styled.p>
-    notification message
-  </styled.p>
   <div />
 </styled.div>
 `;
@@ -129,9 +119,7 @@ exports[`NotificationWindow should display an error notification 1`] = `
   }
 >
   <styled.div>
-    <styled.h3>
-      error
-    </styled.h3>
+    <styled.p />
     <styled.button
       onClick={[Function]}
     >
@@ -167,9 +155,6 @@ exports[`NotificationWindow should display an error notification 1`] = `
       />
     </styled.button>
   </styled.div>
-  <styled.p>
-    notification message
-  </styled.p>
   <div />
 </styled.div>
 `;
