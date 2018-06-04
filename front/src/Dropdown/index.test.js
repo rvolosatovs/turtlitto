@@ -1,11 +1,11 @@
 import React from "react";
 import Dropdown from ".";
-import renderer from "react-test-renderer";
+import { shallow } from "enzyme";
 
 describe("Dropdown", () => {
   it("can be changed", () => {
     let value = "test";
-    const component = renderer.create(
+    const wrapper = shallow(
       <Dropdown
         currentValue={value}
         values={["test", "test2"]}
@@ -15,12 +15,11 @@ describe("Dropdown", () => {
         }}
       />
     );
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
 
     // Check if we can trigger onChange
     expect(value).toBe("test");
-    tree.props.onChange({ target: { value: "test2" } });
+    wrapper.find("select").simulate("change", { target: { value: "test2" } });
     expect(value).toBe("test2");
   });
 });

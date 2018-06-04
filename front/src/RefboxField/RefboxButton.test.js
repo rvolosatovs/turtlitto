@@ -1,20 +1,18 @@
 import React from "react";
 import RefboxButton from "./RefboxButton";
-import renderer from "react-test-renderer";
+import { shallow } from "enzyme";
 
 describe("RefboxButton", () => {
   it("shows a cyan button with KO on it", () => {
-    const component = renderer.create(
+    const wrapper = shallow(
       <RefboxButton teamColor="cyan" onClick={() => {}} tag="KO" />
     );
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
   it("shows a magenta button with P on it", () => {
-    const component = renderer.create(
+    const wrapper = shallow(
       <RefboxButton teamColor="magenta" onClick={() => {}} tag="P" />
     );
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 });

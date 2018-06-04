@@ -1,135 +1,177 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NotificationWindow is error notification should match snapshot 1`] = `
-<div
-  className="sc-bdVaJa fitzTx"
+exports[`NotificationWindow should display a success notification 1`] = `
+<styled.div
+  background={
+    Array [
+      "
+            background: ",
+      [Function],
+      ";
+          ",
+    ]
+  }
 >
-  <div
-    className="sc-bwzfXH yjXZK"
-  >
-    <h3
-      className="sc-htpNat gMOTmC"
-    >
-      error
-    </h3>
-    <button
-      className="sc-ifAKCX hycWwR"
-      onClick={[Function]}
-    >
-      <svg
-        aria-hidden="true"
-        className="svg-inline--fa fa-times fa-w-11 fa-4x "
-        color="black"
-        data-icon="times"
-        data-prefix="fas"
-        role="img"
-        style={Object {}}
-        viewBox="0 0 352 512"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          fill="currentColor"
-          style={Object {}}
-        />
-      </svg>
-    </button>
-  </div>
-  <p
-    className="sc-bxivhb hTbClt"
-  >
-    notification message
-  </p>
-  <div />
-</div>
-`;
-
-exports[`NotificationWindow is null should not render anything 1`] = `null`;
-
-exports[`NotificationWindow is success notification should match snapshot 1`] = `
-<div
-  className="sc-bdVaJa fitzTx"
->
-  <div
-    className="sc-bwzfXH yjXZK"
-  >
-    <h3
-      className="sc-htpNat gMOTmC"
-    >
+  <styled.div>
+    <styled.h3>
       success
-    </h3>
-    <button
-      className="sc-ifAKCX hycWwR"
+    </styled.h3>
+    <styled.button
       onClick={[Function]}
     >
-      <svg
-        aria-hidden="true"
-        className="svg-inline--fa fa-times fa-w-11 fa-4x "
+      <FontAwesomeIcon
+        border={false}
+        className=""
         color="black"
-        data-icon="times"
-        data-prefix="fas"
-        role="img"
-        style={Object {}}
-        viewBox="0 0 352 512"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          fill="currentColor"
-          style={Object {}}
-        />
-      </svg>
-    </button>
-  </div>
-  <p
-    className="sc-bxivhb hTbClt"
-  >
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              352,
+              512,
+              Array [],
+              "f00d",
+              "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z",
+            ],
+            "iconName": "times",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={null}
+        size="4x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      />
+    </styled.button>
+  </styled.div>
+  <styled.p>
     notification message
-  </p>
+  </styled.p>
   <div />
-</div>
+</styled.div>
 `;
 
-exports[`NotificationWindow is warning notification should match snapshot 1`] = `
-<div
-  className="sc-bdVaJa fitzTx"
+exports[`NotificationWindow should display a warning notification 1`] = `
+<styled.div
+  background={
+    Array [
+      "
+            background: ",
+      [Function],
+      ";
+          ",
+    ]
+  }
 >
-  <div
-    className="sc-bwzfXH yjXZK"
-  >
-    <h3
-      className="sc-htpNat gMOTmC"
-    >
+  <styled.div>
+    <styled.h3>
       warning
-    </h3>
-    <button
-      className="sc-ifAKCX hycWwR"
+    </styled.h3>
+    <styled.button
       onClick={[Function]}
     >
-      <svg
-        aria-hidden="true"
-        className="svg-inline--fa fa-times fa-w-11 fa-4x "
+      <FontAwesomeIcon
+        border={false}
+        className=""
         color="black"
-        data-icon="times"
-        data-prefix="fas"
-        role="img"
-        style={Object {}}
-        viewBox="0 0 352 512"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-          fill="currentColor"
-          style={Object {}}
-        />
-      </svg>
-    </button>
-  </div>
-  <p
-    className="sc-bxivhb hTbClt"
-  >
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              352,
+              512,
+              Array [],
+              "f00d",
+              "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z",
+            ],
+            "iconName": "times",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={null}
+        size="4x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      />
+    </styled.button>
+  </styled.div>
+  <styled.p>
     notification message
-  </p>
+  </styled.p>
   <div />
-</div>
+</styled.div>
 `;
+
+exports[`NotificationWindow should display an error notification 1`] = `
+<styled.div
+  background={
+    Array [
+      "
+            background: ",
+      [Function],
+      ";
+          ",
+    ]
+  }
+>
+  <styled.div>
+    <styled.h3>
+      error
+    </styled.h3>
+    <styled.button
+      onClick={[Function]}
+    >
+      <FontAwesomeIcon
+        border={false}
+        className=""
+        color="black"
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              352,
+              512,
+              Array [],
+              "f00d",
+              "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z",
+            ],
+            "iconName": "times",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={null}
+        size="4x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      />
+    </styled.button>
+  </styled.div>
+  <styled.p>
+    notification message
+  </styled.p>
+  <div />
+</styled.div>
+`;
+
+exports[`NotificationWindow should not render anything 1`] = `""`;

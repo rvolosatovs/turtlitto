@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RefboxButton shows a cyan button with KO on it 1`] = `
-<button
-  className="sc-bdVaJa jdWCur"
+<styled.button
   onClick={[Function]}
+  teamColor="cyan"
 />
 `;
 
 exports[`RefboxButton shows a magenta button with P on it 1`] = `
-<button
-  className="sc-bdVaJa ldpgei"
+<styled.button
   onClick={[Function]}
+  teamColor="magenta"
 />
 `;

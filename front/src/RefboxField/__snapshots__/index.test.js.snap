@@ -1,112 +1,127 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
-<div
-  className="sc-bwzfXH ewUyFi"
+<styled.div
+  isPenalty={false}
 >
-  <button
-    className="sc-bdVaJa jdWCur"
+  <RefboxButton
+    key="KO"
     onClick={[Function]}
+    teamColor="cyan"
   >
     KO
-  </button>
-  <button
-    className="sc-bdVaJa jdWCur"
+  </RefboxButton>
+  <RefboxButton
+    key="FK"
     onClick={[Function]}
+    teamColor="cyan"
   >
     FK
-  </button>
-  <button
-    className="sc-bdVaJa jdWCur"
+  </RefboxButton>
+  <RefboxButton
+    key="GK"
     onClick={[Function]}
+    teamColor="cyan"
   >
     GK
-  </button>
-  <button
-    className="sc-bdVaJa jdWCur"
+  </RefboxButton>
+  <RefboxButton
+    key="TI"
     onClick={[Function]}
+    teamColor="cyan"
   >
     TI
-  </button>
-  <button
-    className="sc-bdVaJa jdWCur"
+  </RefboxButton>
+  <RefboxButton
+    key="C"
     onClick={[Function]}
+    teamColor="cyan"
   >
     C
-  </button>
-  <button
-    className="sc-bdVaJa jdWCur"
+  </RefboxButton>
+  <RefboxButton
+    key="P"
     onClick={[Function]}
+    teamColor="cyan"
   >
     P
-  </button>
-</div>
+  </RefboxButton>
+</styled.div>
 `;
 
 exports[`RefboxField shows a magenta refbox field with all buttons 1`] = `
-<div
-  className="sc-bwzfXH ewUyFi"
+<styled.div
+  isPenalty={false}
 >
-  <button
-    className="sc-bdVaJa ldpgei"
+  <RefboxButton
+    key="KO"
     onClick={[Function]}
+    teamColor="magenta"
   >
     KO
-  </button>
-  <button
-    className="sc-bdVaJa ldpgei"
+  </RefboxButton>
+  <RefboxButton
+    key="FK"
     onClick={[Function]}
+    teamColor="magenta"
   >
     FK
-  </button>
-  <button
-    className="sc-bdVaJa ldpgei"
+  </RefboxButton>
+  <RefboxButton
+    key="GK"
     onClick={[Function]}
+    teamColor="magenta"
   >
     GK
-  </button>
-  <button
-    className="sc-bdVaJa ldpgei"
+  </RefboxButton>
+  <RefboxButton
+    key="TI"
     onClick={[Function]}
+    teamColor="magenta"
   >
     TI
-  </button>
-  <button
-    className="sc-bdVaJa ldpgei"
+  </RefboxButton>
+  <RefboxButton
+    key="C"
     onClick={[Function]}
+    teamColor="magenta"
   >
     C
-  </button>
-  <button
-    className="sc-bdVaJa ldpgei"
+  </RefboxButton>
+  <RefboxButton
+    key="P"
     onClick={[Function]}
+    teamColor="magenta"
   >
     P
-  </button>
-</div>
+  </RefboxButton>
+</styled.div>
 `;
 
 exports[`RefboxField shows a magenta refbox with penalty buttons 1`] = `
-<div
-  className="sc-bwzfXH eubhZo"
+<styled.div
+  isPenalty={true}
 >
-  <button
-    className="sc-bdVaJa ldpgei"
+  <RefboxButton
+    key="Soft"
     onClick={[Function]}
+    teamColor="magenta"
   >
     Soft
-  </button>
-  <button
-    className="sc-bdVaJa ldpgei"
+  </RefboxButton>
+  <RefboxButton
+    key="Medium"
     onClick={[Function]}
+    teamColor="magenta"
   >
     Medium
-  </button>
-  <button
-    className="sc-bdVaJa ldpgei"
+  </RefboxButton>
+  <RefboxButton
+    key="Hard"
     onClick={[Function]}
+    teamColor="magenta"
   >
     Hard
-  </button>
-</div>
+  </RefboxButton>
+</styled.div>
 `;

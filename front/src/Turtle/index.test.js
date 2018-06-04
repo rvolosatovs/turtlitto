@@ -1,5 +1,4 @@
 import React from "react";
-import renderer from "react-test-renderer";
 import { shallow } from "enzyme";
 import sinon from "sinon";
 import Turtle from ".";
@@ -13,10 +12,10 @@ describe("Turtle", () => {
       role: "Goalkeeper",
       team: "Cyan"
     };
-    const component = renderer.create(
+    const wrapper = shallow(
       <Turtle turtle={turtle} editable={false} onChange={() => {}} />
     );
-    expect(component.toJSON()).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 
   describe("the user changes dropdown values", () => {

@@ -1,11 +1,10 @@
 import React from "react";
 import InOutButton from "./InOutButton";
-import renderer from "react-test-renderer";
+import { shallow } from "enzyme";
 
 describe("InOutButton", () => {
   it("shows two buttons with go in or go out written on it", () => {
-    const component = renderer.create(<InOutButton onClick={() => {}} />);
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    const wrapper = shallow(<InOutButton onClick={() => {}} />);
+    expect(wrapper).toMatchSnapshot();
   });
 });
