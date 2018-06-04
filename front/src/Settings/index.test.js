@@ -10,18 +10,18 @@ it("renders without crashing", () => {
         {
           id: 1,
           enabled: true,
-          battery: 66,
-          home: "Yellow home",
+          batteryvoltage: 66,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         },
         {
           id: 2,
           enabled: false,
-          battery: 42,
-          home: "Yellow home",
+          batteryvoltage: 42,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         }
       ]}
       onTurtleEnableChange={() => {}}

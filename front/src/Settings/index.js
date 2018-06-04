@@ -52,10 +52,10 @@ Settings.propTypes = {
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       enabled: PropTypes.bool.isRequired,
-      battery: PropTypes.number.isRequired,
-      home: PropTypes.string.isRequired,
+      batteryvoltage: PropTypes.number.isRequired,
+      homegoal: PropTypes.string.isRequired,
       role: PropTypes.string.isRequired,
-      team: PropTypes.string.isRequired
+      teamcolor: PropTypes.string.isRequired
     })
   ).isRequired,
   onChange: PropTypes.func.isRequired
