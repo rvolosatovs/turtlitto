@@ -4,18 +4,19 @@ import Dropdown from "../Dropdown";
 import Battery from "../Battery";
 import styled from "styled-components";
 
-const TEAM_VALUES = ["Magenta", "Cyan"];
-const HOME_VALUES = ["Yellow home", "Blue home"];
-const ROLE_VALUES = [
-  "INACTIVE",
-  "ROLE_NONE",
-  "Att main",
-  "Att assist",
-  "Def main",
-  "Def assist",
-  "Def assist 2",
-  "Goalkeeper"
-];
+// The following values are used in the Turtle refbox. The property name (or key) is shown in the UI, while its value will be sent over to the TRC.
+const TEAM_VALUES = { Magenta: "magenta", Cyan: "cyan" };
+const HOME_VALUES = { "Yellow home": "yellow", "Blue home": "blue" };
+const ROLE_VALUES = {
+  INACTIVE: "inactive",
+  ROLE_NONE: "none",
+  "Att main": "attack_main",
+  "Att assist": "attack_assist",
+  "Def main": "defender_main",
+  "Def assist": "defender_assist",
+  "Def assist 2": "defender_assist2",
+  Goalkeeper: "goalkeeper"
+};
 
 const onChange = (id, propName, propValue) => {
   const body = {};
@@ -59,27 +60,27 @@ const Turtle = props => {
           id={`turtle${id}__role`}
           currentValue={role}
           enabled={editable}
-          values={ROLE_VALUES}
+          values={Object.keys(ROLE_VALUES)}
           onChange={value => {
-            onChange(id, "role", value);
+            onChange(id, "role", ROLE_VALUES[value]);
           }}
         />
         <Dropdown
           id={`turtle${id}__home`}
           currentValue={home}
           enabled={editable}
-          values={HOME_VALUES}
+          values={Object.keys(HOME_VALUES)}
           onChange={value => {
-            onChange(id, "homegoal", value);
+            onChange(id, "homegoal", HOME_VALUES[value]);
           }}
         />
         <Dropdown
           id={`turtle${id}__team`}
           currentValue={team}
           enabled={editable}
-          values={TEAM_VALUES}
+          values={Object.keys(TEAM_VALUES)}
           onChange={value => {
-            onChange(id, "teamcolor", value);
+            onChange(id, "teamcolor", TEAM_VALUES[value]);
           }}
         />
       </DropDownSection>
