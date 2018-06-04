@@ -17,6 +17,18 @@ const ROLE_VALUES = [
   "Goalkeeper"
 ];
 
+const onChange = (id, propName, propValue) => {
+  const body = {};
+  body[id] = {};
+  body[id][propName] = propValue;
+  fetch("/api/v1/turtles/", {
+    body: JSON.stringify(body),
+    method: "PUT"
+  })
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+};
+
 /**
  * Show all details for a turtle
  * Author: H.E. van der Laan
@@ -33,7 +45,7 @@ const ROLE_VALUES = [
  */
 const Turtle = props => {
   const { battery, home, id, role, team } = props.turtle;
-  const { editable, onChange } = props;
+  const { editable } = props;
   return (
     <DefaultTurtle>
       <BatterySection>
@@ -49,7 +61,7 @@ const Turtle = props => {
           enabled={editable}
           values={ROLE_VALUES}
           onChange={value => {
-            onChange("role", value);
+            onChange(id, "role", value);
           }}
         />
         <Dropdown
@@ -58,7 +70,7 @@ const Turtle = props => {
           enabled={editable}
           values={HOME_VALUES}
           onChange={value => {
-            onChange("home", value);
+            onChange(id, "homegoal", value);
           }}
         />
         <Dropdown
@@ -67,7 +79,7 @@ const Turtle = props => {
           enabled={editable}
           values={TEAM_VALUES}
           onChange={value => {
-            onChange("team", value);
+            onChange(id, "teamcolor", value);
           }}
         />
       </DropDownSection>

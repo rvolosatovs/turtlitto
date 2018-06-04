@@ -59,3 +59,24 @@ exports[`Turtle should match snapshot 1`] = `
   </styled.div>
 </styled.div>
 `;
+
+exports[`Turtle the user changes dropdown values should change the home 1`] = `
+Object {
+  "body": "{\\"2\\":{\\"homegoal\\":\\"Yellow home\\"}}",
+  "method": "PUT",
+}
+`;
+
+exports[`Turtle the user changes dropdown values should change the role 1`] = `
+Object {
+  "body": "{\\"2\\":{\\"role\\":\\"INACTIVE\\"}}",
+  "method": "PUT",
+}
+`;
+
+exports[`Turtle the user changes dropdown values should change the team 1`] = `
+Object {
+  "body": "{\\"2\\":{\\"teamcolor\\":\\"Magenta\\"}}",
+  "method": "PUT",
+}
+`;
