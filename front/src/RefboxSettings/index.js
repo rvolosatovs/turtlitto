@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 const RefboxSettings = props => {
   return (
     <Refbox>
-      <DropBall
+      <DropBallButton
         onClick={() => {
           props.onClickDropBall();
         }}
@@ -42,6 +42,10 @@ const ButtonBlockWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+`;
+
+const DropBallButton = styled(DropBall)`
+  margin: 0.5rem;
 `;
 
 const Refbox = styled.div`

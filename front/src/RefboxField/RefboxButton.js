@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 const RefboxButton = props => {
   return (
     <Button
+      className={props.className}
       teamColor={props.teamColor}
       onClick={() => {
         props.onClick();
@@ -25,15 +26,17 @@ const RefboxButton = props => {
   );
 };
 
-/**
- * A styled component defining the style of the refbox buttons
- */
 const Button = styled.button`
-  background-color: ${props => props.teamColor};
-  min-width: 8rem;
-  height: 8rem;
-  border: 0.25rem solid;
+  background-color: ${props =>
+    props.teamColor === "magenta"
+      ? props.theme.refboxMagenta
+      : props.theme.refboxCyan};
+  justify-content: center;
+  align-items: center;
   font-size: 4rem;
+  padding: 1.5rem 0;
+  border: 0.125rem solid;
+  user-select: none;
 `;
 
 RefboxButton.propType = {

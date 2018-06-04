@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
  */
 const DropBall = props => {
   return (
-    <DropBallWrapper>
+    <DropBallWrapper className={props.className}>
       <DropBallButton
         onClick={() => {
           props.onClick();
