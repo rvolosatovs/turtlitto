@@ -5,11 +5,11 @@ import Turtle from ".";
 describe("Turtle", () => {
   it("should match snapshot", () => {
     const turtle = {
-      battery: 42,
-      home: "Blue home",
+      batteryvoltage: 42,
+      homegoal: "Blue home",
       id: 2,
       role: "Goalkeeper",
-      team: "Cyan"
+      teamcolor: "Cyan"
     };
     const wrapper = shallow(
       <Turtle turtle={turtle} editable={false} onChange={() => {}} />
@@ -23,11 +23,11 @@ describe("Turtle", () => {
 
     beforeEach(() => {
       const turtle = {
-        battery: 42,
-        home: "Blue home",
+        batteryvoltage: 42,
+        homegoal: "Blue home",
         id: 2,
         role: "Goalkeeper",
-        team: "Cyan"
+        teamcolor: "Cyan"
       };
       wrapper = shallow(<Turtle turtle={turtle} editable />);
       global.fetch = jest.fn().mockImplementation((url, params) => {
