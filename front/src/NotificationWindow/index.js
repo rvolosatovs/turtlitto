@@ -77,7 +77,7 @@ const NotificationWindow = props => {
     return (
       <Window background={background}>
         <ToolBar>
-          <Text>{props.message}</Text>
+          <Text>{notification.message}</Text>
           <CloseButton onClick={() => onDismiss()}>
             <FontAwesomeIcon icon={faTimes} color="black" size="4x" />
           </CloseButton>
