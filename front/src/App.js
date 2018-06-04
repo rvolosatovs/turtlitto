@@ -12,6 +12,7 @@ import RefboxField from "./RefboxField";
 import RefboxSettings from "./RefboxSettings";
 import Settings from "./Settings";
 import TurtleEnableBar from "./TurtleEnableBar";
+import AuthenticationScreen from "./AuthenticationScreen";
 
 const Container = styled.div`
   height: 100%;
@@ -79,7 +80,8 @@ class App extends Component {
       notifications: [
         { notificationType: "error", message: "Pants on fire" },
         { notificationType: "success", message: "Rendering Notifications" }
-      ]
+      ],
+      loggedIn: false
     };
     this.connection = null;
   }
@@ -138,49 +140,72 @@ class App extends Component {
     });
   }
 
+  /**
+   * The function AuthenticationScreen will call when a token has been
+   * submitted.
+   * @param token The token received from AuthenticationScreen.
+   * @param onIncorrectToken Callback from AuthenticationScreen to update the
+   * AuthenticationScreen in case the token was incorrect.
+   */
+  onSubmit(token, onIncorrectToken) {
+    //TODO: Implement a correct version
+    if (token === "techunited") {
+      this.setState({ loggedIn: true, token: token });
+    } else {
+      onIncorrectToken();
+    }
+  }
+
   getNextNotification() {
     const { notifications } = this.state;
     return notifications.length > 0 ? notifications[0] : null;
   }
 
   render() {
-    const { activePage, turtles, connectionStatus } = this.state;
+    const { activePage, turtles, loggedIn, connectionStatus } = this.state;
+
     return (
       <ThemeProvider theme={theme}>
-        <Container>
-          {activePage === "refbox" && (
-            <div>
-              <RefboxField isPenalty={false} token={this.state.token} />
-              <RefboxSettings token={this.state.token} />
-            </div>
-          )}
-          {activePage === "settings" && (
-            <Fragment>
-              <TurtleEnableBar
-                turtles={Object.keys(turtles).map(id => {
-                  return {
-                    id: id,
-                    enabled: turtles[id].enabled
-                  };
-                })}
-                onTurtleEnableChange={id => this.onTurtleEnableChange(id)}
-              />
-              <ScrollableContent>
-                <Settings turtles={turtles} token={this.state.token} />
-              </ScrollableContent>
-            </Fragment>
-          )}
-          <NotificationWindow
-            onDismiss={() => this.onNotificationDismiss()}
-            notification={this.getNextNotification()}
+        {loggedIn ? (
+          <Container>
+            {activePage === "refbox" && (
+              <div>
+                <RefboxField isPenalty={false} token={this.state.token} />
+                <RefboxSettings token={this.state.token} />
+              </div>
+            )}
+            {activePage === "settings" && (
+              <Fragment>
+                <TurtleEnableBar
+                  turtles={Object.keys(turtles).map(id => {
+                    return {
+                      id: id,
+                      enabled: turtles[id].enabled
+                    };
+                  })}
+                  onTurtleEnableChange={id => this.onTurtleEnableChange(id)}
+                />
+                <ScrollableContent>
+                  <Settings turtles={turtles} token={this.state.token} />
+                </ScrollableContent>
+              </Fragment>
+            )}
+            <NotificationWindow
+              onDismiss={() => this.onNotificationDismiss()}
+              notification={this.getNextNotification()}
+            />
+            <BottomBar
+              activePage={activePage}
+              changeActivePage={page => this.setState({ activePage: page })}
+              connectionStatus={connectionStatus}
+              token={this.state.token}
+            />
+          </Container>
+        ) : (
+          <AuthenticationScreen
+            onSubmit={(token, callback) => this.onSubmit(token, callback)}
           />
-          <BottomBar
-            activePage={activePage}
-            changeActivePage={page => this.setState({ activePage: page })}
-            connectionStatus={connectionStatus}
-            token={this.state.token}
-          />
-        </Container>
+        )}
       </ThemeProvider>
     );
   }
