@@ -9,10 +9,6 @@ exports[`RefboxSettings shows the settings including two dropdown menus and thre
     <InOutButton
       onClick={[Function]}
     />
-    <ConfigDropdown
-      onChange={[Function]}
-      value="Whatever"
-    />
   </styled.div>
 </styled.div>
 `;
