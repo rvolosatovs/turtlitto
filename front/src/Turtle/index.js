@@ -10,8 +10,8 @@ const HOME_VALUES = { "Yellow home": "yellow", "Blue home": "blue" };
 const ROLE_VALUES = {
   INACTIVE: "inactive",
   ROLE_NONE: "none",
-  "Att main": "attack_main",
-  "Att assist": "attack_assist",
+  "Att main": "attacker_main",
+  "Att assist": "attacker_assist",
   "Def main": "defender_main",
   "Def assist": "defender_assist",
   "Def assist 2": "defender_assist2",
