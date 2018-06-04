@@ -90,11 +90,11 @@ const Turtle = props => {
 
 Turtle.propTypes = {
   turtle: PropTypes.shape({
-    battery: PropTypes.number,
-    home: PropTypes.string,
+    batteryvoltage: PropTypes.number,
+    homegoal: PropTypes.string,
     id: PropTypes.number,
     role: PropTypes.string,
-    team: PropTypes.string
+    teamcolor: PropTypes.string
   }).isRequired,
   editable: PropTypes.bool,
   onChange: PropTypes.func
