@@ -44,18 +44,4 @@ describe("NotificationWindow", () => {
     );
     expect(wrapper).toMatchSnapshot();
   });
-
-  describe("gets invalid notificationType", () => {
-    it("should throw an error", () => {
-      const notification = "invalid";
-      expect(() => {
-        shallow(
-          <NotificationWindow
-            notification={notification}
-            onDismiss={() => {}}
-          />
-        );
-      }).toThrow();
-    });
-  });
 });
