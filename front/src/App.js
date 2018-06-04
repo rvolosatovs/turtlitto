@@ -34,50 +34,50 @@ class App extends Component {
         {
           id: 1,
           enabled: false,
-          battery: 66,
-          home: "Yellow home",
+          batteryvoltage: 66,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         },
         {
           id: 2,
           enabled: false,
-          battery: 42,
-          home: "Yellow home",
+          batteryvoltage: 42,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         },
         {
           id: 3,
           enabled: false,
-          battery: 42,
-          home: "Yellow home",
+          batteryvoltage: 42,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         },
         {
           id: 4,
           enabled: false,
-          battery: 100,
-          home: "Yellow home",
+          batteryvoltage: 100,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         },
         {
           id: 5,
           enabled: false,
-          battery: 4,
-          home: "Yellow home",
+          batteryvoltage: 4,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         },
         {
           id: 6,
           enabled: false,
-          battery: 0,
-          home: "Yellow home",
+          batteryvoltage: 0,
+          homegoal: "Yellow home",
           role: "INACTIVE",
-          team: "Magenta"
+          teamcolor: "Magenta"
         }
       ],
       notifications: [

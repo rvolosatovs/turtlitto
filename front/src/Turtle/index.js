@@ -36,21 +36,21 @@ const onChange = (id, propName, propValue) => {
  *
  * Props:
  * - turtle: An object containing the following turtle details:
- *   - battery: the current battery status of the turtle
- *   - home: the current home goal of this turtle
+ *   - batteryvoltage: the current battery status of the turtle
+ *   - homegoal: the current home goal of this turtle
  *   - id: the ID number of the turtle
  *   - role: the current role of this turtle
- *   - team: the current team of this turtle
+ *   - teamcolor: the current team of this turtle
  * - editable: whether this turtle's properties can be edited
  * - onChange: a function with two arguments that is called when one of the dropdowns is changed. The first argument is name of the prop that is changed, the second argument is its new value.
  */
 const Turtle = props => {
-  const { battery, home, id, role, team } = props.turtle;
+  const { batteryvoltage, homegoal, id, role, teamcolor } = props.turtle;
   const { editable } = props;
   return (
     <DefaultTurtle>
       <BatterySection>
-        <Battery percentage={battery} />
+        <Battery percentage={batteryvoltage} />
       </BatterySection>
       <SubSection>
         <p>Turtle {id}</p>
@@ -67,7 +67,7 @@ const Turtle = props => {
         />
         <Dropdown
           id={`turtle${id}__home`}
-          currentValue={home}
+          currentValue={homegoal}
           enabled={editable}
           values={Object.keys(HOME_VALUES)}
           onChange={value => {
@@ -76,7 +76,7 @@ const Turtle = props => {
         />
         <Dropdown
           id={`turtle${id}__team`}
-          currentValue={team}
+          currentValue={teamcolor}
           enabled={editable}
           values={Object.keys(TEAM_VALUES)}
           onChange={value => {
