@@ -51,7 +51,12 @@ func RandomHandshake() *api.Handshake {
 	if err != nil {
 		panic("could not parse version")
 	}
-	return &api.Handshake{ver}
+	b := make([]byte, 10+rand.Intn(10))
+	rand.Read(b)
+	return &api.Handshake{
+		Version: ver,
+		Token:   string(b),
+	}
 }
 
 //RandomULID returns a random, valid ULID.
