@@ -2,6 +2,19 @@ import React from "react";
 import Button from "./RefboxButton";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
+import sendToServer from "../sendToServer";
+
+const TAG_VALUES = {
+  KO: "kick_off",
+  FK: "free_kick",
+  GK: "goal_kick",
+  TI: "throw_in",
+  C: "corner",
+  P: "penalty",
+  Soft: "soft",
+  Medium: "medium",
+  Hard: "hard"
+};
 
 /**
  * Constructs a refbox for a team consisting of 6 buttons:
@@ -30,7 +43,8 @@ const RefboxField = props => {
               key={tag}
               teamColor={"magenta"}
               onClick={() => {
-                props.onClick(tag, "magenta");
+                console.log(`${TAG_VALUES[tag]}_magenta`);
+                sendToServer(`${TAG_VALUES[tag]}_magenta`, "command");
               }}
             >
               {tag}
@@ -46,7 +60,8 @@ const RefboxField = props => {
               key={tag}
               teamColor={"cyan"}
               onClick={() => {
-                props.onClick(tag, "cyan");
+                console.log(`${TAG_VALUES[tag]}_cyan`);
+                sendToServer(`${TAG_VALUES[tag]}_cyan`, "command");
               }}
             >
               {tag}

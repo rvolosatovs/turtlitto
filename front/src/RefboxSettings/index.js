@@ -3,6 +3,7 @@ import DropBall from "./DropBall";
 import InOutButton from "./InOutButton";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import sendToServer from "../sendToServer";
 
 /**
  * Gives the settings part of the refbox:
@@ -23,13 +24,13 @@ const RefboxSettings = props => {
     <Refbox>
       <DropBallButton
         onClick={() => {
-          props.onClickDropBall();
+          sendToServer("dropped_ball", "command");
         }}
       />
       <ButtonBlockWrapper>
         <InOutButton
           onClick={prop => {
-            props.onClickInOut(prop);
+            sendToServer(prop, "command");
           }}
         />
       </ButtonBlockWrapper>

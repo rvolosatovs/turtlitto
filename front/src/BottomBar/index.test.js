@@ -10,7 +10,6 @@ describe("BottomBar", () => {
     const wrapper = shallow(
       <BottomBar
         changeActivePage={() => {}}
-        onSend={() => {}}
         activePage={pageTypes.SETTINGS}
         connectionStatus={connectionTypes.CONNECTED}
       />
@@ -23,7 +22,6 @@ describe("BottomBar", () => {
     const wrapper = shallow(
       <BottomBar
         changeActivePage={() => {}}
-        onSend={() => {}}
         activePage={pageTypes.SETTINGS}
         connectionStatus={connectionTypes.CONNECTING}
       />
@@ -36,7 +34,6 @@ describe("BottomBar", () => {
     const wrapper = shallow(
       <BottomBar
         changeActivePage={() => {}}
-        onSend={() => {}}
         activePage={pageTypes.SETTINGS}
         connectionStatus={connectionTypes.DISCONNECTED}
       />
@@ -45,41 +42,32 @@ describe("BottomBar", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  describe("the user clicks on the start button", () => {
-    it("should pass `start` to the `onSend` function", () => {
-      const onSendSpy = sinon.spy();
-      const wrapper = shallow(
+  describe("the user clicks on a start or stop button.", () => {
+    const realFetch = global.fetch;
+    let wrapper = null;
+    beforeEach(() => {
+      wrapper = shallow(
         <BottomBar
           changeActivePage={() => {}}
-          onSend={onSendSpy}
           activePage={pageTypes.REFBOX}
           connectionStatus={connectionTypes.CONNECTED}
         />
       );
-
-      wrapper.find("#bottom-bar__start-button").simulate("click");
-
-      expect(onSendSpy.calledOnce).toBe(true);
-      expect(onSendSpy.calledWithExactly("start")).toBe(true);
+      global.fetch = jest.fn().mockImplementation((url, params) => {
+        expect(url).toBe("/api/v1/command");
+        expect(params).toMatchSnapshot();
+        return Promise.resolve({ ok: true });
+      });
     });
-  });
 
-  describe("the user clicks on the stop button", () => {
-    it("should pass `stop` to the `onSend` function", () => {
-      const onSendSpy = sinon.spy();
-      const wrapper = shallow(
-        <BottomBar
-          changeActivePage={() => {}}
-          onSend={onSendSpy}
-          activePage={pageTypes.REFBOX}
-          connectionStatus={connectionTypes.CONNECTED}
-        />
-      );
-
-      wrapper.find("#bottom-bar__stop-button").simulate("click");
-
-      expect(onSendSpy.calledOnce).toBe(true);
-      expect(onSendSpy.calledWithExactly("stop")).toBe(true);
+    afterEach(() => {
+      global.fetch = realFetch;
+    });
+    it("Clicking the start button should pass `start` to the 'sendToServer' function", () => {
+      wrapper.find("bottom-bar__start-button").simulate("click");
+    });
+    it("Clicking the stop button should pass `stop` to the 'sendToServer' function", () => {
+      wrapper.find("bottom-bar__stop-button").simulate("click");
     });
   });
 
@@ -88,7 +76,6 @@ describe("BottomBar", () => {
       const wrapper = shallow(
         <BottomBar
           changeActivePage={() => {}}
-          onSend={() => {}}
           activePage={pageTypes.REFBOX}
           connectionStatus={connectionTypes.CONNECTED}
         />
@@ -103,7 +90,6 @@ describe("BottomBar", () => {
         const wrapper = shallow(
           <BottomBar
             changeActivePage={changeActivePageSpy}
-            onSend={() => {}}
             activePage={pageTypes.REFBOX}
             connectionStatus={connectionTypes.CONNECTED}
           />
@@ -122,7 +108,6 @@ describe("BottomBar", () => {
       const wrapper = shallow(
         <BottomBar
           changeActivePage={() => {}}
-          onSend={() => {}}
           activePage={pageTypes.SETTINGS}
           connectionStatus={connectionTypes.CONNECTED}
         />
@@ -137,7 +122,6 @@ describe("BottomBar", () => {
         const wrapper = shallow(
           <BottomBar
             changeActivePage={changeActivePageSpy}
-            onSend={() => {}}
             activePage={pageTypes.SETTINGS}
             connectionStatus={connectionTypes.CONNECTED}
           />

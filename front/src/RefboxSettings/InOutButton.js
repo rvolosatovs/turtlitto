@@ -15,14 +15,14 @@ const InOutButton = props => {
     <Container>
       <GoButton
         onClick={() => {
-          props.onClick("in");
+          props.onClick("go_in");
         }}
       >
         {"Go in"}
       </GoButton>
       <GoButton
         onClick={() => {
-          props.onClick("out");
+          props.onClick("go_out");
         }}
       >
         {"Go out"}

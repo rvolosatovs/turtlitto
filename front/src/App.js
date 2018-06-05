@@ -184,10 +184,7 @@ class App extends Component {
                 }
               />
               <ScrollableContent>
-                <Settings
-                  turtles={turtles.filter(turtle => turtle.enabled)}
-                  onChange={() => {}}
-                />
+                <Settings turtles={turtles.filter(turtle => turtle.enabled)} />
               </ScrollableContent>
             </Fragment>
           )}
@@ -198,7 +195,6 @@ class App extends Component {
           <BottomBar
             activePage={activePage}
             changeActivePage={page => this.setState({ activePage: page })}
-            onSend={message => this.onSend(message)}
             connectionStatus={connectionStatus}
           />
         </Container>

@@ -8,6 +8,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import pageTypes from "./pageTypes";
 import connectionTypes from "./connectionTypes";
+import sendToServer from "../sendToServer";
 
 const getConnectionStatusBackground = type => {
   switch (type) {
@@ -37,14 +38,13 @@ const getConnectionStatusBackground = type => {
  * Author: G.M. van der Sanden
  *
  * Props:
- * - onSend: function to send a command
  * - changeActivePage: function to change the active page
  * - activePage: a string indicating the current active page
  * - isConnected: a boolean indicating whether the client is connected to the TRC
  */
 
 const BottomBar = props => {
-  const { changeActivePage, onSend, activePage, connectionStatus } = props;
+  const { changeActivePage, activePage, connectionStatus } = props;
   const isSettingsPage = activePage === pageTypes.SETTINGS;
   const connectionStatusBackground = getConnectionStatusBackground(
     connectionStatus
@@ -59,7 +59,9 @@ const BottomBar = props => {
         <ButtonColumn>
           <Button
             id="bottom-bar__start-button"
-            onClick={() => onSend("start")}
+            onClick={() => {
+              sendToServer("start", "command");
+            }}
             enabled
           >
             <FontAwesomeIcon icon={faPlay} />
@@ -82,7 +84,9 @@ const BottomBar = props => {
         </ButtonColumn>
         <StopButton
           id="bottom-bar__stop-button"
-          onClick={() => onSend("stop")}
+          onClick={() => {
+            sendToServer("stop", "command");
+          }}
           enabled
         >
           <FontAwesomeIcon icon={faStop} color="red" />
@@ -93,7 +97,6 @@ const BottomBar = props => {
 };
 
 BottomBar.propTypes = {
-  onSend: PropTypes.func.isRequired,
   changeActivePage: PropTypes.func.isRequired,
   activePage: PropTypes.oneOf(Object.values(pageTypes)),
   connectionStatus: PropTypes.oneOf(Object.values(connectionTypes)).isRequired
