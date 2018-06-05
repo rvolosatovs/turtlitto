@@ -92,4 +92,4 @@ docker: $(BINDIR)/front $(BINDIR)/srrs-linux-amd64
 clean:
 	rm -rf node_modules front/node_modules vendor $(BINDIR)/srrs-* $(BINDIR)/front
 
-.PHONY: all srrs deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
+.PHONY: all srrs relay trcd deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
