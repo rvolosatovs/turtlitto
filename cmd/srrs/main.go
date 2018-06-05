@@ -51,10 +51,12 @@ func main() {
 	}
 
 	pool := trcapi.NewPool(func() (*trcapi.Conn, func(), error) {
-		logger := log.WithField("path", *unixSock)
+		var logger *log.Entry
 
 		var netConn net.Conn
 		if *tcpSock == "" {
+			logger = log.WithField("trc_socket", *unixSock)
+
 			var err error
 			logger.Debug("Dialing Unix socket...")
 			netConn, err = net.Dial("unix", *unixSock)
@@ -63,6 +65,8 @@ func main() {
 			}
 			logger.Debug("Unix socket dial succeeded")
 		} else {
+			logger = log.WithField("trc_socket", *tcpSock)
+
 			var err error
 			logger.Debug("Dialing TCP socket...")
 			netConn, err = net.Dial("tcp", *tcpSock)
