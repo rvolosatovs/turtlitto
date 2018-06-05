@@ -15,15 +15,15 @@ describe("TurtleEnableBar", () => {
   it("should render all turtles as <TurtleEnableButton /> components", () => {
     const turtles = [
       {
-        id: 0,
+        id: "1",
         enabled: false
       },
       {
-        id: 1,
+        id: "2",
         enabled: false
       },
       {
-        id: 2,
+        id: "3",
         enabled: false
       }
     ];

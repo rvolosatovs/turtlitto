@@ -59,29 +59,13 @@ exports[`renders without crashing 1`] = `
   />
   <Turtle
     editable={true}
+    id="1"
     key="1"
-    onChange={[Function]}
     turtle={
       Object {
         "batteryvoltage": 66,
         "enabled": true,
         "homegoal": "Yellow home",
-        "id": 1,
-        "role": "INACTIVE",
-        "teamcolor": "Magenta",
-      }
-    }
-  />
-  <Turtle
-    editable={true}
-    key="2"
-    onChange={[Function]}
-    turtle={
-      Object {
-        "batteryvoltage": 42,
-        "enabled": false,
-        "homegoal": "Yellow home",
-        "id": 2,
         "role": "INACTIVE",
         "teamcolor": "Magenta",
       }

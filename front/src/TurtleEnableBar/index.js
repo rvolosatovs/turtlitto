@@ -12,22 +12,22 @@ import PropTypes from "prop-types";
  *
  * Props:
  * - turtles: a list of turtles to be displayed in the bar
- *   - id: an identificator of the turtle
+ *   - id: an identificator of the turtle. Should be unique.
  *   - enabled: a boolean flag specifying whether the turtle is enabled
- * - onTurtleEnableChange: function to call when the turtle enable button is pressed
+ * - onTurtleEnableChange: function to call when the turtle enable button is pressed. The first argument is the id of the turtle that is changed.
  */
 
 const TurtleEnableBar = props => {
   const { className, onTurtleEnableChange } = props;
   return (
     <Bar className={className}>
-      {props.turtles.map((turtle, position) => {
+      {props.turtles.map(turtle => {
         return (
           <TurtleEnableButton
             key={turtle.id}
             enabled={turtle.enabled}
-            id={position + 1}
-            onTurtleEnableChange={() => onTurtleEnableChange(position)}
+            id={turtle.id}
+            onTurtleEnableChange={() => onTurtleEnableChange(turtle.id)}
           />
         );
       })}
@@ -38,7 +38,7 @@ const TurtleEnableBar = props => {
 TurtleEnableBar.propTypes = {
   turtles: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.string.isRequired,
       enabled: PropTypes.bool.isRequired
     })
   ).isRequired,

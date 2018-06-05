@@ -43,22 +43,16 @@ const Settings = props => {
         }}
         enabled={true}
       />
-      {turtles.map(turtle => (
-        <Turtle
-          key={turtle.id}
-          turtle={turtle}
-          editable
-          onChange={(changedProp, newValue) => {} /* TODO: turtle update */}
-        />
-      ))}
+      {Object.keys(turtles)
+        .filter(id => turtles[id].enabled)
+        .map(id => <Turtle key={id} id={id} turtle={turtles[id]} editable />)}
     </SettingsWrapper>
   );
 };
 
 Settings.propTypes = {
-  turtles: PropTypes.arrayOf(
+  turtles: PropTypes.objectOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
       enabled: PropTypes.bool.isRequired,
       batteryvoltage: PropTypes.number.isRequired,
       homegoal: PropTypes.string.isRequired,

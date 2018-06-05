@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@fortawesome/react-fontawesome": "^0.0.20",
     "date-fns": "^1.29.0",
+    "immutability-helper": "^2.7.0",
     "normalize.css": "^8.0.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
