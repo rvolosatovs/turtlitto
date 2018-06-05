@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"sync"
+	"sync/atomic"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/blang/semver"
@@ -34,6 +35,7 @@ type decoder interface {
 // Conn is safe for concurrent use by multiple goroutines.
 type Conn struct {
 	version semver.Version
+	token   *atomic.Value
 
 	decoder decoder
 	encoder encoder
@@ -61,6 +63,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	dec.DisallowUnknownFields()
 	conn := &Conn{
 		version:       ver,
+		token:         &atomic.Value{},
 		closeChMu:     &sync.RWMutex{},
 		closeCh:       make(chan struct{}),
 		decoder:       dec,
@@ -104,6 +107,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		resp.Version = ver
 	}
 	conn.version = resp.Version
+	conn.token.Store(hs.Token)
 
 	b, err := json.Marshal(resp)
 	if err != nil {
@@ -235,6 +239,21 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 	delete(c.pendingReqs, msg.MessageID)
 	c.pendingReqsMu.Unlock()
 	return resp.Payload, nil
+}
+
+// Token returns the token received from TRC during the handshake procedure or error,
+// if it did not happen yet.
+func (c *Conn) Token() (string, error) {
+	v := c.token.Load()
+	if v == nil {
+		return "", errors.New("No token configured")
+	}
+
+	tok, ok := v.(string)
+	if !ok {
+		panic("Token is not a string")
+	}
+	return tok, nil
 }
 
 // Close closes the connection.

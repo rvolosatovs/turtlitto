@@ -183,6 +183,7 @@ const (
 // Handshake represents the handshake message payload.
 type Handshake struct {
 	Version semver.Version `json:"version"`
+	Token   string         `json:"token"`
 }
 
 // State represents the state of the TRC.
