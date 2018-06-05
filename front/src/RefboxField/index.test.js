@@ -8,7 +8,6 @@ describe("RefboxField", () => {
     expect(wrapper).toMatchSnapshot();
   });
   it("shows a refbox with penalty buttons", () => {
-    //It doesn't. TODO fix this
     const wrapper = shallow(<RefboxField isPenalty={true} />);
     expect(wrapper).toMatchSnapshot();
   });

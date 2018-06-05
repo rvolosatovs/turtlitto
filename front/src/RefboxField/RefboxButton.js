@@ -17,7 +17,9 @@ const RefboxButton = props => {
     <Button
       className={props.className}
       teamColor={props.teamColor}
-      onClick={() => props.onClick()}
+      onClick={() => {
+        props.onClick();
+      }}
     >
       {props.children}
     </Button>

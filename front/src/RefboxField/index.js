@@ -29,7 +29,6 @@ const TAG_VALUES = {
  * Author: G.W. van der Heijden
  *
  * Props:
- *  - onClick: a function on what to do when the button is pressed
  *  - isPenalty: a boolean which indicates whether to go into penalty mode
  */
 const RefboxField = props => {

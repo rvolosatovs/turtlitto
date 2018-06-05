@@ -30,8 +30,8 @@ const getConnectionStatusBackground = type => {
 };
 
 /**
- * All of the props depend on the implementation in App.js. App.js should include WebSockets, with an onSend command,
- * which sends a command,a state variable which has the values "settings" and "refbox",
+ * All of the props depend on the implementation in App.js. App.js should include WebSockets,
+ * a state variable which has the values "settings" and "refbox",
  * and the implementation of the functions passed to BottomBar.
  * Author: T.T.P. Franken
  * Author: B. Afonins

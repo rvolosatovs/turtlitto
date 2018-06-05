@@ -2,7 +2,6 @@ import React from "react";
 import DropBall from "./DropBall";
 import InOutButton from "./InOutButton";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import sendToServer from "../sendToServer";
 
 /**
@@ -14,12 +13,8 @@ import sendToServer from "../sendToServer";
  * Author: G.W. van der Heijden
  * Author: S.A. Tanja
  * Author: T.T.P. Franken
- *
- * Props:
- * - onClickDropBall: a function on what to do when DropBall is pressed
- * - onClickInOut: a function on what to do when InOutButton is pressed
  */
-const RefboxSettings = props => {
+const RefboxSettings = () => {
   return (
     <Refbox>
       <DropBallButton
@@ -55,11 +50,5 @@ const Refbox = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
-
-RefboxSettings.propType = {
-  onClickDropBall: PropTypes.func.isRequired,
-  onClickInOut: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired
-};
 
 export default RefboxSettings;

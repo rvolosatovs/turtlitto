@@ -12,8 +12,6 @@ import sendToServer from "../sendToServer";
  *
  * props:
  * - turtles: an array of Turtles
- * - onTurtleEnableChange: function to call when the turtle enable button is pressed
- * - onSettingsChange: a function which dictates what happens when a dropdown is changed.
  */
 
 const CONFIG_VALUES = [

@@ -163,11 +163,7 @@ class App extends Component {
           {activePage === "refbox" && (
             <div>
               <RefboxField isPenalty={false} />
-              <RefboxSettings
-                onClickDropBall={() => {}}
-                onClickInOut={prop => {}}
-                onChange={(type, value) => {}}
-              />
+              <RefboxSettings />
             </div>
           )}
           {activePage === "settings" && (
