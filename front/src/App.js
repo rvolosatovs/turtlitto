@@ -33,50 +33,7 @@ class App extends Component {
       activePage: "settings",
       connectionStatus: connectionTypes.DISCONNECTED,
       token: "dummy",
-      turtles: {
-        1: {
-          enabled: false,
-          batteryvoltage: 66,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
-        },
-        2: {
-          enabled: false,
-          batteryvoltage: 42,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
-        },
-        3: {
-          enabled: false,
-          batteryvoltage: 42,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
-        },
-        4: {
-          enabled: false,
-          batteryvoltage: 100,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
-        },
-        5: {
-          enabled: false,
-          batteryvoltage: 4,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
-        },
-        6: {
-          enabled: false,
-          batteryvoltage: 0,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
-        }
-      },
+      turtles: {},
       notifications: [
         { notificationType: "error", message: "Pants on fire" },
         { notificationType: "success", message: "Rendering Notifications" }
@@ -125,7 +82,20 @@ class App extends Component {
   }
 
   onConnectionMessage(event) {
-    console.log(event); // TODO: something useful with this message
+    const data = JSON.parse(event.data);
+    this.setState(prev => {
+      const turtleChanges = Object.keys(data.turtles).reduce((acc, id) => {
+        if (prev.turtles[id] === undefined) {
+          data.turtles[id].enabled = false;
+          acc[id] = { $set: data.turtles[id] };
+        } else {
+          acc[id] = { $merge: data.turtles[id] };
+        }
+        return acc;
+      }, {});
+      const turtles = update(prev.turtles, turtleChanges);
+      return { turtles };
+    });
   }
 
   onConnectionOpen(event) {
