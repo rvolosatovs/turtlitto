@@ -162,7 +162,7 @@ class App extends Component {
         <Container>
           {activePage === "refbox" && (
             <div>
-              <RefboxField onClick={(tag, teamColor) => {}} />
+              <RefboxField isPenalty={false} />
               <RefboxSettings
                 onClickDropBall={() => {}}
                 onClickInOut={prop => {}}

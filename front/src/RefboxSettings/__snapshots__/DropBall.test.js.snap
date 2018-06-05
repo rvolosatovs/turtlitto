@@ -3,9 +3,18 @@
 exports[`DropBall shows a button with DB written on it 1`] = `
 <styled.div>
   <styled.button
+    id="drop-ball-button"
     onClick={[Function]}
   >
     DB
   </styled.button>
 </styled.div>
+`;
+
+exports[`When clicked, the Drop Ball button should pass \`dropped_ball\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"dropped_ball\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
 `;

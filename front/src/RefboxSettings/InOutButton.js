@@ -14,6 +14,7 @@ const InOutButton = props => {
   return (
     <Container>
       <GoButton
+        id={"InOutButton__go-in-button"}
         onClick={() => {
           props.onClick("go_in");
         }}
@@ -21,6 +22,7 @@ const InOutButton = props => {
         {"Go in"}
       </GoButton>
       <GoButton
+        id={"InOutButton__go-out-button"}
         onClick={() => {
           props.onClick("go_out");
         }}

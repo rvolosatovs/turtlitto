@@ -42,6 +42,7 @@ const RefboxField = props => {
               isPenalty={props.isPenalty}
               key={tag}
               teamColor={"magenta"}
+              id={`${tag}_magenta`}
               onClick={() => {
                 console.log(`${TAG_VALUES[tag]}_magenta`);
                 sendToServer(`${TAG_VALUES[tag]}_magenta`, "command");
@@ -59,8 +60,8 @@ const RefboxField = props => {
               isPenalty={props.isPenalty}
               key={tag}
               teamColor={"cyan"}
+              id={`${tag}_cyan`}
               onClick={() => {
-                console.log(`${TAG_VALUES[tag]}_cyan`);
                 sendToServer(`${TAG_VALUES[tag]}_cyan`, "command");
               }}
             >
@@ -128,8 +129,7 @@ const tags = props => {
 };
 
 RefboxField.propType = {
-  isPenalty: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired
+  isPenalty: PropTypes.bool.isRequired
 };
 
 export default RefboxField;

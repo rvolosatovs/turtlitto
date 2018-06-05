@@ -37,6 +37,7 @@ const Settings = props => {
   return (
     <SettingsWrapper>
       <RoleDropdown
+        id={"settings_role-dropdown"}
         currentValue={"Whatever"}
         values={CONFIG_VALUES}
         onChange={value => {
@@ -66,8 +67,7 @@ Settings.propTypes = {
       role: PropTypes.string.isRequired,
       teamcolor: PropTypes.string.isRequired
     })
-  ).isRequired,
-  onChange: PropTypes.func.isRequired
+  ).isRequired
 };
 
 const RoleDropdown = styled(Dropdown)`

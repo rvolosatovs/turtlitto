@@ -42,35 +42,6 @@ describe("BottomBar", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  describe("the user clicks on a start or stop button.", () => {
-    const realFetch = global.fetch;
-    let wrapper = null;
-    beforeEach(() => {
-      wrapper = shallow(
-        <BottomBar
-          changeActivePage={() => {}}
-          activePage={pageTypes.REFBOX}
-          connectionStatus={connectionTypes.CONNECTED}
-        />
-      );
-      global.fetch = jest.fn().mockImplementation((url, params) => {
-        expect(url).toBe("/api/v1/command");
-        expect(params).toMatchSnapshot();
-        return Promise.resolve({ ok: true });
-      });
-    });
-
-    afterEach(() => {
-      global.fetch = realFetch;
-    });
-    it("Clicking the start button should pass `start` to the 'sendToServer' function", () => {
-      wrapper.find("bottom-bar__start-button").simulate("click");
-    });
-    it("Clicking the stop button should pass `stop` to the 'sendToServer' function", () => {
-      wrapper.find("bottom-bar__stop-button").simulate("click");
-    });
-  });
-
   describe("is in the refbox mode", () => {
     it("should match snapshot", () => {
       const wrapper = shallow(
@@ -133,5 +104,35 @@ describe("BottomBar", () => {
         expect(changeActivePageSpy.calledWithExactly("refbox")).toBe(true);
       });
     });
+  });
+});
+
+describe("When clicked,", () => {
+  const realFetch = global.fetch;
+  let wrapper = null;
+  beforeEach(() => {
+    wrapper = shallow(
+      <BottomBar
+        changeActivePage={() => {}}
+        activePage={pageTypes.REFBOX}
+        connectionStatus={connectionTypes.CONNECTED}
+      />
+    );
+    const l = window.location;
+    global.fetch = jest.fn().mockImplementation((url, params) => {
+      expect(url).toBe(`${l.protocol}//${l.host}/api/v1/command`);
+      expect(params).toMatchSnapshot();
+      return Promise.resolve({ ok: true });
+    });
+  });
+
+  afterEach(() => {
+    global.fetch = realFetch;
+  });
+  it("the start button should pass `start` to the 'sendToServer' function", () => {
+    wrapper.find("#bottom-bar__start-button").simulate("click");
+  });
+  it("the stop button should pass `stop` to the 'sendToServer' function", () => {
+    wrapper.find("#bottom-bar__stop-button").simulate("click");
   });
 });
