@@ -19,7 +19,7 @@ import (
 var (
 	unixSockPath = filepath.Join(os.TempDir(), "trc-sock-test")
 
-	unixSock net.Listener
+	netLst net.Listener
 )
 
 func init() {
@@ -33,14 +33,14 @@ func init() {
 		}
 	}
 
-	unixSock, err = net.Listen("unix", unixSockPath)
+	netLst, err = net.Listen("unix", unixSockPath)
 	if err != nil {
 		log.Fatalf("Failed to open Unix socket on %s: %s", unixSockPath, err)
 	}
 }
 
 func TestMain(m *testing.M) {
-	if err := flag.Set("socket", unixSockPath); err != nil {
+	if err := flag.Set("unixSocket", unixSockPath); err != nil {
 		log.Fatalf("Failed to set `socket` to %s: %s", unixSockPath, err)
 	}
 
@@ -69,7 +69,7 @@ func TestMain(m *testing.M) {
 
 	ret := m.Run()
 
-	if err := unixSock.Close(); err != nil {
+	if err := netLst.Close(); err != nil {
 		log.Printf("Failed to close Unix socket: %s", err)
 	}
 
@@ -87,7 +87,7 @@ func TestAll(t *testing.T) {
 	log.Debug("WebSocket opened")
 
 	log.Debug("Waiting for connection on Unix socket...")
-	unixConn, err := unixSock.Accept()
+	unixConn, err := netLst.Accept()
 	a.NoError(err)
 	log.Debug("Connection on Unix socket received")
 

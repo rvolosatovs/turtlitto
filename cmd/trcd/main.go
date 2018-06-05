@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"net"
 	"os"
-	"path/filepath"
+	"os/signal"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -17,8 +17,8 @@ import (
 
 var (
 	debug    = flag.Bool("debug", false, "Debug mode")
-	unixSock = flag.String("unixSocket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
-	tcpSock  = flag.String("tcpSocket", "", "Service address of tcp socket. TCP will be used instead of a Unix socket when this is set")
+	unixSock = flag.String("unixSocket", DefaultUnixSocket, "Path to the unix socket")
+	tcpSock  = flag.String("tcpSocket", DefaultTCPSocket, "Service address of tcp socket. TCP will be used instead of a Unix socket when this is set")
 	silent   = flag.Bool("silent", false, "Disables automatic sending of random state updates")
 )
 
@@ -41,92 +41,137 @@ func main() {
 
 	var netLst net.Listener
 	var err error
-	if *tcpSock == "" {
-		log.Info("Listening to Unix socket...")
+	switch {
+	case *unixSock != "" && *tcpSock != "":
+		log.WithFields(log.Fields{
+			"unixSocket": *unixSock,
+			"tcpSocket":  *tcpSock,
+		}).Fatal("At most one of tcpSocket and unixSocket must be specified")
+
+	case *unixSock != "":
+		logger := log.WithField("path", *unixSock)
+
+		logger.Info("Listening on Unix socket...")
 		netLst, err = net.Listen("unix", *unixSock)
-	} else {
-		log.Info("Listening to TCP socket...")
-		addr, _ := net.ResolveTCPAddr("", *tcpSock)
-		netLst, err = net.ListenTCP("tcp", addr)
+		if err != nil {
+			logger.WithError(err).Fatal("Failed to listen on Unix socket")
+		}
+
+	case *tcpSock != "":
+		logger := log.WithField("addr", *tcpSock)
+
+		logger.Info("Listening on TCP socket...")
+		netLst, err = net.Listen("tcp", *tcpSock)
+		if err != nil {
+			logger.WithError(err).Fatal("Failed to listen on TCP socket")
+		}
 	}
 
-	if err != nil {
-		panic(err)
-	}
 	defer netLst.Close()
 
-	for {
-		sockConn, err := netLst.Accept()
-		log.Infof("Connected to %s", sockConn.RemoteAddr())
-		if err != nil {
-			panic(err)
-		}
-		defer sockConn.Close()
+	closeCh := make(chan struct{})
 
-		// state handler of mock TRC, logs all actions
-		setStateHandler := func(msg *api.Message) (*api.Message, error) {
-			log.Infof("Received: %s", msg)
+	go func() {
+		for {
+			sockConn, err := netLst.Accept()
 
-			reply, err := trctest.DefaultStateHandler(msg)
-			log.Debugf("Reply with: %s", reply)
-			return reply, err
-		}
-		// ping handler of mock TRC, logs when ping is received
-		pingHandler := func(msg *api.Message) (*api.Message, error) {
-			log.Debug("Received ping")
-			return trctest.DefaultPingHandler(msg)
-		}
+			select {
+			case <-closeCh:
+				if sockConn != nil {
+					err = sockConn.Close()
+					if err != nil {
+						log.WithError(err).Error("Failed to close connection")
+					}
+				}
+				return
 
-		trcConn := trctest.Connect(sockConn, sockConn,
-			trctest.WithHandler(api.MessageTypeState, setStateHandler),
-			trctest.WithHandler(api.MessageTypePing, pingHandler),
-			trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
-		)
-
-		go func() {
-			for err := range trcConn.Errors() {
-				log.WithError(err).Error("Internal mock-trc error")
+			default:
 			}
-		}()
 
-		if err := trcConn.SendHandshake(&api.Handshake{Version: trcapi.DefaultVersion}); err != nil {
-			panic(err)
-		}
-		log.Debug("Received handshake")
+			if err != nil {
+				log.WithError(err).Error("Failed to accept connection")
+				continue
+			}
 
-		if err := trcConn.SendState(&api.State{}); err != nil {
-			log.Error("Initial state: " + err.Error())
-			return
-		}
-
-		closeCh := make(chan struct{})
-		defer close(closeCh)
-
-		// send random messages unless silent is set
-		if !(*silent) {
 			go func() {
-				hBeat := time.Tick(3 * time.Second)
+				defer sockConn.Close()
+
+				log.WithField("addr", sockConn.RemoteAddr()).Infof("Connection accepted")
+
+				// state handler of mock TRC, logs all actions
+				setStateHandler := func(msg *api.Message) (*api.Message, error) {
+					log.Infof("Received: %s", msg)
+
+					reply, err := trctest.DefaultStateHandler(msg)
+					log.Debugf("Reply with: %s", reply)
+					return reply, err
+				}
+				// ping handler of mock TRC, logs when ping is received
+				pingHandler := func(msg *api.Message) (*api.Message, error) {
+					log.Debug("Received ping")
+					return trctest.DefaultPingHandler(msg)
+				}
+
+				trcConn := trctest.Connect(sockConn, sockConn,
+					trctest.WithHandler(api.MessageTypeState, setStateHandler),
+					trctest.WithHandler(api.MessageTypePing, pingHandler),
+					trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
+				)
+				defer trcConn.Close()
+
+				go func() {
+					for err := range trcConn.Errors() {
+						log.WithError(err).Error("Internal mock-trc error")
+						return
+					}
+				}()
+
+				if err := trcConn.SendHandshake(&api.Handshake{
+					Version: trcapi.DefaultVersion,
+					Token:   "test",
+				}); err != nil {
+					log.WithError(err).Error("Failed to send handshake")
+					return
+				}
+				log.WithField("version", trcapi.DefaultVersion).Debug("Sent handshake")
+
+				if err := trcConn.SendState(apitest.RandomState()); err != nil {
+					log.WithError(err).Error("Failed to send state")
+					return
+				}
+
+				if *silent {
+					<-make(chan int)
+					return
+				}
+
 				for {
-					aWhile := time.Millisecond * time.Duration(rand.Intn(5000))
-					// wait 0-5 seconds, then send an empty state
 					select {
-					case <-time.After(aWhile):
+					case <-time.After(5*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
 						if err := trcConn.SendState(apitest.RandomState()); err != nil {
-							log.Error("Random sendState error: " + err.Error())
-						} else {
-							log.Debug("Sent random state")
+							log.WithError(err).Error("Failed to send state")
+							return
 						}
-					case <-hBeat:
+						log.Debug("Sent state")
+
+					case <-time.After(3*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
 						if err := trcConn.Ping(); err != nil {
-							log.Error("Ping error: " + err.Error())
-						} else {
-							log.Debug("Sent ping")
+							log.WithError(err).Error("Failed to send ping")
+							return
 						}
+						log.Debug("Sent ping")
+
 					case <-closeCh:
 						return
 					}
 				}
 			}()
 		}
-	}
+	}()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c)
+	sig := <-c
+	close(closeCh)
+	log.WithField("signal", sig).Info("Received signal, exiting...")
 }
