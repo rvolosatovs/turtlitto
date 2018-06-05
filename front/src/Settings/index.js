@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Turtle from "../Turtle";
 import styled from "styled-components";
 import Dropdown from "../Dropdown";
+import sendToServer from "../sendToServer";
 
 /**
  * Show the settings of all turtles.
@@ -11,8 +12,6 @@ import Dropdown from "../Dropdown";
  *
  * props:
  * - turtles: an array of Turtles
- * - onTurtleEnableChange: function to call when the turtle enable button is pressed
- * - onSettingsChange: a function which dictates what happens when a dropdown is changed.
  */
 
 const CONFIG_VALUES = [
@@ -23,15 +22,24 @@ const CONFIG_VALUES = [
   "Ball Handling demo"
 ];
 
+const COMMAND_VALUES = {
+  "Role assigner on": "role_assigner_on",
+  "Role assigner off": "role_assigner_off",
+  "Pass demo": "pass_demo",
+  "Penalty mode": "penalty_demo",
+  "Ball Handling demo": "ball_handling_demo"
+};
+
 const Settings = props => {
-  const { turtles, onChange } = props;
+  const { turtles } = props;
   return (
     <SettingsWrapper>
-      <RefboxDropdown
+      <RoleDropdown
+        id={"settings_role-dropdown"}
         currentValue={"Whatever"}
         values={CONFIG_VALUES}
         onChange={value => {
-          onChange("role", value);
+          sendToServer(COMMAND_VALUES[value], "command");
         }}
         enabled={true}
       />
@@ -57,11 +65,10 @@ Settings.propTypes = {
       role: PropTypes.string.isRequired,
       teamcolor: PropTypes.string.isRequired
     })
-  ).isRequired,
-  onChange: PropTypes.func.isRequired
+  ).isRequired
 };
 
-const RefboxDropdown = styled(Dropdown)`
+const RoleDropdown = styled(Dropdown)`
   width: 75%;
   margin-left: auto;
   margin-right: auto;

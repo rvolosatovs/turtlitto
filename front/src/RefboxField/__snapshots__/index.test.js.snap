@@ -1,9 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
+exports[`RefboxField shows a cyan and magenta refbox field with all buttons 1`] = `
 <styled.div>
   <styled.div>
     <Styled(RefboxButton)
+      id="KO_magenta"
       isPenalty={false}
       key="KO"
       onClick={[Function]}
@@ -12,6 +13,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       KO
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="FK_magenta"
       isPenalty={false}
       key="FK"
       onClick={[Function]}
@@ -20,6 +22,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       FK
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="GK_magenta"
       isPenalty={false}
       key="GK"
       onClick={[Function]}
@@ -28,6 +31,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       GK
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="TI_magenta"
       isPenalty={false}
       key="TI"
       onClick={[Function]}
@@ -36,6 +40,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       TI
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="C_magenta"
       isPenalty={false}
       key="C"
       onClick={[Function]}
@@ -44,6 +49,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       C
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="P_magenta"
       isPenalty={false}
       key="P"
       onClick={[Function]}
@@ -54,6 +60,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
   </styled.div>
   <styled.div>
     <Styled(RefboxButton)
+      id="KO_cyan"
       isPenalty={false}
       key="KO"
       onClick={[Function]}
@@ -62,6 +69,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       KO
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="FK_cyan"
       isPenalty={false}
       key="FK"
       onClick={[Function]}
@@ -70,6 +78,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       FK
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="GK_cyan"
       isPenalty={false}
       key="GK"
       onClick={[Function]}
@@ -78,6 +87,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       GK
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="TI_cyan"
       isPenalty={false}
       key="TI"
       onClick={[Function]}
@@ -86,6 +96,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       TI
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="C_cyan"
       isPenalty={false}
       key="C"
       onClick={[Function]}
@@ -94,6 +105,7 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
       C
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
+      id="P_cyan"
       isPenalty={false}
       key="P"
       onClick={[Function]}
@@ -105,164 +117,161 @@ exports[`RefboxField shows a cyan refbox field with all buttons 1`] = `
 </styled.div>
 `;
 
-exports[`RefboxField shows a magenta refbox field with all buttons 1`] = `
+exports[`RefboxField shows a refbox with penalty buttons 1`] = `
 <styled.div>
   <styled.div>
     <Styled(RefboxButton)
-      isPenalty={false}
-      key="KO"
+      id="Soft_magenta"
+      isPenalty={true}
+      key="Soft"
       onClick={[Function]}
       teamColor="magenta"
     >
-      KO
+      Soft
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
-      isPenalty={false}
-      key="FK"
+      id="Medium_magenta"
+      isPenalty={true}
+      key="Medium"
       onClick={[Function]}
       teamColor="magenta"
     >
-      FK
+      Medium
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
-      isPenalty={false}
-      key="GK"
+      id="Hard_magenta"
+      isPenalty={true}
+      key="Hard"
       onClick={[Function]}
       teamColor="magenta"
     >
-      GK
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={false}
-      key="TI"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      TI
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={false}
-      key="C"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      C
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={false}
-      key="P"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      P
+      Hard
     </Styled(RefboxButton)>
   </styled.div>
   <styled.div>
     <Styled(RefboxButton)
-      isPenalty={false}
-      key="KO"
+      id="Soft_cyan"
+      isPenalty={true}
+      key="Soft"
       onClick={[Function]}
       teamColor="cyan"
     >
-      KO
+      Soft
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
-      isPenalty={false}
-      key="FK"
+      id="Medium_cyan"
+      isPenalty={true}
+      key="Medium"
       onClick={[Function]}
       teamColor="cyan"
     >
-      FK
+      Medium
     </Styled(RefboxButton)>
     <Styled(RefboxButton)
-      isPenalty={false}
-      key="GK"
+      id="Hard_cyan"
+      isPenalty={true}
+      key="Hard"
       onClick={[Function]}
       teamColor="cyan"
     >
-      GK
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={false}
-      key="TI"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      TI
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={false}
-      key="C"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      C
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={false}
-      key="P"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      P
+      Hard
     </Styled(RefboxButton)>
   </styled.div>
 </styled.div>
 `;
 
-exports[`RefboxField shows a magenta refbox with penalty buttons 1`] = `
-<styled.div>
-  <styled.div>
-    <Styled(RefboxButton)
-      isPenalty={true}
-      key="Soft"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      Soft
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={true}
-      key="Medium"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      Medium
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={true}
-      key="Hard"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      Hard
-    </Styled(RefboxButton)>
-  </styled.div>
-  <styled.div>
-    <Styled(RefboxButton)
-      isPenalty={true}
-      key="Soft"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      Soft
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={true}
-      key="Medium"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      Medium
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      isPenalty={true}
-      key="Hard"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      Hard
-    </Styled(RefboxButton)>
-  </styled.div>
-</styled.div>
+exports[`When clicked, a cyan C button should pass \`corner_cyan\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"corner_cyan\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a cyan FK button should pass \`free_kick_cyan\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"free_kick_cyan\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a cyan GK button should pass \`goal_kick_cyan\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"goal_kick_cyan\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a cyan KO button should pass \`kick_off_cyan\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"kick_off_cyan\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a cyan P button should pass \`penalty_cyan\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"penalty_cyan\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a cyan TI button should pass \`throw_in_cyan\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"throw_in_cyan\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a magenta C button should pass \`corner_magenta\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"corner_magenta\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a magenta FK button should pass \`free_kick_magenta\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"free_kick_magenta\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a magenta GK button should pass \`goal_kick_magenta\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"goal_kick_magenta\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a magenta KO button should pass \`kick_off_magenta\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"kick_off_magenta\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a magenta P button should pass \`penalty_magenta\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"penalty_magenta\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, a magenta TI button should pass \`throw_in_magenta\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"throw_in_magenta\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
 `;

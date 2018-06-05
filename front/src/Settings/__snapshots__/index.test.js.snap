@@ -1,10 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`When the role assigner dropdown is changed to 'Ball Handling demo', it should pass 'ball_handling_demo' to sendToServer 1`] = `
+Object {
+  "body": "\\"ball_handling_demo\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When the role assigner dropdown is changed to 'Pass demo', it should pass 'pass_demo' to sendToServer 1`] = `
+Object {
+  "body": "\\"pass_demo\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When the role assigner dropdown is changed to 'Penalty mode', it should pass 'penalty_demo' to sendToServer 1`] = `
+Object {
+  "body": "\\"penalty_demo\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When the role assigner dropdown is changed to 'Role Assigner off', it should pass 'role_assigner_off' to sendToServer 1`] = `
+Object {
+  "body": "\\"role_assigner_off\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When the role assigner dropdown is changed to 'Role Assigner on', it should pass 'role_assigner_on' to sendToServer 1`] = `
+Object {
+  "body": "\\"role_assigner_on\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
 exports[`renders without crashing 1`] = `
 <styled.div>
   <Styled(Dropdown)
     currentValue="Whatever"
     enabled={true}
+    id="settings_role-dropdown"
     onChange={[Function]}
     values={
       Array [

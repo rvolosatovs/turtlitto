@@ -3,14 +3,32 @@
 exports[`InOutButton shows two buttons with go in or go out written on it 1`] = `
 <styled.div>
   <styled.button
+    id="InOutButton__go-in-button"
     onClick={[Function]}
   >
     Go in
   </styled.button>
   <styled.button
+    id="InOutButton__go-out-button"
     onClick={[Function]}
   >
     Go out
   </styled.button>
 </styled.div>
+`;
+
+exports[`When clicked, the Go In button should pass \`go_in\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"go_in\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
+`;
+
+exports[`When clicked, the Go Out button should pass \`go_out\` to the 'sendToServer' function 1`] = `
+Object {
+  "body": "\\"go_out\\"",
+  "headers": Object {},
+  "method": "PUT",
+}
 `;

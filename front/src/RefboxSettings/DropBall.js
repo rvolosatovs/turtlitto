@@ -14,6 +14,7 @@ const DropBall = props => {
   return (
     <DropBallWrapper className={props.className}>
       <DropBallButton
+        id={"drop-ball-button"}
         onClick={() => {
           props.onClick();
         }}
