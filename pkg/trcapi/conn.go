@@ -134,6 +134,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				conn.errCh <- errors.Wrap(err, "failed to decode incoming message")
 				return
 			}
+			log.Debugf("Received %s message", msg.Type)
 
 			switch msg.Type {
 			case api.MessageTypePing:
