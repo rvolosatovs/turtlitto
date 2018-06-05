@@ -38,6 +38,18 @@ func StateHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
+		tok, err := trcConn.Token()
+		if err != nil {
+			log.WithError(err).Warn("TRC connection established, but failed to get token")
+			http.Error(w, fmt.Sprintf("Token not initialized"), http.StatusInternalServerError)
+			return
+		}
+
+		if r.Header.Get("token") != tok {
+			log.WithError(err).Debug("Authentication failed")
+			http.Error(w, fmt.Sprintf("Wrong authentication token"), http.StatusUnauthorized)
+			return
+		}
 		ctx := r.Context()
 
 		changeCh, closeFn, err := trcConn.SubscribeStateChanges(ctx)
@@ -109,6 +121,19 @@ func CommandHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
+		tok, err := trcConn.Token()
+		if err != nil {
+			log.WithError(err).Warn("TRC connection established, but failed to get token")
+			http.Error(w, fmt.Sprintf("Token not initialized"), http.StatusInternalServerError)
+			return
+		}
+
+		if r.Header.Get("token") != tok {
+			log.WithError(err).Debug("Authentication failed")
+			http.Error(w, fmt.Sprintf("Wrong authentication token"), http.StatusUnauthorized)
+			return
+		}
+
 		if err := trcConn.SetCommand(r.Context(), cmd); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
 			return
@@ -140,6 +165,19 @@ func TurtleHandler(pool *trcapi.Pool) http.HandlerFunc {
 		trcConn, err := pool.Conn()
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Failed to establish connection to TRC: %s", err), http.StatusInternalServerError)
+			return
+		}
+
+		tok, err := trcConn.Token()
+		if err != nil {
+			log.WithError(err).Warn("TRC connection established, but failed to get token")
+			http.Error(w, fmt.Sprintf("Token not initialized"), http.StatusInternalServerError)
+			return
+		}
+
+		if r.Header.Get("token") != tok {
+			log.WithError(err).Debug("Authentication failed")
+			http.Error(w, fmt.Sprintf("Wrong authentication token"), http.StatusUnauthorized)
 			return
 		}
 
