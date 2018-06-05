@@ -1,10 +1,12 @@
 SHELL = /usr/bin/env bash
 BINDIR ?= release
-GOBUILD ?= CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-w -s"
+GOARCH ?= $(shell go env GOARCH)
+GOOS ?= $(shell go env GOOS)
+GOBUILD ?= CGO_ENABLED=0 go build -ldflags="-w -s"
 YARN ?= yarn
 DOCKER_IMAGE_VERSION ?= "latest"
 
-GO_FILES = `find cmd pkg -name '*.go'`
+GO_FILES = $(shell find cmd pkg -name '*.go')
 
 all: deps go.build js.build
 
@@ -39,17 +41,23 @@ go.test: deps
 	$(info Testing Go code...)
 	@go test -cover -coverprofile=coverage.txt -covermode=atomic -v ./...
 
-$(BINDIR)/srrs-linux-amd64: vendor
+$(BINDIR)/trcd-$(GOOS)-$(GOARCH): vendor
+	$(info Compiling $@...)
+	@$(GOBUILD) -o $@ ./cmd/trcd
+
+trcd: $(BINDIR)/trcd-$(GOOS)-$(GOARCH)
+
+$(BINDIR)/srrs-$(GOOS)-$(GOARCH): vendor
 	$(info Compiling $@...)
 	@$(GOBUILD) -o $@ ./cmd/srrs
 
-srrs: $(BINDIR)/srrs-linux-amd64
+srrs: $(BINDIR)/srrs-$(GOOS)-$(GOARCH)
 
-$(BINDIR)/relay-linux-amd64: vendor
+$(BINDIR)/relay-$(GOOS)-$(GOARCH): vendor
 	$(info Compiling $@...)
 	@$(GOBUILD) -o $@ ./cmd/relay
 
-relay: $(BINDIR)/relay-linux-amd64
+relay: $(BINDIR)/relay-$(GOOS)-$(GOARCH)
 
 go.build: srrs
 
@@ -61,6 +69,8 @@ js.build: deps
 	@$(YARN) build
 	@rm -rf $(BINDIR)/front
 	@mv ./front/build $(BINDIR)/front
+
+$(BINDIR)/front: js.build
 
 js.test: deps
 	@$(info Testing JS code...)
@@ -80,6 +90,6 @@ docker: $(BINDIR)/front $(BINDIR)/srrs-linux-amd64
 	docker build -t rvolosatovs/srr:$(DOCKER_IMAGE_VERSION) .
 
 clean:
-	rm -rf node_modules front/node_modules vendor $(BINDIR)/srrs-linux-amd64 $(BINDIR)/front
+	rm -rf node_modules front/node_modules vendor $(BINDIR)/srrs-* $(BINDIR)/front
 
-.PHONY: all srrs deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
+.PHONY: all srrs relay trcd deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean

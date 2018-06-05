@@ -25,7 +25,8 @@ var (
 	debug    = flag.Bool("debug", false, "Debug mode")
 	httpAddr = flag.String("http", defaultAddr, "HTTP service address")
 	static   = flag.String("static", "", "Path to the static assets")
-	sock     = flag.String("socket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
+	unixSock = flag.String("unixSocket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
+	tcpSock  = flag.String("tcpSocket", "", "Service address of tcp socket. TCP will be used instead of a Unix socket when this is set")
 
 	stateEndpoint   = path.Join("api", "v1", "state")
 	turtleEndpoint  = path.Join("api", "v1", "turtles")
@@ -50,19 +51,35 @@ func main() {
 	}
 
 	pool := trcapi.NewPool(func() (*trcapi.Conn, func(), error) {
-		logger := log.WithField("path", *sock)
+		var logger *log.Entry
 
-		logger.Debug("Dialing Unix socket...")
-		unixConn, err := net.Dial("unix", *sock)
-		if err != nil {
-			return nil, nil, errors.Wrapf(err, "failed to connect to TRC's unix socket")
+		var netConn net.Conn
+		if *tcpSock == "" {
+			logger = log.WithField("trc_socket", *unixSock)
+
+			var err error
+			logger.Debug("Dialing Unix socket...")
+			netConn, err = net.Dial("unix", *unixSock)
+			if err != nil {
+				return nil, nil, errors.Wrapf(err, "Failed to connect to TRC's unix socket")
+			}
+			logger.Debug("Unix socket dial succeeded")
+		} else {
+			logger = log.WithField("trc_socket", *tcpSock)
+
+			var err error
+			logger.Debug("Dialing TCP socket...")
+			netConn, err = net.Dial("tcp", *tcpSock)
+			if err != nil {
+				return nil, nil, errors.Wrapf(err, "Failed to connect to TRC's TCP socket")
+			}
+			logger.Debug("TCP socket dial succeeded")
 		}
-		logger.Debug("Unix socket dial succeeded")
 
-		logger.Debug("Initializing TRC protocol connection on Unix socket...")
-		trcConn, err := trcapi.Connect(trcapi.DefaultVersion, unixConn, unixConn)
+		logger.Debug("Initializing TRC protocol connection on socket...")
+		trcConn, err := trcapi.Connect(trcapi.DefaultVersion, netConn, netConn)
 		if err != nil {
-			return nil, nil, errors.Wrapf(err, "failed to establish connection to TRC")
+			return nil, nil, errors.Wrapf(err, "Failed to establish connection to TRC")
 		}
 		logger.Debug("TRC protocol connection initialized")
 
@@ -72,9 +89,9 @@ func main() {
 				logger.WithError(err).Error("Failed to close TRC connection")
 			}
 
-			logger.WithError(err).Debug("Closing Unix socket...")
-			if err := unixConn.Close(); err != nil {
-				logger.WithError(err).Error("Failed to close Unix socket")
+			logger.WithError(err).Debug("Closing socket...")
+			if err := netConn.Close(); err != nil {
+				logger.WithError(err).Error("Failed to close socket")
 			}
 		}, nil
 	})

@@ -7,6 +7,10 @@ sudo: required
 services:
 - docker
 
+env:
+  global:
+    - GOOS=linux GOARCH=amd64
+
 cache:
   yarn: true
   directories:
@@ -22,15 +26,13 @@ before_install:
   - sudo apt-get -y install docker-ce
 
 before_script:
-  - make clean
   - npm install -g yarn@latest
-  - make fmt
+  - make clean fmt
   - make lint || true
 
 script:
-  - make
+  - make all relay trcd test
   - git diff --exit-code
-  - make test
   - bash <(curl -s https://codecov.io/bash) -cF SRRS -f coverage.txt
   - bash <(curl -s https://codecov.io/bash) -cF SRRC
 
