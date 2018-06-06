@@ -4,6 +4,7 @@ import (
 	crand "crypto/rand"
 	"encoding/json"
 	"math/rand"
+	"strconv"
 
 	"github.com/blang/semver"
 	"github.com/oklog/ulid"
@@ -46,7 +47,7 @@ func RandomMessageType() *api.MessageType {
 //RandomHandshake returns a Handshake with randomly generated version string (within v0.0.0 - v9.9.9).
 func RandomHandshake() *api.Handshake {
 	//TODO: Proper way of creating handshakes
-	vers := string(rand.Intn(10)) + "." + string(rand.Intn(10)) + "." + string(rand.Intn(10))
+	vers := strconv.Itoa(rand.Intn(10)) + "." + strconv.Itoa(rand.Intn(10)) + "." + strconv.Itoa(rand.Intn(10))
 	ver, err := semver.Make(vers)
 	if err != nil {
 		panic("could not parse version")
@@ -71,7 +72,7 @@ func RandomState() *api.State {
 	pld.Command = *RandomCommand()
 	tstatemap := make(map[string]*api.TurtleState)
 	for i := range rand.Perm(6) {
-		tstatemap[string(i+1)] = RandomTurtleState()
+		tstatemap[strconv.Itoa(i+1)] = RandomTurtleState()
 	}
 	pld.Turtles = tstatemap
 	return &pld
