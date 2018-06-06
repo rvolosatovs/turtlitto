@@ -653,7 +653,11 @@ exports[`BottomBar should match snapshot when disconnected 1`] = `
 exports[`When clicked, the start button should pass \`start\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"start\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -661,7 +665,11 @@ Object {
 exports[`When clicked, the stop button should pass \`stop\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"stop\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
