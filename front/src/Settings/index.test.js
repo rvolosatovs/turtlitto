@@ -61,24 +61,22 @@ describe("When the role assigner dropdown is changed to", () => {
     beforeEach(() => {
       wrapper = shallow(
         <Settings
-          turtles={[
-            {
-              id: 1,
+          turtles={{
+            1: {
               enabled: true,
               batteryvoltage: 66,
               homegoal: "Yellow home",
               role: "INACTIVE",
               teamcolor: "Magenta"
             },
-            {
-              id: 2,
+            2: {
               enabled: false,
               batteryvoltage: 42,
               homegoal: "Yellow home",
               role: "INACTIVE",
               teamcolor: "Magenta"
             }
-          ]}
+          }}
         />
       );
       const l = window.location;

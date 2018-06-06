@@ -31,12 +31,7 @@ const COMMAND_VALUES = {
 };
 
 const Settings = props => {
-  const turtles = Object.keys(props.turtles)
-    .filter(id => props.turtles[id].enabled)
-    .map(id => {
-      return { ...props.turtles[id], id: id };
-    });
-
+  const { turtles } = props;
   return (
     <SettingsWrapper>
       <RoleDropdown

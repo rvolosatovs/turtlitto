@@ -8,19 +8,22 @@ const TurtleList = props => {
   const { turtles } = props;
   return (
     <Row>
-      {turtles.map((turtle, index) => (
-        <Col xs={12} md={6} key={index}>
-          <Turtle key={index} turtle={turtle} editable />
-        </Col>
-      ))}
+      {Object.keys(turtles)
+        .filter(id => turtles[id].enabled)
+        .map((id, index) => {
+          return (
+            <Col xs={12} md={6} key={index}>
+              <Turtle key={index} id={id} turtle={turtles[id]} editable />
+            </Col>
+          );
+        })}
     </Row>
   );
 };
 
 TurtleList.propTypes = {
-  turtles: PropTypes.arrayOf(
+  turtles: PropTypes.objectOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
       enabled: PropTypes.bool.isRequired,
       batteryvoltage: PropTypes.number.isRequired,
       homegoal: PropTypes.string.isRequired,
