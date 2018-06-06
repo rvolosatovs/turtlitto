@@ -3,6 +3,7 @@ import "./App.css";
 import "normalize.css";
 import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
+import update from "immutability-helper";
 
 import BottomBar from "./BottomBar";
 import connectionTypes from "./BottomBar/connectionTypes";
@@ -30,56 +31,50 @@ class App extends Component {
     this.state = {
       activePage: "settings",
       connectionStatus: connectionTypes.DISCONNECTED,
-      turtles: [
-        {
-          id: 1,
+      turtles: {
+        1: {
           enabled: false,
           batteryvoltage: 66,
           homegoal: "Yellow home",
           role: "INACTIVE",
           teamcolor: "Magenta"
         },
-        {
-          id: 2,
+        2: {
           enabled: false,
           batteryvoltage: 42,
           homegoal: "Yellow home",
           role: "INACTIVE",
           teamcolor: "Magenta"
         },
-        {
-          id: 3,
+        3: {
           enabled: false,
           batteryvoltage: 42,
           homegoal: "Yellow home",
           role: "INACTIVE",
           teamcolor: "Magenta"
         },
-        {
-          id: 4,
+        4: {
           enabled: false,
           batteryvoltage: 100,
           homegoal: "Yellow home",
           role: "INACTIVE",
           teamcolor: "Magenta"
         },
-        {
-          id: 5,
+        5: {
           enabled: false,
           batteryvoltage: 4,
           homegoal: "Yellow home",
           role: "INACTIVE",
           teamcolor: "Magenta"
         },
-        {
-          id: 6,
+        6: {
           enabled: false,
           batteryvoltage: 0,
           homegoal: "Yellow home",
           role: "INACTIVE",
           teamcolor: "Magenta"
         }
-      ],
+      },
       notifications: [
         { notificationType: "error", message: "Pants on fire" },
         { notificationType: "success", message: "Rendering Notifications" }
@@ -125,19 +120,9 @@ class App extends Component {
     console.log(`Sent: ${message}`);
   }
 
-  onTurtleEnableChange(position) {
+  onTurtleEnableChange(id) {
     this.setState(prev => {
-      const turtles = prev.turtles.map((turtle, index) => {
-        if (index === position) {
-          return {
-            ...turtle,
-            enabled: !turtle.enabled
-          };
-        }
-
-        return turtle;
-      });
-
+      const turtles = update(prev.turtles, { [id]: { $toggle: ["enabled"] } });
       return { turtles };
     });
   }
@@ -169,18 +154,16 @@ class App extends Component {
           {activePage === "settings" && (
             <Fragment>
               <TurtleEnableBar
-                turtles={turtles.map(turtle => {
+                turtles={Object.keys(turtles).map(id => {
                   return {
-                    id: turtle.id,
-                    enabled: turtle.enabled
+                    id: id,
+                    enabled: turtles[id].enabled
                   };
                 })}
-                onTurtleEnableChange={position =>
-                  this.onTurtleEnableChange(position)
-                }
+                onTurtleEnableChange={id => this.onTurtleEnableChange(id)}
               />
               <ScrollableContent>
-                <Settings turtles={turtles.filter(turtle => turtle.enabled)} />
+                <Settings turtles={turtles} />
               </ScrollableContent>
             </Fragment>
           )}

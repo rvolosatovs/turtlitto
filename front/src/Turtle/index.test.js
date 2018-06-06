@@ -7,12 +7,11 @@ describe("Turtle", () => {
     const turtle = {
       batteryvoltage: 42,
       homegoal: "Blue home",
-      id: 2,
       role: "Goalkeeper",
       teamcolor: "Cyan"
     };
     const wrapper = shallow(
-      <Turtle turtle={turtle} editable={false} onChange={() => {}} />
+      <Turtle id="2" turtle={turtle} editable={false} onChange={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();
   });
@@ -25,11 +24,10 @@ describe("Turtle", () => {
       const turtle = {
         batteryvoltage: 42,
         homegoal: "Blue home",
-        id: 2,
         role: "Goalkeeper",
         teamcolor: "Cyan"
       };
-      wrapper = shallow(<Turtle turtle={turtle} editable />);
+      wrapper = shallow(<Turtle id="2" turtle={turtle} editable />);
       global.fetch = jest.fn().mockImplementation((url, params) => {
         expect(url).toBe("/api/v1/turtles/");
         expect(params).toMatchSnapshot();
