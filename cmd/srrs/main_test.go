@@ -1,54 +1,67 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
+	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 )
 
 var (
 	unixSockPath = filepath.Join(os.TempDir(), "trc-sock-test")
 
 	netLst net.Listener
+
+	logger *zap.SugaredLogger
 )
 
 func init() {
+	zapLogger, err := zap.NewDevelopment()
+	if err != nil {
+		panic(err)
+	}
+	logger = zapLogger.Sugar()
+
 	f, err := os.Open(unixSockPath)
 	if !os.IsNotExist(err) {
 		f.Close()
 
-		log.Printf("Removing %s...", unixSockPath)
+		logger.Infof("Removing %s...", unixSockPath)
 		if err := os.Remove(unixSockPath); err != nil {
-			log.Fatalf("Failed to remove %s: %s", unixSockPath, err)
+			logger.Fatalf("Failed to remove %s: %s", unixSockPath, err)
 		}
 	}
 
 	netLst, err = net.Listen("unix", unixSockPath)
 	if err != nil {
-		log.Fatalf("Failed to open Unix socket on %s: %s", unixSockPath, err)
+		logger.Fatalf("Failed to open Unix socket on %s: %s", unixSockPath, err)
 	}
 }
 
 func TestMain(m *testing.M) {
 	if err := flag.Set("unixSocket", unixSockPath); err != nil {
-		log.Fatalf("Failed to set `socket` to %s: %s", unixSockPath, err)
+		logger.Fatalf("Failed to set `socket` to %s: %s", unixSockPath, err)
 	}
 
 	if err := flag.Set("debug", "true"); err != nil {
-		log.Fatalf("Failed to set `debug`: %s", err)
+		logger.Fatalf("Failed to set `debug`: %s", err)
 	}
 
-	log.Print("Starting SRRS in goroutine...")
+	logger.Info("Starting SRRS in goroutine...")
 	go main()
 
 	dial := func() (net.Conn, error) { return net.DialTimeout("tcp", defaultAddr, time.Second) }
@@ -60,54 +73,79 @@ func TestMain(m *testing.M) {
 		conn, err = dial()
 	}
 	if err != nil {
-		log.Fatalf("Failed to connect to SRRS at %s: %s", defaultAddr, err)
+		logger.Fatalf("Failed to connect to SRRS at %s: %s", defaultAddr, err)
 	}
 
 	if err := conn.Close(); err != nil {
-		log.Fatalf("Failed to close connection: %s", err)
+		logger.Fatalf("Failed to close connection: %s", err)
 	}
 
 	ret := m.Run()
 
 	if err := netLst.Close(); err != nil {
-		log.Printf("Failed to close Unix socket: %s", err)
+		logger.Infof("Failed to close Unix socket: %s", err)
 	}
 
-	log.Printf("Exiting with return code: %d", ret)
+	logger.Infof("Exiting with return code: %d", ret)
 	os.Exit(ret)
 }
 
 func TestAll(t *testing.T) {
 	a := require.New(t)
 
-	wsAddr := "ws://localhost" + defaultAddr + "/" + stateEndpoint
-	log.WithField("addr", wsAddr).Debug("Opening a WebSocket...")
-	wsConn, _, err := websocket.DefaultDialer.Dial(wsAddr, nil)
-	a.NoError(err)
-	log.Debug("WebSocket opened")
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
 
-	log.Debug("Waiting for connection on Unix socket...")
+	hs := apitest.RandomHandshake()
+
+	var wsConn *websocket.Conn
+	var wsErr error
+	go func() {
+		defer wg.Done()
+
+		wsAddr := "ws://localhost" + defaultAddr + "/" + stateEndpoint
+		logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
+		wsConn, _, wsErr = websocket.DefaultDialer.Dial(wsAddr, http.Header{
+			"Authorization": []string{fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString(append([]byte("user:"), []byte(hs.Token)...)))},
+		})
+	}()
+
+	logger.Debug("Waiting for connection on Unix socket...")
 	unixConn, err := netLst.Accept()
 	a.NoError(err)
-	log.Debug("Connection on Unix socket received")
+	logger.Debug("Connection on Unix socket received")
 
-	log.Debug("Establishing mock TRC connection...")
-	trc := trctest.Connect(unixConn, unixConn)
-	log.Debug("Mock TRC connection established")
+	logger.Debug("Establishing mock TRC connection...")
+	trc := trctest.Connect(unixConn, unixConn,
+		trctest.WithHandler(api.MessageTypeHandshake, func(msg *api.Message) (*api.Message, error) {
+			a.NotNil(msg.ParentID)
+			a.NotEmpty(msg.ParentID)
+			a.NotEmpty(msg.MessageID)
+			a.NotEqual(msg.MessageID, msg.ParentID)
+			a.NotEmpty(msg.Payload)
+			return nil, nil
+		}),
+	)
+	logger.Debug("Mock TRC connection established")
 
-	log.Debug("Sending handshake...")
+	logger.Debug("Sending handshake...")
 	err = trc.SendHandshake(&api.Handshake{
 		Version: trcapi.DefaultVersion,
 	})
 	a.NoError(err)
-	log.Debug("Handshake sent")
+	logger.Debug("Handshake sent")
+
+	wg.Wait()
+	a.NoError(wsErr)
+
+	logger.Debug("WebSocket opened")
 
 	var got api.State
-	log.Debug("Receiving nil state on WebSocket...")
+	logger.Debug("Receiving nil state on WebSocket...")
 	err = wsConn.ReadJSON(&got)
 	a.Nil(err)
 	a.Equal(api.State{}, got)
-	log.Debug("Nil state received on WebSocket")
+	logger.Debug("Nil state received on WebSocket")
 
 	for i := 0; i < 10; i++ {
 		// TODO: generate
@@ -117,17 +155,17 @@ func TestAll(t *testing.T) {
 			},
 		}
 
-		log.Debug("Sending random state...")
+		logger.Debug("Sending random state...")
 		err = trc.SendState(state)
 		a.NoError(err)
-		log.Debug("Random state sent")
+		logger.Debug("Random state sent")
 
 		got := &api.State{}
-		log.Debug("Receiving random state on WebSocket...")
+		logger.Debug("Receiving random state on WebSocket...")
 		err = wsConn.ReadJSON(got)
 		a.Nil(err)
 		a.Equal(got, state)
-		log.Debug("Random state received on WebSocket")
+		logger.Debug("Random state received on WebSocket")
 	}
 	// TODO: check setting of commands
 }

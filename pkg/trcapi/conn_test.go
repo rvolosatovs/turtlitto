@@ -9,17 +9,13 @@ import (
 	"testing"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 	. "github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
-
-func init() {
-	log.SetLevel(log.DebugLevel)
-}
 
 func TestState(t *testing.T) {
 	for i, tc := range []struct {
@@ -141,6 +137,8 @@ func TestState(t *testing.T) {
 }
 
 func TestSetState(t *testing.T) {
+	logger := zap.L()
+
 	for i, tc := range []struct {
 		Input  *api.State
 		Output *api.State
@@ -166,6 +164,8 @@ func TestSetState(t *testing.T) {
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			logger := logger.With(zap.String("test", t.Name()))
+
 			a := assert.New(t)
 
 			srrsIn, trcOut := io.Pipe()
@@ -228,11 +228,11 @@ func TestSetState(t *testing.T) {
 			a.NoError(err)
 			a.NotNil(closeFn)
 
-			log.Debug("Setting state...")
+			logger.Debug("Setting state...")
 			err = conn.SetState(ctx, tc.Input)
 			a.NoError(err)
 
-			log.Debug("Waiting for state update...")
+			logger.Debug("Waiting for state update...")
 			select {
 			case <-ch:
 			case <-time.After(time.Second):
@@ -240,7 +240,7 @@ func TestSetState(t *testing.T) {
 				t.FailNow()
 			}
 
-			log.Debug("Querying the state...")
+			logger.Debug("Querying the state...")
 			st = conn.State(ctx)
 			a.Equal(tc.Output, st)
 
