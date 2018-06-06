@@ -45,8 +45,8 @@ const onChange = (id, propName, propValue) => {
  * - onChange: a function with two arguments that is called when one of the dropdowns is changed. The first argument is name of the prop that is changed, the second argument is its new value.
  */
 const Turtle = props => {
-  const { batteryvoltage, homegoal, role, teamcolor } = props.turtle;
-  const { editable, id } = props;
+  const { batteryvoltage, homegoal, role, teamcolor, id } = props.turtle;
+  const { editable } = props;
   return (
     <DefaultTurtle>
       <BatterySection>
@@ -93,9 +93,9 @@ Turtle.propTypes = {
     batteryvoltage: PropTypes.number,
     homegoal: PropTypes.string,
     role: PropTypes.string,
-    teamcolor: PropTypes.string
+    teamcolor: PropTypes.string,
+    id: PropTypes.string.isRequired
   }).isRequired,
-  id: PropTypes.string.isRequired,
   editable: PropTypes.bool,
   onChange: PropTypes.func
 };

@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TurtleList should match snapshot 1`] = `
+<Row>
+  <Col
+    key="0"
+    md={6}
+    xs={12}
+  >
+    <Turtle
+      editable={true}
+      key="1"
+      turtle={
+        Object {
+          "batteryvoltage": 66,
+          "enabled": true,
+          "homegoal": "Yellow home",
+          "id": 1,
+          "role": "INACTIVE",
+          "teamcolor": "Magenta",
+        }
+      }
+    />
+  </Col>
+  <Col
+    key="1"
+    md={6}
+    xs={12}
+  >
+    <Turtle
+      editable={true}
+      key="2"
+      turtle={
+        Object {
+          "batteryvoltage": 42,
+          "enabled": false,
+          "homegoal": "Yellow home",
+          "id": 2,
+          "role": "INACTIVE",
+          "teamcolor": "Magenta",
+        }
+      }
+    />
+  </Col>
+</Row>
+`;

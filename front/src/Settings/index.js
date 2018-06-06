@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Turtle from "../Turtle";
 import styled from "styled-components";
 import Dropdown from "../Dropdown";
+import TurtleList from "../TurtleList";
 import sendToServer from "../sendToServer";
 
 /**
@@ -31,7 +31,12 @@ const COMMAND_VALUES = {
 };
 
 const Settings = props => {
-  const { turtles } = props;
+  const turtles = Object.keys(props.turtles)
+    .filter(id => props.turtles[id].enabled)
+    .map(id => {
+      return { ...props.turtles[id], id: id };
+    });
+
   return (
     <SettingsWrapper>
       <RoleDropdown
@@ -43,9 +48,7 @@ const Settings = props => {
         }}
         enabled={true}
       />
-      {Object.keys(turtles)
-        .filter(id => turtles[id].enabled)
-        .map(id => <Turtle key={id} id={id} turtle={turtles[id]} editable />)}
+      <TurtleList turtles={turtles} />
     </SettingsWrapper>
   );
 };
@@ -63,7 +66,6 @@ Settings.propTypes = {
 };
 
 const RoleDropdown = styled(Dropdown)`
-  width: 75%;
   margin-left: auto;
   margin-right: auto;
   height: 4rem;
