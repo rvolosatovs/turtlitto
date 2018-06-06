@@ -26,7 +26,7 @@ var (
 	tcpAddr  = flag.String("tcp", defaultAddr, "HTTP service address")
 	static   = flag.String("static", "", "Path to the static assets")
 	unixSock = flag.String("unixSocket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
-	tcpSock  = flag.String("tcpSocket", "", "Service address of tcp socket. TCP will be used instead of a Unix socket when this is set")
+	tcpSock  = flag.String("tcpSocket", "", "Internal TCP socket address. TRC <-> SRRS communication will use this TCP socket instead of a Unix socket when set")
 )
 
 func main() {
