@@ -103,26 +103,28 @@ func main() {
 				go func() {
 					defer sockConn.Close()
 
-					logger.With(zap.Stringer("addr", sockConn.RemoteAddr())).Info("Connection accepted")
+					logger := logger.With(zap.Stringer("addr", sockConn.RemoteAddr()))
 
-					// state handler of mock TRC, logs all actions
-					setStateHandler := func(msg *api.Message) (*api.Message, error) {
-						logger.With(zap.Any("state", msg)).Info("Received state")
-
-						reply, err := trctest.DefaultStateHandler(msg)
-						logger.With(zap.Any("reply", reply)).Debug("Sending reply...")
-						return reply, err
-					}
-					// ping handler of mock TRC, logs when ping is received
-					pingHandler := func(msg *api.Message) (*api.Message, error) {
-						logger.Debug("Received ping")
-						return trctest.DefaultPingHandler(msg)
-					}
+					logger.Info("Connection accepted")
 
 					trcConn := trctest.Connect(sockConn, sockConn,
-						trctest.WithHandler(api.MessageTypeState, setStateHandler),
-						trctest.WithHandler(api.MessageTypePing, pingHandler),
-						trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
+						trctest.WithHandler(api.MessageTypeState, func(msg *api.Message) (*api.Message, error) {
+							logger.With(zap.Any("state", msg)).Info("Received state")
+
+							reply, err := trctest.DefaultStateHandler(msg)
+							logger.With(zap.Any("reply", reply)).Debug("Sending reply...")
+							return reply, err
+						}),
+
+						trctest.WithHandler(api.MessageTypePing, func(msg *api.Message) (*api.Message, error) {
+							logger.Debug("Received ping")
+							return trctest.DefaultPingHandler(msg)
+						}),
+
+						trctest.WithHandler(api.MessageTypeHandshake, func(msg *api.Message) (*api.Message, error) {
+							logger.Debug("Received handshake")
+							return trctest.DefaultPingHandler(msg)
+						}),
 					)
 					defer trcConn.Close()
 
@@ -146,38 +148,50 @@ func main() {
 						logger.With(zap.Error(err)).Error("Failed to send state")
 						return
 					}
+					logger.Info("Sent initial state")
 
 					if *silent {
 						<-make(chan int)
 						return
 					}
 
-					for {
-						select {
-						case <-time.After(5*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
-							if err := trcConn.SendState(apitest.RandomState()); err != nil {
-								logger.With(zap.Error(err)).Error("Failed to send state")
+					go func() {
+						for {
+							select {
+							case <-time.After(5*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
+								if err := trcConn.SendState(apitest.RandomState()); err != nil {
+									logger.With(zap.Error(err)).Error("Failed to send state")
+									return
+								}
+								logger.Debug("Sent state")
+
+							case <-closeCh:
 								return
 							}
-							logger.Debug("Sent state")
-
-						case <-time.After(3*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
-							if err := trcConn.Ping(); err != nil {
-								logger.With(zap.Error(err)).Error("Failed to send ping")
-								return
-							}
-							logger.Debug("Sent ping")
-
-						case <-closeCh:
-							return
 						}
-					}
+					}()
+
+					go func() {
+						for {
+							select {
+							case <-time.After(3*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
+								if err := trcConn.Ping(); err != nil {
+									logger.With(zap.Error(err)).Error("Failed to send ping")
+									continue
+								}
+								logger.Debug("Sent ping")
+
+							case <-closeCh:
+								return
+							}
+						}
+					}()
 				}()
 			}
 		}()
 
 		c := make(chan os.Signal, 1)
-		signal.Notify(c)
+		signal.Notify(c, os.Interrupt)
 		sig := <-c
 		close(closeCh)
 		logger.With(zap.Stringer("signal", sig)).Info("Received signal, exiting...")
