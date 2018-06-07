@@ -2,24 +2,12 @@
 
 exports[`BottomBar is in the refbox mode should match snapshot 1`] = `
 <styled.div>
-  <styled.div
-    background={
-      Array [
-        "
-              background: ",
-        [Function],
-        ";
-            ",
-      ]
-    }
-  >
-    <styled.p>
-      connected
-    </styled.p>
-  </styled.div>
+  <ConnectionBar
+    connectionStatus="connected"
+  />
   <styled.div>
     <styled.div>
-      <styled.button
+      <Styled(styled.button)
         enabled={true}
         id="bottom-bar__start-button"
         onClick={[Function]}
@@ -53,8 +41,8 @@ exports[`BottomBar is in the refbox mode should match snapshot 1`] = `
           symbol={false}
           transform={null}
         />
-      </styled.button>
-      <styled.button
+      </Styled(styled.button)>
+      <Styled(styled.button)
         enabled={true}
         id="bottom-bar__change-page-button"
         onClick={[Function]}
@@ -88,9 +76,9 @@ exports[`BottomBar is in the refbox mode should match snapshot 1`] = `
           symbol={false}
           transform={null}
         />
-      </styled.button>
+      </Styled(styled.button)>
     </styled.div>
-    <styled.button
+    <Styled(styled.button)
       enabled={true}
       id="bottom-bar__stop-button"
       onClick={[Function]}
@@ -125,31 +113,19 @@ exports[`BottomBar is in the refbox mode should match snapshot 1`] = `
         symbol={false}
         transform={null}
       />
-    </styled.button>
+    </Styled(styled.button)>
   </styled.div>
 </styled.div>
 `;
 
 exports[`BottomBar is in the settings mode should match snapshot 1`] = `
 <styled.div>
-  <styled.div
-    background={
-      Array [
-        "
-              background: ",
-        [Function],
-        ";
-            ",
-      ]
-    }
-  >
-    <styled.p>
-      connected
-    </styled.p>
-  </styled.div>
+  <ConnectionBar
+    connectionStatus="connected"
+  />
   <styled.div>
     <styled.div>
-      <styled.button
+      <Styled(styled.button)
         enabled={true}
         id="bottom-bar__start-button"
         onClick={[Function]}
@@ -183,8 +159,8 @@ exports[`BottomBar is in the settings mode should match snapshot 1`] = `
           symbol={false}
           transform={null}
         />
-      </styled.button>
-      <styled.button
+      </Styled(styled.button)>
+      <Styled(styled.button)
         enabled={true}
         id="bottom-bar__change-page-button"
         onClick={[Function]}
@@ -218,9 +194,9 @@ exports[`BottomBar is in the settings mode should match snapshot 1`] = `
           symbol={false}
           transform={null}
         />
-      </styled.button>
+      </Styled(styled.button)>
     </styled.div>
-    <styled.button
+    <Styled(styled.button)
       enabled={true}
       id="bottom-bar__stop-button"
       onClick={[Function]}
@@ -255,397 +231,7 @@ exports[`BottomBar is in the settings mode should match snapshot 1`] = `
         symbol={false}
         transform={null}
       />
-    </styled.button>
-  </styled.div>
-</styled.div>
-`;
-
-exports[`BottomBar should match snapshot when connected 1`] = `
-<styled.div>
-  <styled.div
-    background={
-      Array [
-        "
-              background: ",
-        [Function],
-        ";
-            ",
-      ]
-    }
-  >
-    <styled.p>
-      connected
-    </styled.p>
-  </styled.div>
-  <styled.div>
-    <styled.div>
-      <styled.button
-        enabled={true}
-        id="bottom-bar__start-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                448,
-                512,
-                Array [],
-                "f04b",
-                "M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z",
-              ],
-              "iconName": "play",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </styled.button>
-      <styled.button
-        enabled={true}
-        id="bottom-bar__change-page-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                512,
-                512,
-                Array [],
-                "f009",
-                "M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z",
-              ],
-              "iconName": "th-large",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </styled.button>
-    </styled.div>
-    <styled.button
-      enabled={true}
-      id="bottom-bar__stop-button"
-      onClick={[Function]}
-    >
-      <FontAwesomeIcon
-        border={false}
-        className=""
-        color="red"
-        fixedWidth={false}
-        flip={null}
-        icon={
-          Object {
-            "icon": Array [
-              448,
-              512,
-              Array [],
-              "f04d",
-              "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z",
-            ],
-            "iconName": "stop",
-            "prefix": "fas",
-          }
-        }
-        listItem={false}
-        mask={null}
-        name=""
-        pull={null}
-        pulse={false}
-        rotation={null}
-        size={null}
-        spin={false}
-        symbol={false}
-        transform={null}
-      />
-    </styled.button>
-  </styled.div>
-</styled.div>
-`;
-
-exports[`BottomBar should match snapshot when connecting 1`] = `
-<styled.div>
-  <styled.div
-    background={
-      Array [
-        "
-              background: ",
-        [Function],
-        ";
-            ",
-      ]
-    }
-  >
-    <styled.p>
-      connecting
-    </styled.p>
-  </styled.div>
-  <styled.div>
-    <styled.div>
-      <styled.button
-        enabled={true}
-        id="bottom-bar__start-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                448,
-                512,
-                Array [],
-                "f04b",
-                "M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z",
-              ],
-              "iconName": "play",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </styled.button>
-      <styled.button
-        enabled={true}
-        id="bottom-bar__change-page-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                512,
-                512,
-                Array [],
-                "f009",
-                "M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z",
-              ],
-              "iconName": "th-large",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </styled.button>
-    </styled.div>
-    <styled.button
-      enabled={true}
-      id="bottom-bar__stop-button"
-      onClick={[Function]}
-    >
-      <FontAwesomeIcon
-        border={false}
-        className=""
-        color="red"
-        fixedWidth={false}
-        flip={null}
-        icon={
-          Object {
-            "icon": Array [
-              448,
-              512,
-              Array [],
-              "f04d",
-              "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z",
-            ],
-            "iconName": "stop",
-            "prefix": "fas",
-          }
-        }
-        listItem={false}
-        mask={null}
-        name=""
-        pull={null}
-        pulse={false}
-        rotation={null}
-        size={null}
-        spin={false}
-        symbol={false}
-        transform={null}
-      />
-    </styled.button>
-  </styled.div>
-</styled.div>
-`;
-
-exports[`BottomBar should match snapshot when disconnected 1`] = `
-<styled.div>
-  <styled.div
-    background={
-      Array [
-        "
-              background: ",
-        [Function],
-        ";
-            ",
-      ]
-    }
-  >
-    <styled.p>
-      disconnected
-    </styled.p>
-  </styled.div>
-  <styled.div>
-    <styled.div>
-      <styled.button
-        enabled={true}
-        id="bottom-bar__start-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                448,
-                512,
-                Array [],
-                "f04b",
-                "M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z",
-              ],
-              "iconName": "play",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </styled.button>
-      <styled.button
-        enabled={true}
-        id="bottom-bar__change-page-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                512,
-                512,
-                Array [],
-                "f009",
-                "M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z",
-              ],
-              "iconName": "th-large",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </styled.button>
-    </styled.div>
-    <styled.button
-      enabled={true}
-      id="bottom-bar__stop-button"
-      onClick={[Function]}
-    >
-      <FontAwesomeIcon
-        border={false}
-        className=""
-        color="red"
-        fixedWidth={false}
-        flip={null}
-        icon={
-          Object {
-            "icon": Array [
-              448,
-              512,
-              Array [],
-              "f04d",
-              "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z",
-            ],
-            "iconName": "stop",
-            "prefix": "fas",
-          }
-        }
-        listItem={false}
-        mask={null}
-        name=""
-        pull={null}
-        pulse={false}
-        rotation={null}
-        size={null}
-        spin={false}
-        symbol={false}
-        transform={null}
-      />
-    </styled.button>
+    </Styled(styled.button)>
   </styled.div>
 </styled.div>
 `;
