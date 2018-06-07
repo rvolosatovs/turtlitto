@@ -31,6 +31,7 @@ class App extends Component {
     this.state = {
       activePage: "settings",
       connectionStatus: connectionTypes.DISCONNECTED,
+      token: "dummy",
       turtles: {
         1: {
           enabled: false,
@@ -86,7 +87,9 @@ class App extends Component {
   componentDidMount() {
     const l = window.location;
     this.connection = new WebSocket(
-      `${l.protocol === "https:" ? "wss" : "ws"}://${l.host}/api/v1/state`
+      `${l.protocol === "https:" ? "wss" : "ws"}://user:${this.state.token}@${
+        l.host
+      }/api/v1/state`
     );
     this.connection.onclose = event => this.onConnectionClose(event);
     this.connection.onerror = event => this.onConnectionError(event);
@@ -147,8 +150,8 @@ class App extends Component {
         <Container>
           {activePage === "refbox" && (
             <div>
-              <RefboxField isPenalty={false} />
-              <RefboxSettings />
+              <RefboxField isPenalty={false} token={this.state.token} />
+              <RefboxSettings token={this.state.token} />
             </div>
           )}
           {activePage === "settings" && (
@@ -163,7 +166,7 @@ class App extends Component {
                 onTurtleEnableChange={id => this.onTurtleEnableChange(id)}
               />
               <ScrollableContent>
-                <Settings turtles={turtles} />
+                <Settings turtles={turtles} token={this.state.token} />
               </ScrollableContent>
             </Fragment>
           )}
@@ -175,6 +178,7 @@ class App extends Component {
             activePage={activePage}
             changeActivePage={page => this.setState({ activePage: page })}
             connectionStatus={connectionStatus}
+            token={this.state.token}
           />
         </Container>
       </ThemeProvider>

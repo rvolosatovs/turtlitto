@@ -23,11 +23,12 @@ import ConnectionBar from "./ConnectionBar";
  * Props:
  * - changeActivePage: function to change the active page
  * - activePage: a string indicating the current active page
- * - isConnected: a boolean indicating whether the client is connected to the TRC
+ * - connectionStatus: a boolean indicating whether the client is connected to the TRC
+ * - token: a string which holds the password needed to connect to the SRRS
  */
 
 const BottomBar = props => {
-  const { changeActivePage, activePage, connectionStatus } = props;
+  const { changeActivePage, activePage, connectionStatus, token } = props;
   const isSettingsPage = activePage === pageTypes.SETTINGS;
 
   return (
@@ -38,7 +39,7 @@ const BottomBar = props => {
           <StartButton
             id="bottom-bar__start-button"
             onClick={() => {
-              sendToServer("start", "command");
+              sendToServer("start", "command", token);
             }}
             enabled
           >
@@ -63,7 +64,7 @@ const BottomBar = props => {
         <StopButton
           id="bottom-bar__stop-button"
           onClick={() => {
-            sendToServer("stop", "command");
+            sendToServer("stop", "command", token);
           }}
           enabled
         >

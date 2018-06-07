@@ -183,7 +183,11 @@ exports[`RefboxField shows a refbox with penalty buttons 1`] = `
 exports[`When clicked, a cyan C button should pass \`corner_cyan\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"corner_cyan\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -191,7 +195,11 @@ Object {
 exports[`When clicked, a cyan FK button should pass \`free_kick_cyan\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"free_kick_cyan\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -199,7 +207,11 @@ Object {
 exports[`When clicked, a cyan GK button should pass \`goal_kick_cyan\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"goal_kick_cyan\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -207,7 +219,11 @@ Object {
 exports[`When clicked, a cyan KO button should pass \`kick_off_cyan\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"kick_off_cyan\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -215,7 +231,11 @@ Object {
 exports[`When clicked, a cyan P button should pass \`penalty_cyan\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"penalty_cyan\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -223,7 +243,11 @@ Object {
 exports[`When clicked, a cyan TI button should pass \`throw_in_cyan\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"throw_in_cyan\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -231,7 +255,11 @@ Object {
 exports[`When clicked, a magenta C button should pass \`corner_magenta\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"corner_magenta\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -239,7 +267,11 @@ Object {
 exports[`When clicked, a magenta FK button should pass \`free_kick_magenta\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"free_kick_magenta\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -247,7 +279,11 @@ Object {
 exports[`When clicked, a magenta GK button should pass \`goal_kick_magenta\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"goal_kick_magenta\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -255,7 +291,11 @@ Object {
 exports[`When clicked, a magenta KO button should pass \`kick_off_magenta\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"kick_off_magenta\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -263,7 +303,11 @@ Object {
 exports[`When clicked, a magenta P button should pass \`penalty_magenta\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"penalty_magenta\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -271,7 +315,11 @@ Object {
 exports[`When clicked, a magenta TI button should pass \`throw_in_magenta\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"throw_in_magenta\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;

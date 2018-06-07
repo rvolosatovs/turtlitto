@@ -14,7 +14,11 @@ exports[`DropBall shows a button with DB written on it 1`] = `
 exports[`When clicked, the Drop Ball button should pass \`dropped_ball\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"dropped_ball\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;

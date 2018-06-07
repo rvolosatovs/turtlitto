@@ -20,7 +20,11 @@ exports[`InOutButton shows two buttons with go in or go out written on it 1`] = 
 exports[`When clicked, the Go In button should pass \`go_in\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"go_in\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;
@@ -28,7 +32,11 @@ Object {
 exports[`When clicked, the Go Out button should pass \`go_out\` to the 'sendToServer' function 1`] = `
 Object {
   "body": "\\"go_out\\"",
-  "headers": Object {},
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
   "method": "PUT",
 }
 `;

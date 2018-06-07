@@ -14,18 +14,18 @@ import sendToServer from "../sendToServer";
  * Author: S.A. Tanja
  * Author: T.T.P. Franken
  */
-const RefboxSettings = () => {
+const RefboxSettings = props => {
   return (
     <Refbox>
       <DropBallButton
         onClick={() => {
-          sendToServer("dropped_ball", "command");
+          sendToServer("dropped_ball", "command", props.token);
         }}
       />
       <ButtonBlockWrapper>
         <InOutButton
           onClick={prop => {
-            sendToServer(prop, "command");
+            sendToServer(prop, "command", props.token);
           }}
         />
       </ButtonBlockWrapper>
