@@ -1,46 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Ball Handling demo', it should pass 'ball_handling_demo' to sendToServer 1`] = `
-<styled.div>
-  <Styled(Dropdown)
-    currentValue="Whatever"
-    enabled={true}
-    id="settings_role-dropdown"
-    onChange={[Function]}
-    values={
-      Array [
-        "Role assigner on",
-        "Role assigner off",
-        "Pass demo",
-        "Penalty mode",
-        "Ball Handling demo",
-      ]
-    }
-  />
-  <TurtleList
-    turtles={
-      Object {
-        "1": Object {
-          "batteryvoltage": 66,
-          "enabled": true,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-        "2": Object {
-          "batteryvoltage": 42,
-          "enabled": false,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-      }
-    }
-  />
-</styled.div>
-`;
-
-exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Ball Handling demo', it should pass 'ball_handling_demo' to sendToServer 2`] = `
 Object {
   "body": "\\"ball_handling_demo\\"",
   "headers": Object {},
@@ -49,46 +9,6 @@ Object {
 `;
 
 exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Pass demo', it should pass 'pass_demo' to sendToServer 1`] = `
-<styled.div>
-  <Styled(Dropdown)
-    currentValue="Whatever"
-    enabled={true}
-    id="settings_role-dropdown"
-    onChange={[Function]}
-    values={
-      Array [
-        "Role assigner on",
-        "Role assigner off",
-        "Pass demo",
-        "Penalty mode",
-        "Ball Handling demo",
-      ]
-    }
-  />
-  <TurtleList
-    turtles={
-      Object {
-        "1": Object {
-          "batteryvoltage": 66,
-          "enabled": true,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-        "2": Object {
-          "batteryvoltage": 42,
-          "enabled": false,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-      }
-    }
-  />
-</styled.div>
-`;
-
-exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Pass demo', it should pass 'pass_demo' to sendToServer 2`] = `
 Object {
   "body": "\\"pass_demo\\"",
   "headers": Object {},
@@ -97,46 +17,6 @@ Object {
 `;
 
 exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Penalty mode', it should pass 'penalty_demo' to sendToServer 1`] = `
-<styled.div>
-  <Styled(Dropdown)
-    currentValue="Whatever"
-    enabled={true}
-    id="settings_role-dropdown"
-    onChange={[Function]}
-    values={
-      Array [
-        "Role assigner on",
-        "Role assigner off",
-        "Pass demo",
-        "Penalty mode",
-        "Ball Handling demo",
-      ]
-    }
-  />
-  <TurtleList
-    turtles={
-      Object {
-        "1": Object {
-          "batteryvoltage": 66,
-          "enabled": true,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-        "2": Object {
-          "batteryvoltage": 42,
-          "enabled": false,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-      }
-    }
-  />
-</styled.div>
-`;
-
-exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Penalty mode', it should pass 'penalty_demo' to sendToServer 2`] = `
 Object {
   "body": "\\"penalty_demo\\"",
   "headers": Object {},
@@ -145,46 +25,6 @@ Object {
 `;
 
 exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Role Assigner off', it should pass 'role_assigner_off' to sendToServer 1`] = `
-<styled.div>
-  <Styled(Dropdown)
-    currentValue="Whatever"
-    enabled={true}
-    id="settings_role-dropdown"
-    onChange={[Function]}
-    values={
-      Array [
-        "Role assigner on",
-        "Role assigner off",
-        "Pass demo",
-        "Penalty mode",
-        "Ball Handling demo",
-      ]
-    }
-  />
-  <TurtleList
-    turtles={
-      Object {
-        "1": Object {
-          "batteryvoltage": 66,
-          "enabled": true,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-        "2": Object {
-          "batteryvoltage": 42,
-          "enabled": false,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-      }
-    }
-  />
-</styled.div>
-`;
-
-exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Role Assigner off', it should pass 'role_assigner_off' to sendToServer 2`] = `
 Object {
   "body": "\\"role_assigner_off\\"",
   "headers": Object {},
@@ -193,46 +33,6 @@ Object {
 `;
 
 exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Role Assigner on', it should pass 'role_assigner_on' to sendToServer 1`] = `
-<styled.div>
-  <Styled(Dropdown)
-    currentValue="Whatever"
-    enabled={true}
-    id="settings_role-dropdown"
-    onChange={[Function]}
-    values={
-      Array [
-        "Role assigner on",
-        "Role assigner off",
-        "Pass demo",
-        "Penalty mode",
-        "Ball Handling demo",
-      ]
-    }
-  />
-  <TurtleList
-    turtles={
-      Object {
-        "1": Object {
-          "batteryvoltage": 66,
-          "enabled": true,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-        "2": Object {
-          "batteryvoltage": 42,
-          "enabled": false,
-          "homegoal": "Yellow home",
-          "role": "INACTIVE",
-          "teamcolor": "Magenta",
-        },
-      }
-    }
-  />
-</styled.div>
-`;
-
-exports[`When the role assigner dropdown is changed to the user changes the the role assigner dropdown to 'Role Assigner on', it should pass 'role_assigner_on' to sendToServer 2`] = `
 Object {
   "body": "\\"role_assigner_on\\"",
   "headers": Object {},

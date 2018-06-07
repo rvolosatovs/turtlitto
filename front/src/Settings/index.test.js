@@ -29,31 +29,6 @@ it("renders without crashing", () => {
 });
 
 describe("When the role assigner dropdown is changed to", () => {
-  let wrapper = null;
-  beforeEach(() => {
-    wrapper = shallow(
-      <Settings
-        turtles={{
-          1: {
-            enabled: true,
-            batteryvoltage: 66,
-            homegoal: "Yellow home",
-            role: "INACTIVE",
-            teamcolor: "Magenta"
-          },
-          2: {
-            enabled: false,
-            batteryvoltage: 42,
-            homegoal: "Yellow home",
-            role: "INACTIVE",
-            teamcolor: "Magenta"
-          }
-        }}
-      />
-    );
-    expect(wrapper).toMatchSnapshot();
-  });
-
   describe("the user changes the the role assigner dropdown to", () => {
     const realFetch = global.fetch;
     let wrapper = null;
