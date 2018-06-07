@@ -7,12 +7,12 @@ import (
 	"sync"
 	"sync/atomic"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/blang/semver"
 	"github.com/mohae/deepcopy"
 	"github.com/oklog/ulid"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"go.uber.org/zap"
 )
 
 // DefaultVersion represents the default protocol version.
@@ -59,6 +59,8 @@ type Conn struct {
 // Connect establishes the SRRS-side connection according to TRC API protocol
 // specification of version ver on w and r.
 func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
+	logger := zap.L().With(zap.String("func", "trcapi.Connect"))
+
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
 	conn := &Conn{
@@ -77,12 +79,12 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		pendingReqs:   make(map[ulid.ULID]chan *api.Message),
 	}
 
-	log.Debug("Decoding handshake message...")
+	logger.Debug("Decoding handshake message...")
 	var req api.Message
 	if err := conn.decoder.Decode(&req); err != nil {
 		return nil, errors.Wrap(err, "failed to decode handshake request message")
 	}
-	log.Debug("Handshake message decoded successfully")
+	logger.Debug("Handshake message decoded successfully")
 
 	if req.Type != api.MessageTypeHandshake {
 		return nil, errors.Errorf("expected message of type %s, got %s", api.MessageTypeHandshake, req.Type)
@@ -91,7 +93,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		return nil, errors.New("received handshake payload is empty")
 	}
 
-	log.Debug("Decoding handshake payload...")
+	logger.Debug("Decoding handshake payload...")
 	var hs api.Handshake
 	if err := json.Unmarshal(req.Payload, &hs); err != nil {
 		return nil, errors.Wrap(err, "failed to decode handshake")
@@ -134,7 +136,9 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				conn.errCh <- errors.Wrap(err, "failed to decode incoming message")
 				return
 			}
-			log.Debugf("Received %s message", msg.Type)
+			logger := logger.With(zap.String("type", string(msg.Type)))
+
+			logger.Debug("Received message")
 
 			switch msg.Type {
 			case api.MessageTypePing:
@@ -163,14 +167,14 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				for ch := range conn.stateSubs {
 					select {
 					case ch <- struct{}{}:
-						log.Debug("Sending status update notification...")
+						logger.Debug("Sending status update notification...")
 					default:
-						log.Debug("Skipping update...")
+						logger.Debug("Skipping update...")
 					}
 				}
 				conn.stateSubsMu.RUnlock()
 			default:
-				log.WithField("type", msg.Type).Warn("Unmatched message received")
+				logger.Warn("Unmatched message received")
 				conn.errCh <- errors.Errorf("unmatched message type: %s", msg.Type)
 				return
 			}
@@ -193,6 +197,8 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 
 // sendRequest sends a request of type typ with payload pld and waits for the response.
 func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interface{}) (json.RawMessage, error) {
+	logger := zap.L()
+
 	c.closeChMu.RLock()
 	defer c.closeChMu.RUnlock()
 
@@ -216,10 +222,10 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 
 	msg := api.NewMessage(typ, b, nil)
 
-	logger := log.WithFields(log.Fields{
-		"type":       msg.Type,
-		"message_id": msg.MessageID,
-	})
+	logger = logger.With(
+		zap.String("type", string(msg.Type)),
+		zap.Stringer("message_id", msg.MessageID),
+	)
 
 	ch := make(chan *api.Message, 1)
 	c.pendingReqsMu.Lock()

@@ -6,3 +6,16 @@ import { WebSocket } from "mock-socket";
 Enzyme.configure({ adapter: new Adapter() });
 
 global.WebSocket = WebSocket;
+
+const realConsoleError = console.error;
+
+beforeAll(done => {
+  console.error = jest.fn().mockImplementation(msg => {
+    done.fail(
+      `You shouldn't log to console.error, caught the following message: ${msg}`
+    );
+  });
+  done();
+});
+
+afterAll(() => (console.error = realConsoleError));

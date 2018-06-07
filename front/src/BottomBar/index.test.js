@@ -6,42 +6,6 @@ import connectionTypes from "./connectionTypes";
 import pageTypes from "./pageTypes";
 
 describe("BottomBar", () => {
-  it("should match snapshot when connected", () => {
-    const wrapper = shallow(
-      <BottomBar
-        changeActivePage={() => {}}
-        activePage={pageTypes.SETTINGS}
-        connectionStatus={connectionTypes.CONNECTED}
-      />
-    );
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it("should match snapshot when connecting", () => {
-    const wrapper = shallow(
-      <BottomBar
-        changeActivePage={() => {}}
-        activePage={pageTypes.SETTINGS}
-        connectionStatus={connectionTypes.CONNECTING}
-      />
-    );
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it("should match snapshot when disconnected", () => {
-    const wrapper = shallow(
-      <BottomBar
-        changeActivePage={() => {}}
-        activePage={pageTypes.SETTINGS}
-        connectionStatus={connectionTypes.DISCONNECTED}
-      />
-    );
-
-    expect(wrapper).toMatchSnapshot();
-  });
-
   describe("is in the refbox mode", () => {
     it("should match snapshot", () => {
       const wrapper = shallow(

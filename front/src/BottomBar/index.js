@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faPlay from "@fortawesome/fontawesome-free-solid/faPlay";
 import faStop from "@fortawesome/fontawesome-free-solid/faStop";
@@ -9,25 +9,8 @@ import PropTypes from "prop-types";
 import pageTypes from "./pageTypes";
 import connectionTypes from "./connectionTypes";
 import sendToServer from "../sendToServer";
-
-const getConnectionStatusBackground = type => {
-  switch (type) {
-    case connectionTypes.CONNECTING:
-      return css`
-        background: ${props => props.theme.notificationWarning};
-      `;
-    case connectionTypes.CONNECTED:
-      return css`
-        background: ${props => props.theme.notificationSuccess};
-      `;
-    case connectionTypes.DISCONNECTED:
-      return css`
-        background: ${props => props.theme.notificationError};
-      `;
-    default:
-      throw new Error("Unknown connection status type");
-  }
-};
+import media from "../media";
+import ConnectionBar from "./ConnectionBar";
 
 /**
  * All of the props depend on the implementation in App.js. App.js should include WebSockets,
@@ -47,18 +30,13 @@ const getConnectionStatusBackground = type => {
 const BottomBar = props => {
   const { changeActivePage, activePage, connectionStatus, token } = props;
   const isSettingsPage = activePage === pageTypes.SETTINGS;
-  const connectionStatusBackground = getConnectionStatusBackground(
-    connectionStatus
-  );
 
   return (
     <Bar className={props.className}>
-      <ConnectionBar background={connectionStatusBackground}>
-        <ConnectionStatus>{connectionStatus}</ConnectionStatus>
-      </ConnectionBar>
+      <ConnectionBar connectionStatus={connectionStatus} />
       <ButtonsWrapper>
         <ButtonColumn>
-          <Button
+          <StartButton
             id="bottom-bar__start-button"
             onClick={() => {
               sendToServer("start", "command", token);
@@ -66,8 +44,8 @@ const BottomBar = props => {
             enabled
           >
             <FontAwesomeIcon icon={faPlay} />
-          </Button>
-          <Button
+          </StartButton>
+          <ChangePageButton
             id="bottom-bar__change-page-button"
             onClick={() =>
               changeActivePage(
@@ -81,7 +59,7 @@ const BottomBar = props => {
             ) : (
               <FontAwesomeIcon icon={faCog} />
             )}
-          </Button>
+          </ChangePageButton>
         </ButtonColumn>
         <StopButton
           id="bottom-bar__stop-button"
@@ -121,33 +99,34 @@ const ButtonColumn = styled.div`
 const Button = styled.button`
   background: ${props => props.theme.bottomBarButton};
   width: 100%;
+  font-size: 2rem;
+  flex: 1;
+
+  &:active {
+    background: ${props => props.theme.bottomBarButtonActive};
+  }
+`;
+
+const StopButton = styled(Button)`
+  font-size: 5rem;
+`;
+
+const StartButton = styled(Button)`
   height: 50%;
-  font-size: 200%;
-  flex: 1;
 
-  &:active {
-    background: ${props => props.theme.bottomBarButtonActive};
-  }
+  ${media.md`
+    height: 100%;
+    font-size: 5rem;
+  `};
 `;
 
-const StopButton = styled.button`
-  background: ${props => props.theme.bottomBarButton};
-  font-size: 400%;
-  flex: 1;
+const ChangePageButton = styled(Button)`
+  height: 50%;
+  display: inline-block;
 
-  &:active {
-    background: ${props => props.theme.bottomBarButtonActive};
-  }
-`;
-
-const ConnectionBar = styled.div`
-  ${props => props.background};
-  color: white;
-  margin: 0px;
-  text-align: center;
-  font-size: 1.2rem;
-  padding: 0.6rem;
-  text-transform: uppercase;
+  ${media.md`
+    display: none;
+  `};
 `;
 
 const Bar = styled.div`
@@ -158,10 +137,6 @@ const Bar = styled.div`
   height: 20%;
   display: flex;
   flex-direction: column;
-  margin: 0px;
-`;
-
-const ConnectionStatus = styled.p`
   margin: 0px;
 `;
 

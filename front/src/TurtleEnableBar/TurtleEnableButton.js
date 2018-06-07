@@ -46,6 +46,8 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  min-width: 7rem;
+  flex: 1;
 `;
 
 export default TurtleEnableButton;
