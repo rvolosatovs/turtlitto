@@ -2,6 +2,7 @@ import React from "react";
 import TurtleEnableButton from "./TurtleEnableButton";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { media } from "../media";
 
 /**
  * Simple bar with all the turtles
@@ -56,6 +57,12 @@ const Bar = styled.div`
   border-width: 0rem 0rem 0.2rem 0rem;
   margin-bottom: 0.2rem;
   background: ${props => props.theme.turtleEnableBar};
+
+  ${media.md`
+    width: 80%;
+    margin: 2rem auto 1rem auto;
+    border-width: 0;
+  `};
 `;
 
 export default TurtleEnableBar;

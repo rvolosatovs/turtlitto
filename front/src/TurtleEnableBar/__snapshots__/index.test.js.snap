@@ -24,7 +24,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
 >
   <styled.div>
     <div
-      className="sc-bwzfXH injmkV"
+      className="sc-bwzfXH dcYrIO"
     >
       <TurtleEnableButton
         enabled={false}
@@ -37,7 +37,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
           onClick={[Function]}
         >
           <button
-            className="sc-bdVaJa ghvnXp"
+            className="sc-bdVaJa jgxkes"
             onClick={[Function]}
           >
             1
@@ -55,7 +55,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
           onClick={[Function]}
         >
           <button
-            className="sc-bdVaJa ghvnXp"
+            className="sc-bdVaJa jgxkes"
             onClick={[Function]}
           >
             2
@@ -73,7 +73,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
           onClick={[Function]}
         >
           <button
-            className="sc-bdVaJa ghvnXp"
+            className="sc-bdVaJa jgxkes"
             onClick={[Function]}
           >
             3
