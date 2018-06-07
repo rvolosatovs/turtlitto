@@ -3,6 +3,7 @@ package apitest
 import (
 	crand "crypto/rand"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"strconv"
 
@@ -44,18 +45,17 @@ func RandomMessageType() *api.MessageType {
 	return &vals[rand.Intn(len(vals))]
 }
 
+func RandomVersion() *semver.Version {
+	ver := semver.MustParse(fmt.Sprintf("%d.%d.%d", rand.Intn(10), rand.Intn(10), rand.Intn(10)))
+	return &ver
+}
+
 //RandomHandshake returns a Handshake with randomly generated version string (within v0.0.0 - v9.9.9).
 func RandomHandshake() *api.Handshake {
-	//TODO: Proper way of creating handshakes
-	vers := strconv.Itoa(rand.Intn(10)) + "." + strconv.Itoa(rand.Intn(10)) + "." + strconv.Itoa(rand.Intn(10))
-	ver, err := semver.Make(vers)
-	if err != nil {
-		panic("could not parse version")
-	}
 	b := make([]byte, 10+rand.Intn(10))
 	rand.Read(b)
 	return &api.Handshake{
-		Version: ver,
+		Version: *RandomVersion(),
 		Token:   string(b),
 	}
 }

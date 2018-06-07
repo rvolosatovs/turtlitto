@@ -8,11 +8,13 @@ import (
 	"os/signal"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
@@ -22,156 +24,165 @@ var (
 	silent   = flag.Bool("silent", false, "Disables automatic sending of random state updates")
 )
 
-func init() {
-	log.SetLevel(log.InfoLevel)
-	log.SetFormatter(&log.TextFormatter{
-		ForceColors:      true,
-		DisableTimestamp: true,
-		QuoteEmptyFields: true,
-	})
-	log.SetOutput(os.Stdout)
-}
-
 func main() {
 	flag.Parse()
 
-	if *debug {
-		log.SetLevel(log.DebugLevel)
-	}
-
-	var netLst net.Listener
+	var logger *zap.Logger
 	var err error
-	switch {
-	case *unixSock != "" && *tcpSock != "":
-		log.WithFields(log.Fields{
-			"unixSocket": *unixSock,
-			"tcpSocket":  *tcpSock,
-		}).Fatal("At most one of tcpSocket and unixSocket must be specified")
-
-	case *unixSock != "":
-		logger := log.WithField("path", *unixSock)
-
-		logger.Info("Listening on Unix socket...")
-		netLst, err = net.Listen("unix", *unixSock)
-		if err != nil {
-			logger.WithError(err).Fatal("Failed to listen on Unix socket")
-		}
-
-	case *tcpSock != "":
-		logger := log.WithField("addr", *tcpSock)
-
-		logger.Info("Listening on TCP socket...")
-		netLst, err = net.Listen("tcp", *tcpSock)
-		if err != nil {
-			logger.WithError(err).Fatal("Failed to listen on TCP socket")
-		}
+	if *debug {
+		logger, err = zap.NewDevelopment()
+	} else {
+		logger, err = zap.NewProduction()
 	}
+	if err != nil {
+		zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
+			MessageKey:     "msg",
+			LevelKey:       "level",
+			NameKey:        "logger",
+			EncodeLevel:    zapcore.LowercaseLevelEncoder,
+			EncodeTime:     zapcore.ISO8601TimeEncoder,
+			EncodeDuration: zapcore.StringDurationEncoder,
+		}), os.Stdout, zap.DebugLevel)).Fatal("Failed to initialize logger")
+	}
+	zap.RedirectStdLog(logger)
+	zap.ReplaceGlobals(logger)
 
-	defer netLst.Close()
+	if err := func() error {
+		defer logger.Sync() //nolint
 
-	closeCh := make(chan struct{})
+		var netLst net.Listener
+		switch {
+		case *unixSock != "" && *tcpSock != "":
+			return errors.New("At most one of tcpSocket and unixSocket must be specified")
 
-	go func() {
-		for {
-			sockConn, err := netLst.Accept()
+		case *unixSock != "":
+			logger := logger.With(zap.String("path", *unixSock))
 
-			select {
-			case <-closeCh:
-				if sockConn != nil {
-					err = sockConn.Close()
-					if err != nil {
-						log.WithError(err).Error("Failed to close connection")
-					}
-				}
-				return
-
-			default:
-			}
-
+			logger.Info("Listening on Unix socket...")
+			netLst, err = net.Listen("unix", *unixSock)
 			if err != nil {
-				log.WithError(err).Error("Failed to accept connection")
-				continue
+				return errors.Wrap(err, "failed to listen on Unix socket")
 			}
 
-			go func() {
-				defer sockConn.Close()
+		case *tcpSock != "":
+			logger := logger.With(zap.String("addr", *tcpSock))
 
-				log.WithField("addr", sockConn.RemoteAddr()).Infof("Connection accepted")
+			logger.Info("Listening on TCP socket...")
+			netLst, err = net.Listen("tcp", *tcpSock)
+			if err != nil {
+				return errors.Wrap(err, "failed to listen on TCP socket")
+			}
+		}
 
-				// state handler of mock TRC, logs all actions
-				setStateHandler := func(msg *api.Message) (*api.Message, error) {
-					log.Infof("Received: %s", msg)
+		defer netLst.Close()
 
-					reply, err := trctest.DefaultStateHandler(msg)
-					log.Debugf("Reply with: %s", reply)
-					return reply, err
+		closeCh := make(chan struct{})
+
+		go func() {
+			for {
+				sockConn, err := netLst.Accept()
+
+				select {
+				case <-closeCh:
+					if sockConn != nil {
+						err = sockConn.Close()
+						if err != nil {
+							logger.With(zap.Error(err)).Error("Failed to close connection")
+						}
+					}
+					return
+
+				default:
 				}
-				// ping handler of mock TRC, logs when ping is received
-				pingHandler := func(msg *api.Message) (*api.Message, error) {
-					log.Debug("Received ping")
-					return trctest.DefaultPingHandler(msg)
-				}
 
-				trcConn := trctest.Connect(sockConn, sockConn,
-					trctest.WithHandler(api.MessageTypeState, setStateHandler),
-					trctest.WithHandler(api.MessageTypePing, pingHandler),
-					trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
-				)
-				defer trcConn.Close()
+				if err != nil {
+					logger.With(zap.Error(err)).Error("Failed to accept connection")
+					continue
+				}
 
 				go func() {
-					for err := range trcConn.Errors() {
-						log.WithError(err).Error("Internal mock-trc error")
+					defer sockConn.Close()
+
+					logger.With(zap.Stringer("addr", sockConn.RemoteAddr())).Info("Connection accepted")
+
+					// state handler of mock TRC, logs all actions
+					setStateHandler := func(msg *api.Message) (*api.Message, error) {
+						logger.With(zap.Any("state", msg)).Info("Received state")
+
+						reply, err := trctest.DefaultStateHandler(msg)
+						logger.With(zap.Any("reply", reply)).Debug("Sending reply...")
+						return reply, err
+					}
+					// ping handler of mock TRC, logs when ping is received
+					pingHandler := func(msg *api.Message) (*api.Message, error) {
+						logger.Debug("Received ping")
+						return trctest.DefaultPingHandler(msg)
+					}
+
+					trcConn := trctest.Connect(sockConn, sockConn,
+						trctest.WithHandler(api.MessageTypeState, setStateHandler),
+						trctest.WithHandler(api.MessageTypePing, pingHandler),
+						trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
+					)
+					defer trcConn.Close()
+
+					go func() {
+						for err := range trcConn.Errors() {
+							logger.With(zap.Error(err)).Error("Internal mock-trc error")
+							return
+						}
+					}()
+
+					if err := trcConn.SendHandshake(&api.Handshake{
+						Version: trcapi.DefaultVersion,
+						Token:   "test",
+					}); err != nil {
+						logger.With(zap.Error(err)).Error("Failed to send handshake")
 						return
+					}
+					logger.With(zap.Stringer("version", trcapi.DefaultVersion)).Debug("Sent handshake")
+
+					if err := trcConn.SendState(apitest.RandomState()); err != nil {
+						logger.With(zap.Error(err)).Error("Failed to send state")
+						return
+					}
+
+					if *silent {
+						<-make(chan int)
+						return
+					}
+
+					for {
+						select {
+						case <-time.After(5*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
+							if err := trcConn.SendState(apitest.RandomState()); err != nil {
+								logger.With(zap.Error(err)).Error("Failed to send state")
+								return
+							}
+							logger.Debug("Sent state")
+
+						case <-time.After(3*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
+							if err := trcConn.Ping(); err != nil {
+								logger.With(zap.Error(err)).Error("Failed to send ping")
+								return
+							}
+							logger.Debug("Sent ping")
+
+						case <-closeCh:
+							return
+						}
 					}
 				}()
+			}
+		}()
 
-				if err := trcConn.SendHandshake(&api.Handshake{
-					Version: trcapi.DefaultVersion,
-					Token:   "test",
-				}); err != nil {
-					log.WithError(err).Error("Failed to send handshake")
-					return
-				}
-				log.WithField("version", trcapi.DefaultVersion).Debug("Sent handshake")
-
-				if err := trcConn.SendState(apitest.RandomState()); err != nil {
-					log.WithError(err).Error("Failed to send state")
-					return
-				}
-
-				if *silent {
-					<-make(chan int)
-					return
-				}
-
-				for {
-					select {
-					case <-time.After(5*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
-						if err := trcConn.SendState(apitest.RandomState()); err != nil {
-							log.WithError(err).Error("Failed to send state")
-							return
-						}
-						log.Debug("Sent state")
-
-					case <-time.After(3*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
-						if err := trcConn.Ping(); err != nil {
-							log.WithError(err).Error("Failed to send ping")
-							return
-						}
-						log.Debug("Sent ping")
-
-					case <-closeCh:
-						return
-					}
-				}
-			}()
-		}
-	}()
-
-	c := make(chan os.Signal, 1)
-	signal.Notify(c)
-	sig := <-c
-	close(closeCh)
-	log.WithField("signal", sig).Info("Received signal, exiting...")
+		c := make(chan os.Signal, 1)
+		signal.Notify(c)
+		sig := <-c
+		close(closeCh)
+		logger.With(zap.Stringer("signal", sig)).Info("Received signal, exiting...")
+		return nil
+	}(); err != nil {
+		logger.With(zap.Error(err)).Fatal("TRCD failed")
+	}
 }

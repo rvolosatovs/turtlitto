@@ -5,9 +5,9 @@ import (
 	"io"
 	"sync"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"go.uber.org/zap"
 )
 
 // Default handler for SetState messages, replying according to the API.
@@ -72,6 +72,8 @@ func WithDefaultHandler(h Handler) Option {
 // Connect establishes the TRC-side connection according to TRC API protocol
 // specification of version ver on w and r.
 func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
+	logger := zap.L()
+
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
 	conn := &Conn{
@@ -94,17 +96,12 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 	go func() {
 		for {
 			var msg api.Message
-			log.Debug("TRC decoding message...")
+			logger.Debug("TRC decoding message...")
 			err := conn.decoder.Decode(&msg)
-			logger := log.WithFields(log.Fields{
-				"type":       msg.Type,
-				"message_id": msg.MessageID,
-				"parent_id":  msg.ParentID,
-			})
-			logger.Debug("TRC decoded message")
 
 			select {
 			case <-conn.closeCh:
+				logger.Debug("TRC connection closed, returning...")
 				// Don't handle err if connection is closed
 				close(conn.errCh)
 				return
@@ -114,6 +111,15 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 				conn.errCh <- errors.Wrap(err, "failed to decode incoming message")
 				return
 			}
+
+			logger := logger.With(
+				zap.String("type", string(msg.Type)),
+				zap.Stringer("message_id", msg.MessageID),
+			)
+			if msg.ParentID != nil {
+				logger = logger.With(zap.Stringer("parent_id", msg.ParentID))
+			}
+			logger.Debug("TRC decoded message")
 
 			var h Handler
 			v, ok := conn.handlers.Load(msg.Type)
@@ -126,7 +132,7 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 			logger.Debug("Executing handler...")
 			resp, err := h(&msg)
 			if err != nil {
-				logger.WithError(err).Debug("Executing handler failed")
+				logger.With(zap.Error(err)).Debug("Executing handler failed")
 				conn.errCh <- err
 				return
 			}
