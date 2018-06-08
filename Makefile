@@ -41,19 +41,19 @@ go.test: deps
 	$(info Testing Go code...)
 	@go test -cover -coverprofile=coverage.txt -covermode=atomic -v ./...
 
-$(BINDIR)/trcd-$(GOOS)-$(GOARCH): vendor
+$(BINDIR)/trcd-$(GOOS)-$(GOARCH): vendor $(GO_FILES)
 	$(info Compiling $@...)
 	@$(GOBUILD) -o $@ ./cmd/trcd
 
 trcd: $(BINDIR)/trcd-$(GOOS)-$(GOARCH)
 
-$(BINDIR)/srrs-$(GOOS)-$(GOARCH): vendor
+$(BINDIR)/srrs-$(GOOS)-$(GOARCH): vendor $(GO_FILES)
 	$(info Compiling $@...)
 	@$(GOBUILD) -o $@ ./cmd/srrs
 
 srrs: $(BINDIR)/srrs-$(GOOS)-$(GOARCH)
 
-$(BINDIR)/relay-$(GOOS)-$(GOARCH): vendor
+$(BINDIR)/relay-$(GOOS)-$(GOARCH): vendor $(GO_FILES)
 	$(info Compiling $@...)
 	@$(GOBUILD) -o $@ ./cmd/relay
 

@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -27,23 +28,18 @@ var (
 func main() {
 	flag.Parse()
 
-	var logger *zap.Logger
-	var err error
+	conf := zap.NewProductionConfig()
+	conf.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	if *debug {
-		logger, err = zap.NewDevelopment()
-	} else {
-		logger, err = zap.NewProduction()
+		conf = zap.NewDevelopmentConfig()
+		conf.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
+
+	logger, err := conf.Build()
 	if err != nil {
-		zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-			MessageKey:     "msg",
-			LevelKey:       "level",
-			NameKey:        "logger",
-			EncodeLevel:    zapcore.LowercaseLevelEncoder,
-			EncodeTime:     zapcore.ISO8601TimeEncoder,
-			EncodeDuration: zapcore.StringDurationEncoder,
-		}), os.Stdout, zap.DebugLevel)).Fatal("Failed to initialize logger")
+		panic(err)
 	}
+
 	zap.RedirectStdLog(logger)
 	zap.ReplaceGlobals(logger)
 
@@ -96,7 +92,9 @@ func main() {
 				}
 
 				if err != nil {
-					logger.With(zap.Error(err)).Error("Failed to accept connection")
+					logger.Error("Failed to accept connection",
+						zap.Error(err),
+					)
 					continue
 				}
 
@@ -130,71 +128,107 @@ func main() {
 
 					go func() {
 						for err := range trcConn.Errors() {
-							logger.With(zap.Error(err)).Error("Internal mock-trc error")
+							logger.Error("Internal TRCD error",
+								zap.Error(err),
+							)
 							return
 						}
 					}()
 
-					if err := trcConn.SendHandshake(&api.Handshake{
+					hs := &api.Handshake{
 						Version: trcapi.DefaultVersion,
 						Token:   "test",
-					}); err != nil {
-						logger.With(zap.Error(err)).Error("Failed to send handshake")
+					}
+					if err := trcConn.SendHandshake(hs); err != nil {
+						logger.Error("Failed to send handshake",
+							zap.Error(err),
+						)
 						return
 					}
-					logger.With(zap.Stringer("version", trcapi.DefaultVersion)).Debug("Sent handshake")
+					logger.Debug("Sent handshake",
+						zap.Reflect("handshake", hs),
+					)
 
-					if err := trcConn.SendState(apitest.RandomState()); err != nil {
-						logger.With(zap.Error(err)).Error("Failed to send state")
+					st := apitest.RandomState()
+					if err := trcConn.SendState(st); err != nil {
+						logger.Error("Failed to send initial state",
+							zap.Error(err),
+						)
 						return
 					}
-					logger.Info("Sent initial state")
+					logger.Info("Sent initial state",
+						zap.Reflect("state", st),
+					)
 
 					if *silent {
-						<-make(chan int)
+						<-closeCh
 						return
 					}
 
+					wg := &sync.WaitGroup{}
+					wg.Add(2)
+
 					go func() {
+						defer wg.Done()
+
 						for {
 							select {
-							case <-time.After(5*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
-								if err := trcConn.SendState(apitest.RandomState()); err != nil {
-									logger.With(zap.Error(err)).Error("Failed to send state")
+							case <-time.After(10*time.Second + time.Millisecond*time.Duration(rand.Intn(7000))):
+								st := apitest.RandomState()
+								if err := trcConn.SendState(st); err != nil {
+									logger.Error("Failed to send state",
+										zap.Error(err),
+									)
 									return
 								}
-								logger.Debug("Sent state")
+								logger.Debug("Sent state",
+									zap.Reflect("state", st),
+								)
 
 							case <-closeCh:
+								logger.Debug("TRCD closed, stopping state-sending goroutine")
 								return
 							}
 						}
 					}()
 
 					go func() {
+						defer wg.Done()
+
 						for {
 							select {
-							case <-time.After(3*time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
+							case <-time.After(time.Second + time.Millisecond*time.Duration(rand.Intn(3000))):
 								if err := trcConn.Ping(); err != nil {
-									logger.With(zap.Error(err)).Error("Failed to send ping")
-									continue
+									logger.Error("Failed to send ping",
+										zap.Error(err),
+									)
+									return
 								}
 								logger.Debug("Sent ping")
 
 							case <-closeCh:
+								logger.Debug("TRCD closed, stopping ping-sending goroutine")
 								return
 							}
 						}
 					}()
+
+					wg.Wait()
 				}()
 			}
 		}()
 
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, os.Interrupt)
-		sig := <-c
-		close(closeCh)
-		logger.With(zap.Stringer("signal", sig)).Info("Received signal, exiting...")
+
+		select {
+		case <-closeCh:
+		case sig := <-c:
+			close(closeCh)
+			logger.Info("Received signal, exiting...",
+				zap.Stringer("signal", sig),
+			)
+		}
 		return nil
 	}(); err != nil {
 		logger.With(zap.Error(err)).Fatal("TRCD failed")

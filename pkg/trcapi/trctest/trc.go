@@ -105,6 +105,11 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 			var msg api.Message
 			logger.Debug("TRC decoding message...")
 			err := conn.decoder.Decode(&msg)
+			if err == io.EOF {
+				logger.Debug("EOF while decoding")
+				close(conn.errCh)
+				return
+			}
 
 			select {
 			case <-conn.closeCh:

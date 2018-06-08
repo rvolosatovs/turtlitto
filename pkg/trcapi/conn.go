@@ -59,7 +59,7 @@ type Conn struct {
 // Connect establishes the SRRS-side connection according to TRC API protocol
 // specification of version ver on w and r.
 func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
-	logger := zap.L().With(zap.String("func", "trcapi.Connect"))
+	logger := zap.L()
 
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
@@ -79,12 +79,20 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		pendingReqs:   make(map[ulid.ULID]chan *api.Message),
 	}
 
-	logger.Debug("Decoding handshake message...")
+	logger.Debug("Decoding initial message...")
 	var req api.Message
 	if err := conn.decoder.Decode(&req); err != nil {
 		return nil, errors.Wrap(err, "failed to decode handshake request message")
 	}
-	logger.Debug("Handshake message decoded successfully")
+
+	if req.ParentID != nil {
+		return nil, errors.New("initial message is a response, while a request was expected")
+	}
+
+	logger.Debug("Initial message decoded successfully",
+		zap.Stringer("msg_id", req.MessageID),
+		zap.String("msg_type", string(req.Type)),
+	)
 
 	if req.Type != api.MessageTypeHandshake {
 		return nil, errors.Errorf("expected message of type %s, got %s", api.MessageTypeHandshake, req.Type)
@@ -98,6 +106,9 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	if err := json.Unmarshal(req.Payload, &hs); err != nil {
 		return nil, errors.Wrap(err, "failed to decode handshake")
 	}
+	logger.Debug("Handshake payload decoded successfully",
+		zap.Stringer("version", hs.Version),
+	)
 
 	resp := &api.Handshake{
 		Version: hs.Version,
@@ -109,6 +120,8 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		resp.Version = ver
 	}
 	conn.version = resp.Version
+
+	logger.Debug("Updating token...")
 	conn.token.Store(hs.Token)
 
 	b, err := json.Marshal(resp)
@@ -116,6 +129,9 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		return nil, errors.Wrap(err, "failed to encode handshake response message")
 	}
 
+	logger.Debug("Encoding handshake response...",
+		zap.Stringer("version", resp.Version),
+	)
 	if err := conn.encoder.Encode(api.NewMessage(req.Type, b, &req.MessageID)); err != nil {
 		return nil, err
 	}
@@ -123,10 +139,17 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	go func() {
 		for {
 			var msg api.Message
+			logger.Debug("Decoding message...")
 			err := conn.decoder.Decode(&msg)
+			if err == io.EOF {
+				logger.Debug("EOF during decoding - closing error channel, return...")
+				close(conn.errCh)
+				return
+			}
 
 			select {
 			case <-conn.closeCh:
+				logger.Debug("Conn closed - closing error channel, return...")
 				// Don't handle err if connection is closed
 				close(conn.errCh)
 				return
@@ -136,17 +159,25 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				conn.errCh <- errors.Wrap(err, "failed to decode incoming message")
 				return
 			}
-			logger := logger.With(zap.String("type", string(msg.Type)))
+			logger := logger.With(
+				zap.String("msg_type", string(msg.Type)),
+				zap.Stringer("msg_id", msg.MessageID),
+			)
+			if msg.ParentID != nil {
+				logger = logger.With(zap.Stringer("msg_parent_id", msg.ParentID))
+			}
 
 			logger.Debug("Received message")
 
 			switch msg.Type {
 			case api.MessageTypePing:
 				if msg.ParentID != nil {
+					logger.Debug("Pong received")
 					// Don't respond to a pong
 					break
 				}
 
+				logger.Debug("Ping received, encoding pong...")
 				if err := conn.encoder.Encode(api.NewMessage(api.MessageTypePing, nil, &msg.MessageID)); err != nil {
 					conn.errCh <- errors.Wrap(err, "failed to encode ping message")
 					continue
@@ -173,8 +204,9 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 					}
 				}
 				conn.stateSubsMu.RUnlock()
+
 			default:
-				logger.Warn("Unmatched message received")
+				logger.Error("Received message of unmatched type")
 				conn.errCh <- errors.Errorf("unmatched message type: %s", msg.Type)
 				return
 			}

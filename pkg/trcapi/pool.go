@@ -24,11 +24,8 @@ func NewPool(connectFunc func() (*Conn, func(), error)) *Pool {
 func (p *Pool) Conn() (*Conn, error) {
 	logger := zap.L().With(zap.String("func", "trcapi.Pool.Conn"))
 
-	logger.Debug("Locking connMu...")
 	p.connMu.Lock()
 	defer p.connMu.Unlock()
-
-	logger.Debug("connMu locked...")
 
 	if p.conn != nil {
 		select {
