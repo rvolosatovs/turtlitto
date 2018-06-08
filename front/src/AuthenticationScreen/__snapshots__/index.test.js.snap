@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthenticationScreen The user enters a incorrect token should match snapshot 1`] = `
+<styled.div>
+  <styled.div>
+    <styled.label>
+      Token:
+    </styled.label>
+    <styled.input
+      onChange={[Function]}
+      placeholder="Enter the TRC token"
+      type="text"
+    />
+    <Styled(styled.label)>
+      Incorrect token.
+    </Styled(styled.label)>
+    <styled.button
+      id="login-button"
+      onClick={[Function]}
+    >
+      Log in
+    </styled.button>
+  </styled.div>
+</styled.div>
+`;
