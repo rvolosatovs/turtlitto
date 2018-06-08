@@ -16,7 +16,7 @@ import sendToServer from "../sendToServer";
  */
 const RefboxSettings = props => {
   return (
-    <Refbox>
+    <Refbox className={props.className}>
       <DropBallButton
         onClick={() => {
           sendToServer("dropped_ball", "command", props.token);
@@ -49,6 +49,7 @@ const Refbox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 0.5rem;
 `;
 
 export default RefboxSettings;

@@ -4,6 +4,7 @@ import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import notificationTypes from "./notificationTypes";
+import media from "../media";
 
 const Window = styled.div`
   ${props => props.background};
@@ -12,6 +13,11 @@ const Window = styled.div`
   width: 90%;
   position: relative;
   margin: 0 auto;
+
+  ${media.md`
+    width: 100%;
+    margin: 0;
+  `};
 `;
 
 const ToolBar = styled.div`

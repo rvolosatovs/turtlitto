@@ -83,17 +83,12 @@ BottomBar.propTypes = {
 
 const ButtonsWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   margin: 0rem;
-  flex: 1;
 `;
 
 const ButtonColumn = styled.div`
-  width: 50%;
-  height: 100%;
-  justify-content: space-between;
   margin: 0rem;
-  flex: 1;
+  flex-basis: 50%;
 `;
 
 const Button = styled.button`
@@ -109,6 +104,8 @@ const Button = styled.button`
 
 const StopButton = styled(Button)`
   font-size: 5rem;
+  padding: 3rem;
+  flex-basis: 50%;
 `;
 
 const StartButton = styled(Button)`
@@ -116,13 +113,13 @@ const StartButton = styled(Button)`
 
   ${media.md`
     height: 100%;
+    padding: 3rem;
     font-size: 5rem;
   `};
 `;
 
 const ChangePageButton = styled(Button)`
   height: 50%;
-  display: inline-block;
 
   ${media.md`
     display: none;
@@ -130,14 +127,9 @@ const ChangePageButton = styled(Button)`
 `;
 
 const Bar = styled.div`
-  position: sticky;
   background-color: white;
-  top: 100%;
-  width: 100%;
-  height: 20%;
   display: flex;
   flex-direction: column;
-  margin: 0px;
 `;
 
 export default BottomBar;

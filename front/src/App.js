@@ -4,8 +4,10 @@ import "normalize.css";
 import styled, { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import update from "immutability-helper";
+import { Row, Col } from "react-flexbox-grid";
+import pageTypes from "./BottomBar/pageTypes";
 
-import BottomBar from "./BottomBar";
+import Bar from "./BottomBar";
 import connectionTypes from "./BottomBar/connectionTypes";
 import NotificationWindow from "./NotificationWindow";
 import RefboxField from "./RefboxField";
@@ -25,12 +27,23 @@ const ScrollableContent = styled.div`
   overflow-y: auto;
 `;
 
+const BottomBar = styled(Bar)`
+  height: 100%;
+`;
+
+const StickyBottomContainer = styled.div`
+  position: sticky;
+  top: 100%;
+  width: 100%;
+  margin: 0;
+`;
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      activePage: "settings",
+      activePage: pageTypes.SETTINGS,
       connectionStatus: connectionTypes.DISCONNECTED,
       token: "dummy",
       turtles: {},
@@ -149,13 +162,7 @@ class App extends Component {
       <ThemeProvider theme={theme}>
         {loggedIn ? (
           <Container>
-            {activePage === "refbox" && (
-              <div>
-                <RefboxField isPenalty={false} token={this.state.token} />
-                <RefboxSettings token={this.state.token} />
-              </div>
-            )}
-            {activePage === "settings" && (
+            {activePage === pageTypes.SETTINGS && (
               <Fragment>
                 <TurtleEnableBar
                   turtles={Object.keys(turtles).map(id => {
@@ -171,16 +178,46 @@ class App extends Component {
                 </ScrollableContent>
               </Fragment>
             )}
-            <NotificationWindow
-              onDismiss={() => this.onNotificationDismiss()}
-              notification={this.getNextNotification()}
-            />
-            <BottomBar
-              activePage={activePage}
-              changeActivePage={page => this.setState({ activePage: page })}
-              connectionStatus={connectionStatus}
-              token={this.state.token}
-            />
+            <StickyBottomContainer>
+              <Row bottom="xs">
+                <Col md={4} className={"hidden-xs hidden-sm"}>
+                  <RefboxField isPenalty={false} token={this.state.token} />
+                </Col>
+                <Col md={4} className={"hidden-xs hidden-sm"}>
+                  <NotificationWindow
+                    onDismiss={() => this.onNotificationDismiss()}
+                    notification={this.getNextNotification()}
+                  />
+                </Col>
+                <Col xs={12} md={4} className={"hidden-xs hidden-sm"}>
+                  <RefboxSettings token={this.state.token} />
+                  <BottomBar
+                    activePage={activePage}
+                    changeActivePage={page =>
+                      this.setState({ activePage: page })
+                    }
+                    connectionStatus={connectionStatus}
+                    token={this.state.token}
+                  />
+                </Col>
+                <Col xs={12} className={"hidden-md hidden-lg hidden-xl"}>
+                  {activePage === pageTypes.REFBOX && (
+                    <Fragment>
+                      <RefboxField isPenalty={false} token={this.state.token} />
+                      <RefboxSettings token={this.state.token} />
+                    </Fragment>
+                  )}
+                  <BottomBar
+                    activePage={activePage}
+                    changeActivePage={page =>
+                      this.setState({ activePage: page })
+                    }
+                    connectionStatus={connectionStatus}
+                    token={this.state.token}
+                  />
+                </Col>
+              </Row>
+            </StickyBottomContainer>
           </Container>
         ) : (
           <AuthenticationScreen
