@@ -219,27 +219,36 @@ func MakeCommandHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
+		logger.Debug("Retrieving a connection from pool...")
 		trcConn, err := pool.Conn()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Failed to establish connection to TRC: %s", err), http.StatusInternalServerError)
+			http.Error(w, errors.Wrap(err, "failed to establish connection to TRC").Error(), http.StatusInternalServerError)
 			return
 		}
 
+		logger.Debug("Retrieving token...")
 		tok, err := trcConn.Token()
 		if err != nil {
-			logger.With(zap.Error(err)).Warn("TRC connection established, but failed to get token")
-			http.Error(w, fmt.Sprintf("Token not initialized"), http.StatusInternalServerError)
+			http.Error(w, errors.Wrap(err, "TRC connection established, but failed to get token").Error(), http.StatusInternalServerError)
 			return
 		}
 
-		if r.Header.Get("token") != tok {
-			logger.With(zap.Error(err)).Debug("Authentication failed")
-			http.Error(w, fmt.Sprintf("Wrong authentication token"), http.StatusUnauthorized)
+		_, pswd, ok := r.BasicAuth()
+		if !ok {
+			http.Error(w, errors.New("Authorization header not found or invalid").Error(), http.StatusBadRequest)
 			return
 		}
 
+		if tok != "" && pswd != tok {
+			http.Error(w, errors.New("invalid token").Error(), http.StatusUnauthorized)
+			return
+		}
+
+		logger.Debug("Sending command...",
+			zap.String("command", string(cmd)),
+		)
 		if err := trcConn.SetCommand(ctx, cmd); err != nil {
-			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
+			http.Error(w, errors.Wrap(err, "failed to send command to TRC").Error(), http.StatusInternalServerError)
 			return
 		}
 	}
@@ -266,27 +275,36 @@ func MakeTurtleHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
+		logger.Debug("Retrieving a connection from pool...")
 		trcConn, err := pool.Conn()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Failed to establish connection to TRC: %s", err), http.StatusInternalServerError)
+			http.Error(w, errors.Wrap(err, "failed to establish connection to TRC").Error(), http.StatusInternalServerError)
 			return
 		}
 
+		logger.Debug("Retrieving token...")
 		tok, err := trcConn.Token()
 		if err != nil {
-			logger.With(zap.Error(err)).Warn("TRC connection established, but failed to get token")
-			http.Error(w, fmt.Sprintf("Token not initialized"), http.StatusInternalServerError)
+			http.Error(w, errors.Wrap(err, "TRC connection established, but failed to get token").Error(), http.StatusInternalServerError)
 			return
 		}
 
-		if r.Header.Get("token") != tok {
-			logger.With(zap.Error(err)).Debug("Authentication failed")
-			http.Error(w, fmt.Sprintf("Wrong authentication token"), http.StatusUnauthorized)
+		_, pswd, ok := r.BasicAuth()
+		if !ok {
+			http.Error(w, errors.New("Authorization header not found or invalid").Error(), http.StatusBadRequest)
 			return
 		}
 
+		if tok != "" && pswd != tok {
+			http.Error(w, errors.New("invalid token").Error(), http.StatusUnauthorized)
+			return
+		}
+
+		logger.Debug("Sending turtle state...",
+			zap.Reflect("state", st),
+		)
 		if err := trcConn.SetTurtleState(ctx, st); err != nil {
-			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
+			http.Error(w, errors.Wrap(err, "failed to send turtle state to TRC").Error(), http.StatusInternalServerError)
 			return
 		}
 	}
