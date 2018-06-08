@@ -124,9 +124,9 @@ func main() {
 			}
 		}()
 
-		http.HandleFunc("/"+stateEndpoint, webapi.StateHandler(pool))
-		http.HandleFunc("/"+commandEndpoint, webapi.CommandHandler(pool))
-		http.HandleFunc("/"+turtleEndpoint+"/", webapi.TurtleHandler(pool))
+		http.HandleFunc("/"+stateEndpoint, webapi.MakeStateHandler(pool))
+		http.HandleFunc("/"+commandEndpoint, webapi.MakeCommandHandler(pool))
+		http.HandleFunc("/"+turtleEndpoint+"/", webapi.MakeTurtleHandler(pool))
 
 		if *static != "" {
 			http.Handle("/", http.FileServer(http.Dir(*static)))

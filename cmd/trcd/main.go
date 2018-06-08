@@ -181,7 +181,7 @@ func main() {
 									)
 									return
 								}
-								logger.Debug("Sent state",
+								logger.Info("Sent state",
 									zap.Reflect("state", st),
 								)
 
@@ -204,7 +204,7 @@ func main() {
 									)
 									return
 								}
-								logger.Debug("Sent ping")
+								logger.Info("Sent ping")
 
 							case <-closeCh:
 								logger.Debug("TRCD closed, stopping ping-sending goroutine")

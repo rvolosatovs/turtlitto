@@ -100,16 +100,20 @@ func wsError(w ControlWriter, logger *zap.Logger, err error, code int) {
 	}
 }
 
-func StateHandler(pool *trcapi.Pool) http.HandlerFunc {
+func requestLogger(r *http.Request) *zap.Logger {
+	logger, ok := r.Context().Value(logKey{}).(*zap.Logger)
+	if !ok || logger == nil {
+		return zap.L()
+	}
+	return logger
+}
+
+func MakeStateHandler(pool *trcapi.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
 		ctx := r.Context()
-
-		logger, ok := ctx.Value(logKey{}).(*zap.Logger)
-		if !ok || logger == nil {
-			logger = zap.L()
-		}
+		logger := requestLogger(r)
 
 		wsConn, err := (&websocket.Upgrader{
 			EnableCompression: true,
@@ -194,16 +198,12 @@ func StateHandler(pool *trcapi.Pool) http.HandlerFunc {
 	}
 }
 
-func CommandHandler(pool *trcapi.Pool) http.HandlerFunc {
+func MakeCommandHandler(pool *trcapi.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
+		logger := requestLogger(r)
 		ctx := r.Context()
-
-		logger, ok := ctx.Value(logKey{}).(*zap.Logger)
-		if !ok || logger == nil {
-			logger = zap.L()
-		}
 
 		if r.Method != "PUT" {
 			http.Error(w, fmt.Sprintf("Expected a PUT request, got %s", r.Method), http.StatusBadRequest)
@@ -238,23 +238,19 @@ func CommandHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
-		if err := trcConn.SetCommand(r.Context(), cmd); err != nil {
+		if err := trcConn.SetCommand(ctx, cmd); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
 			return
 		}
 	}
 }
 
-func TurtleHandler(pool *trcapi.Pool) http.HandlerFunc {
+func MakeTurtleHandler(pool *trcapi.Pool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
+		logger := requestLogger(r)
 		ctx := r.Context()
-
-		logger, ok := ctx.Value(logKey{}).(*zap.Logger)
-		if !ok || logger == nil {
-			logger = zap.L()
-		}
 
 		if r.Method != "PUT" {
 			http.Error(w, fmt.Sprintf("Expected a PUT request, got %s", r.Method), http.StatusBadRequest)
@@ -263,7 +259,6 @@ func TurtleHandler(pool *trcapi.Pool) http.HandlerFunc {
 
 		dec := json.NewDecoder(r.Body)
 		dec.DisallowUnknownFields()
-		defer r.Body.Close()
 
 		var st map[string]*api.TurtleState
 		if err := dec.Decode(&st); err != nil {
@@ -290,7 +285,7 @@ func TurtleHandler(pool *trcapi.Pool) http.HandlerFunc {
 			return
 		}
 
-		if err := trcConn.SetTurtleState(r.Context(), st); err != nil {
+		if err := trcConn.SetTurtleState(ctx, st); err != nil {
 			http.Error(w, fmt.Sprintf("Failed to send command to TRC: %s", err), http.StatusBadRequest)
 			return
 		}
