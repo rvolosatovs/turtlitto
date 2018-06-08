@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// Default handler for state messages, replying according to the API.
+// DefaultStateHandler is a state handler, which sends the request state back as response.
 func DefaultStateHandler(msg *api.Message) (*api.Message, error) {
 	if msg.ParentID == nil {
 		return api.NewMessage(api.MessageTypeState, msg.Payload, &msg.MessageID), nil
@@ -19,7 +19,7 @@ func DefaultStateHandler(msg *api.Message) (*api.Message, error) {
 	return nil, errors.New("TRC should not receive state responses")
 }
 
-// Default handler for ping messages, replying according to the API.
+// DefaultPingHandler is a ping handler, which responds to pongs.
 func DefaultPingHandler(msg *api.Message) (*api.Message, error) {
 	if msg.ParentID == nil {
 		return api.NewMessage(api.MessageTypePing, nil, &msg.MessageID), nil
@@ -27,7 +27,7 @@ func DefaultPingHandler(msg *api.Message) (*api.Message, error) {
 	return nil, nil
 }
 
-// Default handler for handshake messages, replying according to the API.
+// DefaultHandshakeHandler is a handshake handler, which compares the version to trcapi.DefaultVersion.
 func DefaultHandshakeHandler(msg *api.Message) (*api.Message, error) {
 	if msg.ParentID == nil {
 		return nil, errors.New("TRC should not receive a handshake request")
@@ -45,6 +45,7 @@ func DefaultHandshakeHandler(msg *api.Message) (*api.Message, error) {
 // Handler is a function, which handles a message.
 type Handler func(*api.Message) (*api.Message, error)
 
+// Conn represents a connection to SRRS.
 type Conn struct {
 	decoder interface{ Decode(v interface{}) error }
 	encoder interface{ Encode(v interface{}) error }
@@ -56,8 +57,10 @@ type Conn struct {
 	defaultHander Handler
 }
 
+// Option represents a Conn option.
 type Option func(*Conn)
 
+// WithHandler allows to specify a custom handler for Conn.
 func WithHandler(t api.MessageType, h Handler) Option {
 	return func(c *Conn) {
 		_, ok := c.handlers.LoadOrStore(t, h)
@@ -67,6 +70,7 @@ func WithHandler(t api.MessageType, h Handler) Option {
 	}
 }
 
+// WithDefaultHandler allows to specify a default handler for Conn.
 func WithDefaultHandler(h Handler) Option {
 	return func(c *Conn) {
 		if c.defaultHander != nil {
