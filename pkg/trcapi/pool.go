@@ -59,8 +59,8 @@ func (p *Pool) Close() error {
 	p.connMu.Lock()
 	if p.closeFunc != nil {
 		p.closeFunc()
-		p.conn = nil
 	}
+	p.conn = nil
 	p.connMu.Unlock()
 	return nil
 }
