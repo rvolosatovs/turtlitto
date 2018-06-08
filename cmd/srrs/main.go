@@ -36,23 +36,18 @@ var (
 func main() {
 	flag.Parse()
 
-	var logger *zap.Logger
-	var err error
+	conf := zap.NewProductionConfig()
+	conf.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	if *debug {
-		logger, err = zap.NewDevelopment()
-	} else {
-		logger, err = zap.NewProduction()
+		conf = zap.NewDevelopmentConfig()
+		conf.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
+
+	logger, err := conf.Build()
 	if err != nil {
-		zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-			MessageKey:     "msg",
-			LevelKey:       "level",
-			NameKey:        "logger",
-			EncodeLevel:    zapcore.LowercaseLevelEncoder,
-			EncodeTime:     zapcore.ISO8601TimeEncoder,
-			EncodeDuration: zapcore.StringDurationEncoder,
-		}), os.Stdout, zap.DebugLevel)).Fatal("Failed to initialize logger")
+		panic(err)
 	}
+
 	zap.RedirectStdLog(logger)
 	zap.ReplaceGlobals(logger)
 
@@ -118,7 +113,7 @@ func main() {
 				logger.Debug("Retrieving a connection from pool...")
 				trcConn, err := pool.Conn()
 				if err != nil {
-					logger.With(zap.Error(err)).Info("Failed to retrieve TRC connection from pool")
+					logger.With(zap.Error(err)).Warn("Failed to retrieve TRC connection from pool")
 					continue
 				}
 				logger.Debug("Connection retrieval from pool succeeded")

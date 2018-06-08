@@ -7,37 +7,45 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"go.uber.org/zap"
 )
 
-// Default handler for SetState messages, replying according to the API.
+// DefaultStateHandler is a state handler, which sends the request state back as response.
 func DefaultStateHandler(msg *api.Message) (*api.Message, error) {
-	var st api.State
-	if err := json.Unmarshal(msg.Payload, &st); err != nil {
-		return nil, err
+	if msg.ParentID == nil {
+		return api.NewMessage(api.MessageTypeState, msg.Payload, &msg.MessageID), nil
 	}
-
-	// TODO: Generate random
-	b, err := json.Marshal(&api.State{})
-	if err != nil {
-		return nil, err
-	}
-	return api.NewMessage(api.MessageTypeState, b, &msg.MessageID), nil
+	return nil, errors.New("TRC should not receive state responses")
 }
 
-// Default handler for ping messages, replying according to the API.
+// DefaultPingHandler is a ping handler, which responds to pongs.
 func DefaultPingHandler(msg *api.Message) (*api.Message, error) {
-	return api.NewMessage(api.MessageTypePing, nil, &msg.MessageID), nil
+	if msg.ParentID == nil {
+		return api.NewMessage(api.MessageTypePing, nil, &msg.MessageID), nil
+	}
+	return nil, nil
 }
 
-// Default handler for handshake messages, replying according to the API.
+// DefaultHandshakeHandler is a handshake handler, which compares the version to trcapi.DefaultVersion.
 func DefaultHandshakeHandler(msg *api.Message) (*api.Message, error) {
+	if msg.ParentID == nil {
+		return nil, errors.New("TRC should not receive a handshake request")
+	}
+	var hs api.Handshake
+	if err := json.Unmarshal(msg.Payload, &hs); err != nil {
+		return nil, errors.Wrapf(err, "failed to decode handshake payload")
+	}
+	if hs.Version.Compare(trcapi.DefaultVersion) > 0 {
+		return nil, errors.Errorf("unsupported version received: %s", hs.Version)
+	}
 	return nil, nil
 }
 
 // Handler is a function, which handles a message.
 type Handler func(*api.Message) (*api.Message, error)
 
+// Conn represents a connection to SRRS.
 type Conn struct {
 	decoder interface{ Decode(v interface{}) error }
 	encoder interface{ Encode(v interface{}) error }
@@ -49,8 +57,10 @@ type Conn struct {
 	defaultHander Handler
 }
 
+// Option represents a Conn option.
 type Option func(*Conn)
 
+// WithHandler allows to specify a custom handler for Conn.
 func WithHandler(t api.MessageType, h Handler) Option {
 	return func(c *Conn) {
 		_, ok := c.handlers.LoadOrStore(t, h)
@@ -60,6 +70,7 @@ func WithHandler(t api.MessageType, h Handler) Option {
 	}
 }
 
+// WithDefaultHandler allows to specify a default handler for Conn.
 func WithDefaultHandler(h Handler) Option {
 	return func(c *Conn) {
 		if c.defaultHander != nil {
@@ -98,6 +109,11 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 			var msg api.Message
 			logger.Debug("TRC decoding message...")
 			err := conn.decoder.Decode(&msg)
+			if err == io.EOF {
+				logger.Debug("EOF while decoding")
+				close(conn.errCh)
+				return
+			}
 
 			select {
 			case <-conn.closeCh:

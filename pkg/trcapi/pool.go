@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// Pool represents a pool of Conn's.
 type Pool struct {
 	connectFunc func() (*Conn, func(), error)
 	closeFunc   func()
@@ -14,6 +15,8 @@ type Pool struct {
 	conn   *Conn
 }
 
+// NewPool returns a new Pool.
+// connectFunc must return a *Conn, function to close it(possibly nil) and error, if any.
 func NewPool(connectFunc func() (*Conn, func(), error)) *Pool {
 	return &Pool{
 		connectFunc: connectFunc,
@@ -21,14 +24,12 @@ func NewPool(connectFunc func() (*Conn, func(), error)) *Pool {
 	}
 }
 
+// Conn returns an exisiting open connection, if such exists or establishes a new one.
 func (p *Pool) Conn() (*Conn, error) {
-	logger := zap.L().With(zap.String("func", "trcapi.Pool.Conn"))
+	logger := zap.L()
 
-	logger.Debug("Locking connMu...")
 	p.connMu.Lock()
 	defer p.connMu.Unlock()
-
-	logger.Debug("connMu locked...")
 
 	if p.conn != nil {
 		select {
@@ -53,11 +54,13 @@ func (p *Pool) Conn() (*Conn, error) {
 	return conn, nil
 }
 
+// Close closes the underlying connection.
 func (p *Pool) Close() error {
 	p.connMu.Lock()
 	if p.closeFunc != nil {
 		p.closeFunc()
 	}
+	p.conn = nil
 	p.connMu.Unlock()
 	return nil
 }
