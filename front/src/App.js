@@ -86,7 +86,7 @@ class App extends Component {
     this.connection = null;
   }
 
-  componentDidMount() {
+  connect() {
     const l = window.location;
     this.connection = new WebSocket(
       `${l.protocol === "https:" ? "wss" : "ws"}://user:${this.state.token}@${
@@ -101,12 +101,23 @@ class App extends Component {
     this.setState({ connectionStatus: connectionTypes.CONNECTING });
   }
 
+  componentDidMount() {
+    this.connect();
+  }
+
   componentWillUnmount() {
     this.connection.close();
+    if (this.timer !== null) {
+      clearTimeout(this.timer);
+    }
   }
 
   onConnectionClose(event) {
     this.setState({ connectionStatus: connectionTypes.DISCONNECTED });
+    this.timer = setTimeout(() => {
+      this.timer = null;
+      this.connect();
+    }, 1000);
   }
 
   onConnectionError(event) {
