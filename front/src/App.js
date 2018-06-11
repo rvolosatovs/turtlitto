@@ -54,6 +54,17 @@ class App extends Component {
       loggedIn: false
     };
     this.connection = null;
+    this.checkWindowWidth = this.checkWindowWidth.bind(this);
+  }
+
+  checkWindowWidth() {
+    /* 
+     * Once enter the tablet mode, make sure
+     * we transition to the settings page 
+    */
+    if (window.innerWidth >= 768) {
+      this.setState({ activePage: pageTypes.SETTINGS });
+    }
   }
 
   connect() {
@@ -67,6 +78,7 @@ class App extends Component {
     this.connection.onerror = event => this.onConnectionError(event);
     this.connection.onmessage = event => this.onConnectionMessage(event);
     this.connection.onopen = event => this.onConnectionOpen(event);
+    window.addEventListener("resize", this.checkWindowWidth);
 
     this.setState({ connectionStatus: connectionTypes.CONNECTING });
   }
@@ -80,6 +92,7 @@ class App extends Component {
     if (this.timer !== null) {
       clearTimeout(this.timer);
     }
+    window.removeEventListener("resize", this.checkWindowWidth);
   }
 
   onConnectionClose(event) {
@@ -207,6 +220,10 @@ class App extends Component {
                       <RefboxSettings token={this.state.token} />
                     </Fragment>
                   )}
+                  <NotificationWindow
+                    onDismiss={() => this.onNotificationDismiss()}
+                    notification={this.getNextNotification()}
+                  />
                   <BottomBar
                     activePage={activePage}
                     changeActivePage={page =>
