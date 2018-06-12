@@ -305,7 +305,12 @@ func (c *Conn) Token() (string, error) {
 
 // Close closes the connection.
 func (c *Conn) Close() error {
-	close(c.closeCh)
+	select {
+	case <-c.closeCh:
+	default:
+		close(c.closeCh)
+	}
+
 	c.stateSubsMu.Lock()
 	for ch := range c.stateSubs {
 		delete(c.stateSubs, ch)

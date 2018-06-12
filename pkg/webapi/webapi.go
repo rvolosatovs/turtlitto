@@ -362,7 +362,6 @@ func (srv *server) handleCommand(w http.ResponseWriter, r *http.Request) {
 		return
 
 	case key != srv.session.key:
-		srv.sessionMu.Unlock()
 		http.Error(w, errInvalidSessionKey.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -417,7 +416,6 @@ func (srv *server) handleTurtles(w http.ResponseWriter, r *http.Request) {
 		return
 
 	case key != srv.session.key:
-		srv.sessionMu.Unlock()
 		http.Error(w, errInvalidSessionKey.Error(), http.StatusUnauthorized)
 		return
 	}
