@@ -1,3 +1,4 @@
+// Package webapi implements the web API as defined in the specification.
 package webapi
 
 import (

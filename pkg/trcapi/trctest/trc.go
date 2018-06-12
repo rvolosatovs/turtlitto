@@ -1,3 +1,4 @@
+// Package trctest is used to mock the TRC.
 package trctest
 
 import (

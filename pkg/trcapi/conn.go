@@ -1,3 +1,4 @@
+// Package trcapi implements the TRC API as defined in the specification.
 package trcapi
 
 import (

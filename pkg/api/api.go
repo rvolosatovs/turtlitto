@@ -1,3 +1,4 @@
+// Package api defines the structures used in API.
 package api
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/oklog/ulid"
 )
 
+// Command is a TRC command.
 type Command string
 
 const (
@@ -35,6 +37,7 @@ const (
 	CommandBallHandlingDemo Command = "ball_handling_demo"
 )
 
+// TeamColor is a color of a team.
 type TeamColor string
 
 const (
@@ -42,6 +45,7 @@ const (
 	TeamColorCyan    TeamColor = "cyan"
 )
 
+// HomeGoal is a goal of a team.
 type HomeGoal string
 
 const (
@@ -49,6 +53,7 @@ const (
 	HomeGoalBlue   HomeGoal = "blue"
 )
 
+// Role is a role of a turtle.
 type Role string
 
 const (
@@ -62,6 +67,7 @@ const (
 	RoleDefenderAssist2 Role = "defender_assist2"
 )
 
+// RefBoxRole is a refbox- role of a turtle.
 type RefBoxRole string
 
 const (
@@ -73,6 +79,7 @@ const (
 	RefBoxRole6 RefBoxRole = "role_6"
 )
 
+// KinectState is a state of kinect.
 type KinectState string
 
 const (
@@ -81,6 +88,7 @@ const (
 	KinectStateBall    KinectState = "ball"
 )
 
+// LocalizationStatus is a status of localization.
 type LocalizationStatus string
 
 const (
@@ -89,6 +97,7 @@ const (
 	LocalizationStatusLocalization   LocalizationStatus = "localization"
 )
 
+// BallFound is a status of ball being found.
 type BallFound string
 
 const (
@@ -97,6 +106,7 @@ const (
 	BallFoundNo           BallFound = "no"
 )
 
+// CPB is status of CPB.
 type CPB string
 
 const (
