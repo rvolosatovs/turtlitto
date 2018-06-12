@@ -1,11 +1,8 @@
 package main
 
 import (
-	"encoding/base64"
 	"flag"
-	"fmt"
 	"net"
-	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
@@ -17,6 +14,7 @@ import (
 	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
+	"github.com/rvolosatovs/turtlitto/pkg/webapi"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 )
@@ -97,17 +95,16 @@ func TestAll(t *testing.T) {
 	wg.Add(1)
 
 	hs := apitest.RandomHandshake()
+	_ = hs
 
 	var wsConn *websocket.Conn
 	var wsErr error
 	go func() {
 		defer wg.Done()
 
-		wsAddr := "ws://localhost" + defaultAddr + "/" + stateEndpoint
+		wsAddr := "ws://localhost" + defaultAddr + "/" + webapi.StateEndpoint
 		logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
-		wsConn, _, wsErr = websocket.DefaultDialer.Dial(wsAddr, http.Header{
-			"Authorization": []string{fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString(append([]byte("user:"), []byte(hs.Token)...)))},
-		})
+		wsConn, _, wsErr = websocket.DefaultDialer.Dial(wsAddr, nil)
 	}()
 
 	logger.Debug("Waiting for connection on Unix socket...")
@@ -137,6 +134,9 @@ func TestAll(t *testing.T) {
 
 	wg.Wait()
 	a.NoError(wsErr)
+
+	err = wsConn.WriteJSON("SESSIONKEY")
+	a.NoError(err)
 
 	logger.Debug("WebSocket opened")
 
