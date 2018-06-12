@@ -6,7 +6,6 @@ import (
 	"io"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/blang/semver"
 	"github.com/mohae/deepcopy"
@@ -229,7 +228,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 }
 
 // sendRequest sends a request of type typ with payload pld and waits for the response.
-func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interface{}, timeout time.Duration) (json.RawMessage, error) {
+func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interface{}) (json.RawMessage, error) {
 	logger := zap.L()
 
 	c.closeChMu.RLock()
@@ -279,16 +278,11 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 	logger.Debug("Waiting for response...")
 
 	var resp *api.Message
-	if timeout != 0 {
-		select {
-		case <-time.After(timeout):
-			logger.Error("Connection timed out")
-			return nil, errors.New("Timed out")
-		case resp = <-ch:
-			logger.Debug("Response received")
-		}
-	} else {
-		resp = <-ch
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	case resp = <-ch:
+		logger.Debug("Response received")
 	}
 	return resp.Payload, nil
 }
@@ -367,13 +361,13 @@ func (c *Conn) SubscribeStateChanges(ctx context.Context) (<-chan struct{}, func
 
 // Ping sends ping to the TRC and waits for response.
 func (c *Conn) Ping(ctx context.Context) error {
-	_, err := c.sendRequest(ctx, api.MessageTypePing, nil, 5*time.Second)
+	_, err := c.sendRequest(ctx, api.MessageTypePing, nil)
 	return err
 }
 
 // SetState sends the state to TRC and waits for response.
 func (c *Conn) SetState(ctx context.Context, st *api.State) error {
-	_, err := c.sendRequest(ctx, api.MessageTypeState, st, 0)
+	_, err := c.sendRequest(ctx, api.MessageTypeState, st)
 	return err
 }
 
