@@ -6,6 +6,7 @@ import (
 	"io"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/blang/semver"
 	"github.com/mohae/deepcopy"
@@ -228,7 +229,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 }
 
 // sendRequest sends a request of type typ with payload pld and waits for the response.
-func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interface{}) (json.RawMessage, error) {
+func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interface{}, timeout time.Duration) (json.RawMessage, error) {
 	logger := zap.L()
 
 	c.closeChMu.RLock()
@@ -263,6 +264,11 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 	c.pendingReqsMu.Lock()
 	c.pendingReqs[msg.MessageID] = ch
 	c.pendingReqsMu.Unlock()
+	defer func() {
+		c.pendingReqsMu.Lock()
+		delete(c.pendingReqs, msg.MessageID)
+		c.pendingReqsMu.Unlock()
+	}()
 
 	logger.Debug("Sending request to TRC...")
 	if err := c.encoder.Encode(msg); err != nil {
@@ -271,12 +277,19 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 	logger.Debug("Sending request to TRC succeeded")
 
 	logger.Debug("Waiting for response...")
-	resp := <-ch
-	logger.Debug("Response received")
 
-	c.pendingReqsMu.Lock()
-	delete(c.pendingReqs, msg.MessageID)
-	c.pendingReqsMu.Unlock()
+	var resp *api.Message
+	if timeout != 0 {
+		select {
+		case <-time.After(timeout):
+			logger.Error("Connection timed out")
+			return nil, errors.New("Timed out")
+		case resp = <-ch:
+			logger.Debug("Response received")
+		}
+	} else {
+		resp = <-ch
+	}
 	return resp.Payload, nil
 }
 
@@ -354,13 +367,13 @@ func (c *Conn) SubscribeStateChanges(ctx context.Context) (<-chan struct{}, func
 
 // Ping sends ping to the TRC and waits for response.
 func (c *Conn) Ping(ctx context.Context) error {
-	_, err := c.sendRequest(ctx, api.MessageTypePing, nil)
+	_, err := c.sendRequest(ctx, api.MessageTypePing, nil, 5*time.Second)
 	return err
 }
 
 // SetState sends the state to TRC and waits for response.
 func (c *Conn) SetState(ctx context.Context, st *api.State) error {
-	_, err := c.sendRequest(ctx, api.MessageTypeState, st)
+	_, err := c.sendRequest(ctx, api.MessageTypeState, st, 0)
 	return err
 }
 
