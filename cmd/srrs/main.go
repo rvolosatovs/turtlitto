@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"net"
 	"net/http"
@@ -84,6 +85,36 @@ func main() {
 				return nil, nil, errors.Wrapf(err, "Failed to establish connection to TRC")
 			}
 			logger.Debug("TRC protocol connection initialized")
+
+			go func() {
+				var next time.Time
+				for {
+					next = time.Now().Add(5 * time.Second)
+
+					ctx, cancel := context.WithDeadline(context.Background(), next)
+					defer cancel()
+
+					if err := trcConn.Ping(ctx); err != nil {
+						logger.Error("Failed to ping TRC",
+							zap.Error(err),
+						)
+
+						if err := trcConn.Close(); err != nil {
+							logger.Error("Failed to close TRC",
+								zap.Error(err),
+							)
+						}
+						return
+					}
+
+					select {
+					case <-trcConn.Closed():
+						return
+
+					case <-time.After(time.Until(next)):
+					}
+				}
+			}()
 
 			return trcConn, func() {
 				logger.Debug("Closing TRC connection...")
