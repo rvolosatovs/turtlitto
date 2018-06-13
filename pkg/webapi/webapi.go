@@ -3,7 +3,6 @@ package webapi
 
 import (
 	"compress/flate"
-	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -44,77 +43,6 @@ var (
 // logKey is the key, under which *zap.Logger
 // is contained in the context.
 type logKey struct{}
-
-// logResponseWriter logs requests.
-type logResponseWriter struct {
-	http.ResponseWriter
-	statusCh   chan int
-	responseCh chan []byte
-}
-
-func (w *logResponseWriter) Write(p []byte) (int, error) {
-	b := make([]byte, len(p))
-	copy(b, p)
-	w.responseCh <- b
-	return w.ResponseWriter.Write(p)
-}
-
-func (w *logResponseWriter) WriteHeader(status int) {
-	w.statusCh <- status
-	w.ResponseWriter.WriteHeader(status)
-}
-
-// LogHandler is a http.Handler, which logs requests to Logger.
-type LogHandler struct {
-	http.Handler
-	*zap.Logger
-}
-
-type hijackResponseWriter struct {
-	http.ResponseWriter
-	http.Hijacker
-}
-
-// ServeHTTP logs request and dispatches h.Handler.ServeHTTP.
-func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	logger := h.Logger.With(
-		zap.String("remote_addr", r.RemoteAddr),
-		zap.String("user_agent", r.UserAgent()),
-		zap.String("uri", r.RequestURI),
-	)
-
-	responseCh := make(chan []byte, 1)
-	statusCh := make(chan int, 1)
-
-	var wrapped http.ResponseWriter = &logResponseWriter{
-		ResponseWriter: w,
-		responseCh:     responseCh,
-		statusCh:       statusCh,
-	}
-	if h, ok := w.(http.Hijacker); ok {
-		wrapped = &hijackResponseWriter{
-			ResponseWriter: wrapped,
-			Hijacker:       h,
-		}
-	}
-
-	logger.Debug("Processing request...")
-	h.Handler.ServeHTTP(wrapped, r.WithContext(
-		context.WithValue(r.Context(), logKey{}, logger),
-	))
-
-	logger.Debug("Waiting for status...")
-	status := <-statusCh
-	logger = logger.With(
-		zap.String("response", string(<-responseCh)),
-		zap.Int("status", status),
-	)
-	if status < http.StatusBadRequest {
-		logger.Debug("Successfully processed request")
-	} else {
-		logger.Error("Error processing request")
-	}
-}
 
 // controlWriter can write Control messages to itself.
 type controlWriter interface {

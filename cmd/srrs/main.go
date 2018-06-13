@@ -161,11 +161,7 @@ func main() {
 		tcpSrv := &http.Server{
 			Addr:     *tcpAddr,
 			ErrorLog: zap.NewStdLog(logger),
-			//Handler: &webapi.LogHandler{
-			//Logger:  logger,
-			//Handler: mux,
-			//},
-			Handler: mux,
+			Handler:  mux,
 		}
 
 		// TODO: Create tlsServ
