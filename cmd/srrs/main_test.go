@@ -32,7 +32,10 @@ var (
 	logger *zap.SugaredLogger
 )
 
-const timeout = 2 * time.Second
+const (
+	timeout      = time.Second
+	messageCount = 3
+)
 
 func init() {
 	http.DefaultClient.Timeout = timeout
@@ -45,7 +48,7 @@ func init() {
 
 	flag.Parse()
 	if *tcpSock == "" {
-		logger.Debug("Creating Unix socket")
+		logger.Debug("Creating Unix socket...")
 		f, err := os.Open(unixSockPath)
 		if !os.IsNotExist(err) {
 			f.Close()
@@ -56,13 +59,14 @@ func init() {
 			}
 		}
 
+		logger.Debugf("Listening on UNIX socket on %s...", unixSockPath)
 		netLst, err = net.Listen("unix", unixSockPath)
 		if err != nil {
-			logger.Fatalf("Failed to open Unix socket on %s: %s", unixSockPath, err)
+			logger.Fatalf("Failed to open UNIX socket on %s: %s", unixSockPath, err)
 		}
 
 	} else {
-		logger.Debug("Creating TCP socket")
+		logger.Debugf("Listening on TCP socket on %s...", *tcpSock)
 		netLst, err = net.Listen("tcp", *tcpSock)
 		if err != nil {
 			logger.Fatalf("Failed to open TCP socket on %s: %s", *tcpSock, err)
@@ -98,6 +102,8 @@ func TestMain(m *testing.M) {
 		logger.Fatalf("Failed to close connection: %s", err)
 	}
 
+	logger = zap.S()
+
 	ret := m.Run()
 
 	if err := netLst.Close(); err != nil {
@@ -124,8 +130,10 @@ func TestAll(t *testing.T) {
 		a.NoError(err)
 		req.SetBasicAuth("", handshake.Token)
 
+		logger.Debug("Sending authentication request...")
 		resp, err := http.DefaultClient.Do(req)
 		if !a.NoError(err) {
+			logger.With("error", err).Error("Failed to authenticate")
 			return
 		}
 		defer resp.Body.Close()
@@ -133,13 +141,13 @@ func TestAll(t *testing.T) {
 		b, err := ioutil.ReadAll(resp.Body)
 		a.NoError(err)
 
+		logger.With("key", string(b)).Debug("Got session key")
 		sessionKey = string(b)
 	}()
 
 	logger.Debug("Waiting for connection on Unix socket...")
 	unixConn, err := netLst.Accept()
 	a.NoError(err)
-	logger.Debug("Connection on Unix socket received")
 	defer unixConn.Close()
 
 	logger.Debug("Establishing mock TRC connection...")
@@ -162,17 +170,18 @@ func TestAll(t *testing.T) {
 			return trctest.DefaultStateHandler(msg)
 		}),
 	)
-	logger.Debug("Mock TRC connection established")
 
 	logger.Debug("Sending handshake...")
 	err = trc.SendHandshake(&api.Handshake{
 		Version: trcapi.DefaultVersion,
 	})
 	a.NoError(err)
-	logger.Debug("Handshake sent")
 
 	logger.Debug("Waiting for authentication...")
 	wg.Wait()
+	if t.Failed() {
+		t.FailNow()
+	}
 
 	wsAddr := "ws://localhost" + defaultAddr + "/" + webapi.StateEndpoint
 	logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
@@ -185,30 +194,26 @@ func TestAll(t *testing.T) {
 	err = wsConn.WriteJSON(sessionKey)
 	a.NoError(err)
 
-	logger.Debug("WebSocket opened")
-
 	t.Run("TRC->SRRC/state", func(t *testing.T) {
-		for i := 0; i < 10; i++ {
+		for i := 0; i < messageCount; i++ {
 			t.Run(strconv.Itoa(i), func(t *testing.T) {
 				expected := apitest.RandomState()
 
 				logger.Debug("Sending random state from TRC...")
 				err = trc.SendState(expected)
 				a.NoError(err)
-				logger.Debug("Random state sent")
 
-				var got *api.State
+				var got api.State
 				logger.Debug("Receiving random state on WebSocket...")
-				err = wsConn.ReadJSON(got)
+				err = wsConn.ReadJSON(&got)
 				a.NoError(err)
-				a.Equal(got, expected)
-				logger.Debug("Random state received on WebSocket")
+				a.Equal(expected, &got)
 			})
 		}
 	})
 
 	t.Run("SRRC->TRC/turtles", func(t *testing.T) {
-		for i := 0; i < 10; i++ {
+		for i := 0; i < messageCount; i++ {
 			t.Run(strconv.Itoa(i), func(t *testing.T) {
 				expected := &api.State{
 					Turtles: apitest.RandomState().Turtles,
@@ -247,12 +252,12 @@ func TestAll(t *testing.T) {
 				var got api.State
 				err = json.Unmarshal(msg.Payload, &got)
 				a.NoError(err)
-				a.Equal(expected, got)
+				a.Equal(expected, &got)
 
 				got = api.State{}
 				err = wsConn.ReadJSON(&got)
 				a.NoError(err)
-				a.Equal(expected, got)
+				a.Equal(expected, &got)
 
 				wg.Wait()
 			})
@@ -260,7 +265,7 @@ func TestAll(t *testing.T) {
 	})
 
 	t.Run("SRRC->TRC/command", func(t *testing.T) {
-		for i := 0; i < 10; i++ {
+		for i := 0; i < messageCount; i++ {
 			t.Run(strconv.Itoa(i), func(t *testing.T) {
 				expected := &api.State{
 					Command: *apitest.RandomCommand(),
@@ -299,12 +304,12 @@ func TestAll(t *testing.T) {
 				var got api.State
 				err = json.Unmarshal(msg.Payload, &got)
 				a.NoError(err)
-				a.Equal(expected, got)
+				a.Equal(expected, &got)
 
 				got = api.State{}
 				err = wsConn.ReadJSON(&got)
 				a.NoError(err)
-				a.Equal(expected, got)
+				a.Equal(expected, &got)
 
 				wg.Wait()
 			})

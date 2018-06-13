@@ -103,6 +103,7 @@ func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		context.WithValue(r.Context(), logKey{}, logger),
 	))
 
+	logger.Debug("Waiting for status...")
 	status := <-statusCh
 	logger = logger.With(
 		zap.String("response", string(<-responseCh)),
@@ -191,18 +192,18 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	srv.sessionMu.Lock()
 	switch {
 	case srv.session == nil:
-		srv.sessionMu.Unlock()
 		wsError(wsConn, logger, errAuthenticateFirst, websocket.ClosePolicyViolation)
+		srv.sessionMu.Unlock()
 		return
 
 	case key != srv.session.key:
+		wsError(wsConn, logger, errInvalidSessionKey, websocket.CloseInvalidFramePayloadData)
 		srv.sessionMu.Unlock()
-		wsError(wsConn, logger, errors.Wrap(err, errInvalidSessionKey.Error()), websocket.CloseInvalidFramePayloadData)
 		return
 
 	case srv.session.isActive:
-		srv.sessionMu.Unlock()
 		wsError(wsConn, logger, errActiveWebSocket, websocket.ClosePolicyViolation)
+		srv.sessionMu.Unlock()
 		return
 	}
 
@@ -270,7 +271,7 @@ func (srv *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 	logger := requestLogger(r)
 
 	if r.Method != "GET" {
-		http.Error(w, errors.Errorf("Expected a GET request, got %s", r.Method).Error(), http.StatusBadRequest)
+		http.Error(w, errors.Errorf("expected a GET request, got %s", r.Method).Error(), http.StatusBadRequest)
 		return
 	}
 
