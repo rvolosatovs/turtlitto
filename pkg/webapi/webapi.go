@@ -102,7 +102,10 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	defer wsConn.Close()
 
 	wsConn.EnableWriteCompression(true)
-	wsConn.SetCompressionLevel(flate.BestCompression)
+	if err := wsConn.SetCompressionLevel(flate.BestCompression); err != nil {
+		wsError(wsConn, logger, errors.Wrap(err, "failed to enable compression"), websocket.CloseProtocolError)
+		return
+	}
 
 	var key string
 	logger.Debug("Reading key...")
