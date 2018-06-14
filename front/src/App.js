@@ -6,6 +6,7 @@ import theme from "./theme";
 import update from "immutability-helper";
 import { Row, Col } from "react-flexbox-grid";
 import pageTypes from "./BottomBar/pageTypes";
+import { screenSizes } from "./media";
 
 import Bar from "./BottomBar";
 import connectionTypes from "./BottomBar/connectionTypes";
@@ -62,7 +63,7 @@ class App extends Component {
      * Once enter the tablet mode, make sure
      * we transition to the settings page 
     */
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= screenSizes.md) {
       this.setState({ activePage: pageTypes.SETTINGS });
     }
   }
@@ -206,9 +207,7 @@ class App extends Component {
                   <RefboxSettings token={this.state.token} />
                   <BottomBar
                     activePage={activePage}
-                    changeActivePage={page =>
-                      this.setState({ activePage: page })
-                    }
+                    changeActivePage={() => {}}
                     connectionStatus={connectionStatus}
                     token={this.state.token}
                   />

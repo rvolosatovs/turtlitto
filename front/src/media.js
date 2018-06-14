@@ -1,6 +1,6 @@
 import { css } from "styled-components";
 
-const sizes = {
+export const screenSizes = {
   xl: 1170,
   lg: 992,
   md: 768,
@@ -8,8 +8,8 @@ const sizes = {
   xs: 376
 };
 
-export default Object.keys(sizes).reduce((accumulator, label) => {
-  const size = sizes[label];
+export default Object.keys(screenSizes).reduce((accumulator, label) => {
+  const size = screenSizes[label];
   accumulator[label] = (...args) => css`
     @media (min-width: ${size}px) {
       ${css(...args)};
