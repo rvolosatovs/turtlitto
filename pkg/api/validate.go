@@ -131,15 +131,15 @@ func rangeError(source string) error {
 // Validate implements Validator.
 func (s *TurtleState) Validate() error {
 	switch {
-	case s.RestartCountVision > 99:
+	case s.RestartCountVision != nil && *s.RestartCountVision > 99:
 		return rangeError("RestartCountVision")
-	case s.RestartCountWorldmodel > 99:
+	case s.RestartCountWorldmodel != nil && *s.RestartCountWorldmodel > 99:
 		return rangeError("RestartCountWorldmodel")
-	case s.BatteryVoltage > 99:
+	case s.BatteryVoltage != nil && *s.BatteryVoltage > 99:
 		return rangeError("BatteryVoltage")
-	case s.EmergencyStatus > 100:
+	case s.EmergencyStatus != nil && *s.EmergencyStatus > 100:
 		return rangeError("EmergencyStatus")
-	case s.ActiveDevPC > 90:
+	case s.ActiveDevPC != nil && *s.ActiveDevPC > 90:
 		return rangeError("ActiveDevPC")
 	}
 

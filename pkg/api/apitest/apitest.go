@@ -12,14 +12,295 @@ import (
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 )
 
-//RandomMessage returns a message with randomly generated fields, within boundaries of the specifications.
-func RandomMessage() api.Message {
-	var msg = api.Message{}
-	msg.Type = *RandomMessageType()
-	msg.MessageID = *RandomULID()
+// MaxTurtles is the maximum amount of turtles.
+const MaxTurtles = 6
 
+func must(v interface{}, err error) interface{} {
+	if err != nil {
+		panic(err)
+	}
+	return v
+}
+
+// BoolPtr returns v as *bool.
+func BoolPtr(v bool) *bool {
+	return &v
+}
+
+// BoolPtr returns v as *uint8.
+func Uint8Ptr(v uint8) *uint8 {
+	return &v
+}
+
+// RandomCommand returns a random valid api.Command.
+func RandomCommand() api.Command {
+	switch rand.Intn(22) {
+	case 0:
+		return api.CommandDroppedBall
+	case 1:
+		return api.CommandStart
+	case 2:
+		return api.CommandStop
+	case 3:
+		return api.CommandGoIn
+	case 4:
+		return api.CommandGoOut
+	case 5:
+		return api.CommandKickOffCyan
+	case 6:
+		return api.CommandKickOffMagenta
+	case 7:
+		return api.CommandFreeKickCyan
+	case 8:
+		return api.CommandFreeKickMagenta
+	case 9:
+		return api.CommandGoalKickCyan
+	case 10:
+		return api.CommandGoalKickMagenta
+	case 11:
+		return api.CommandThrowInCyan
+	case 12:
+		return api.CommandThrowInMagenta
+	case 13:
+		return api.CommandCornerCyan
+	case 14:
+		return api.CommandCornerMagenta
+	case 15:
+		return api.CommandPenaltyCyan
+	case 16:
+		return api.CommandPenaltyMagenta
+	case 17:
+		return api.CommandRoleAssignerOff
+	case 18:
+		return api.CommandRoleAssignerOn
+	case 19:
+		return api.CommandPassDemo
+	case 20:
+		return api.CommandPenaltyMode
+	case 21:
+		return api.CommandBallHandlingDemo
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomBallFound returns a random valid api.BallFound.
+func RandomBallFound() api.BallFound {
+	switch rand.Intn(3) {
+	case 0:
+		return api.BallFoundYes
+	case 1:
+		return api.BallFoundCommunicated
+	case 2:
+		return api.BallFoundNo
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomLocalizationStatus returns a random valid api.LocalizationStatus.
+func RandomLocalizationStatus() api.LocalizationStatus {
+	switch rand.Intn(3) {
+	case 0:
+		return api.LocalizationStatusNoLocalization
+	case 1:
+		return api.LocalizationStatusCompassError
+	case 2:
+		return api.LocalizationStatusLocalization
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomCPB returns a random valid api.CPB.
+func RandomCPB() api.CPB {
+	switch rand.Intn(3) {
+	case 0:
+		return api.CPBYes
+	case 1:
+		return api.CPBCommunicated
+	case 2:
+		return api.CPBNo
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomRole returns a random valid api.Role.
+func RandomRole() api.Role {
+	switch rand.Intn(8) {
+	case 0:
+		return api.RoleNone
+	case 1:
+		return api.RoleInactive
+	case 2:
+		return api.RoleGoalkeeper
+	case 3:
+		return api.RoleAttackerMain
+	case 4:
+		return api.RoleAttackerAssist
+	case 5:
+		return api.RoleDefenderMain
+	case 6:
+		return api.RoleDefenderAssist
+	case 7:
+		return api.RoleDefenderAssist2
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomRefboxRole returns a random valid api.RefboxRole.
+func RandomRefBoxRole() api.RefBoxRole {
+	switch rand.Intn(6) {
+	case 0:
+		return api.RefBoxRole1
+	case 1:
+		return api.RefBoxRole2
+	case 2:
+		return api.RefBoxRole3
+	case 3:
+		return api.RefBoxRole4
+	case 4:
+		return api.RefBoxRole5
+	case 5:
+		return api.RefBoxRole6
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomHomeGoal returns a random valid api.HomeGoal.
+func RandomHomeGoal() api.HomeGoal {
+	switch rand.Intn(2) {
+	case 0:
+		return api.HomeGoalYellow
+	case 1:
+		return api.HomeGoalBlue
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomTeamColor returns a random valid api.TeamColor.
+func RandomTeamColor() api.TeamColor {
+	switch rand.Intn(2) {
+	case 0:
+		return api.TeamColorMagenta
+	case 1:
+		return api.TeamColorCyan
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomKinectState returns a random valid api.KinectState.
+func RandomKinectState() api.KinectState {
+	switch rand.Intn(3) {
+	case 0:
+		return api.KinectStateBall
+	case 1:
+		return api.KinectStateNoBall
+	case 2:
+		return api.KinectStateNoState
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomTurtleState returns a random valid *api.TurtleState.
+func RandomTurtleState() *api.TurtleState {
+	return &api.TurtleState{
+		VisionStatus:           BoolPtr(rand.Intn(2) == 0),
+		MotionStatus:           BoolPtr(rand.Intn(2) == 0),
+		WorldmodelStatus:       BoolPtr(rand.Intn(2) == 0),
+		AppmanStatus:           BoolPtr(rand.Intn(2) == 0),
+		RestartCountMotion:     Uint8Ptr(uint8(rand.Intn(100))),
+		RestartCountVision:     Uint8Ptr(uint8(rand.Intn(100))),
+		RestartCountWorldmodel: Uint8Ptr(uint8(rand.Intn(100))),
+		BallFound:              RandomBallFound(),
+		LocalizationStatus:     RandomLocalizationStatus(),
+		CPB:                    RandomCPB(),
+		BatteryVoltage:         Uint8Ptr(uint8(rand.Intn(100))),
+		EmergencyStatus:        Uint8Ptr(uint8(rand.Intn(101))),
+		Role:                   RandomRole(),
+		RefBoxRole:             RandomRefBoxRole(),
+		RobotInField:           BoolPtr(rand.Intn(2) == 0),
+		RobotEmergencyButton:   BoolPtr(rand.Intn(2) == 0),
+		HomeGoal:               RandomHomeGoal(),
+		TeamColor:              RandomTeamColor(),
+		ActiveDevPC:            Uint8Ptr(uint8(rand.Intn(91))),
+		Kinect1State:           RandomKinectState(),
+		Kinect2State:           RandomKinectState(),
+	}
+}
+
+// RandomTurtleStateMap returns a random valid *api.TurtleState map.
+func RandomTurtleStateMap() map[string]*api.TurtleState {
+	ret := map[string]*api.TurtleState{}
+	perm := rand.Perm(MaxTurtles + 1)[:rand.Intn(MaxTurtles+2)]
+	for _, i := range perm {
+		ret[strconv.Itoa(i)] = RandomTurtleState()
+	}
+	return ret
+}
+
+// RandomState returns a random valid *api.State.
+func RandomState() *api.State {
+	var pld api.State
+	if rand.Intn(2) == 0 {
+		pld.Command = RandomCommand()
+	}
+	if rand.Intn(2) == 0 {
+		pld.Turtles = RandomTurtleStateMap()
+	}
+	return &pld
+}
+
+// RandomVersion returns a random valid *semver.Version.
+func RandomVersion() *semver.Version {
+	ver := semver.MustParse(
+		fmt.Sprintf("%d.%d.%d", rand.Intn(10), rand.Intn(10), rand.Intn(10)),
+	)
+	return &ver
+}
+
+// RandomMessageType returns a random valid api.MessageType.
+func RandomMessageType() api.MessageType {
+	switch rand.Intn(2) {
+	case 0:
+		return api.MessageTypeState
+	case 1:
+		return api.MessageTypePing
+	case 2:
+		return api.MessageTypeHandshake
+	default:
+		panic("unmatched")
+	}
+}
+
+// RandomHandshake returns a random valid *api.Handshake.
+func RandomHandshake() *api.Handshake {
+	b := make([]byte, 10+rand.Intn(10))
+	rand.Read(b)
+	return &api.Handshake{
+		Version: *RandomVersion(),
+		Token:   string(b),
+	}
+}
+
+// RandomULID returns a random valid *ulid.ULID.
+func RandomULID() *ulid.ULID {
+	ret := ulid.MustNew(ulid.Now(), crand.Reader)
+	return &ret
+}
+
+// RandomMessage returns a random valid *api.Message.
+func RandomMessage() *api.Message {
 	var pld interface{}
-	switch msg.Type {
+
+	mt := RandomMessageType()
+	switch mt {
 	case api.MessageTypeHandshake:
 		pld = *RandomHandshake()
 	case api.MessageTypeState:
@@ -32,144 +313,18 @@ func RandomMessage() api.Message {
 
 	b, err := json.Marshal(pld)
 	if err != nil {
-		panic("could not marshall payload ")
+		panic("failed to marshall payload ")
 	}
 
-	msg.Payload = b
-	return msg
-}
-
-//RandomMessageType randomly returns one of the possible MessageTypes.
-func RandomMessageType() *api.MessageType {
-	vals := []api.MessageType{api.MessageTypeState, api.MessageTypePing, api.MessageTypeHandshake}
-	return &vals[rand.Intn(len(vals))]
-}
-
-func RandomVersion() *semver.Version {
-	ver := semver.MustParse(fmt.Sprintf("%d.%d.%d", rand.Intn(10), rand.Intn(10), rand.Intn(10)))
-	return &ver
-}
-
-//RandomHandshake returns a Handshake with randomly generated version string (within v0.0.0 - v9.9.9).
-func RandomHandshake() *api.Handshake {
-	b := make([]byte, 10+rand.Intn(10))
-	rand.Read(b)
-	return &api.Handshake{
-		Version: *RandomVersion(),
-		Token:   string(b),
+	var parentID *ulid.ULID
+	if rand.Intn(2) == 0 {
+		parentID = RandomULID()
 	}
-}
 
-//RandomULID returns a random, valid ULID.
-func RandomULID() *ulid.ULID {
-	newulid := ulid.MustNew(ulid.Now(), crand.Reader)
-	return &newulid
-}
-
-//RandomState returns a full state existing of a RandomCommand and a RandomTurtleState.
-func RandomState() *api.State {
-	var pld api.State
-	pld.Command = *RandomCommand()
-	tstatemap := make(map[string]*api.TurtleState)
-	for i := range rand.Perm(6) {
-		tstatemap[strconv.Itoa(i+1)] = RandomTurtleState()
+	return &api.Message{
+		Type:      mt,
+		MessageID: *RandomULID(),
+		ParentID:  parentID,
+		Payload:   b,
 	}
-	pld.Turtles = tstatemap
-	return &pld
-}
-
-//RandomCommand returns one of the possible Commands of type Command at random.
-func RandomCommand() *api.Command {
-	var cmds = []api.Command{
-		api.CommandDroppedBall,
-		api.CommandStart,
-		api.CommandStop,
-		api.CommandGoIn,
-		api.CommandGoOut,
-		api.CommandKickOffCyan,
-		api.CommandKickOffMagenta,
-		api.CommandFreeKickCyan,
-		api.CommandFreeKickMagenta,
-		api.CommandGoalKickCyan,
-		api.CommandGoalKickMagenta,
-		api.CommandThrowInCyan,
-		api.CommandThrowInMagenta,
-		api.CommandCornerCyan,
-		api.CommandCornerMagenta,
-		api.CommandPenaltyCyan,
-		api.CommandPenaltyMagenta,
-		api.CommandRoleAssignerOff,
-		api.CommandRoleAssignerOn,
-		api.CommandPassDemo,
-		api.CommandPenaltyMode,
-		api.CommandBallHandlingDemo}
-
-	cmd := cmds[rand.Intn(len(cmds))]
-	return &cmd
-}
-
-//RandomTurtleState returns a TurtleState with fields randomly filled within specification boundaries.
-func RandomTurtleState() *api.TurtleState {
-	var ballfound = []api.BallFound{api.BallFoundCommunicated, api.BallFoundYes, api.BallFoundYes}
-	var cpb = []api.CPB{api.CPBCommunicated, api.CPBNo, api.CPBYes}
-	var homegoals = []api.HomeGoal{api.HomeGoalBlue, api.HomeGoalYellow}
-	var teams = []api.TeamColor{api.TeamColorCyan, api.TeamColorMagenta}
-	var kinectstates = []api.KinectState{api.KinectStateBall, api.KinectStateNoBall, api.KinectStateNoState}
-	var roles = []api.Role{
-		api.RoleAttackerAssist,
-		api.RoleAttackerMain,
-		api.RoleDefenderAssist,
-		api.RoleDefenderAssist2,
-		api.RoleDefenderMain,
-		api.RoleGoalkeeper,
-		api.RoleInactive,
-		api.RoleNone}
-	var refroles = []api.RefBoxRole{
-		api.RefBoxRole1,
-		api.RefBoxRole2,
-		api.RefBoxRole3,
-		api.RefBoxRole4,
-		api.RefBoxRole5,
-		api.RefBoxRole6}
-
-	var locstat = []api.LocalizationStatus{api.LocalizationStatusCompassError,
-		api.LocalizationStatusLocalization,
-		api.LocalizationStatusNoLocalization}
-
-	var turtstate api.TurtleState = api.TurtleState{
-		randomBool(),
-		randomBool(),
-		randomBool(),
-		randomBool(),
-		uint8(rand.Intn(100)),
-		uint8(rand.Intn(100)),
-		uint8(rand.Intn(100)),
-		ballfound[rand.Intn(len(ballfound))],
-		locstat[rand.Intn(len(locstat))],
-		cpb[rand.Intn(len(cpb))],
-		uint8(rand.Intn(100)),
-		uint8(rand.Intn(101)),
-		roles[rand.Intn(len(roles))],
-		refroles[rand.Intn(len(refroles))],
-		randomBool(),
-		randomBool(),
-		homegoals[rand.Intn(len(homegoals))],
-		teams[rand.Intn(len(teams))],
-		uint8(rand.Intn(100)),
-		kinectstates[rand.Intn(len(kinectstates))],
-		kinectstates[rand.Intn(len(kinectstates))]}
-
-	return &turtstate
-}
-
-func randomBool() *bool {
-	val := rand.Int()%2 == 0
-	return &val
-}
-
-func must(v interface{}, err error) interface{} {
-	if err != nil {
-		panic(err)
-	}
-	return v
 }

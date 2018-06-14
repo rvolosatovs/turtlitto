@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	. "github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,14 +19,14 @@ func TestValidate(t *testing.T) {
 		{
 			Name: "a simple correct turtleState",
 			Input: &TurtleState{
-				EmergencyStatus: 100, // maximum
+				EmergencyStatus: apitest.Uint8Ptr(100),
 			},
 			ShouldError: false,
 		},
 		{
 			Name: "a simple erroneous turtleState",
 			Input: &TurtleState{
-				BatteryVoltage: 255, // max_uint8
+				BatteryVoltage: apitest.Uint8Ptr(255),
 			},
 			ShouldError: true,
 		},
@@ -46,17 +47,17 @@ func TestValidate(t *testing.T) {
 				Turtles: map[string]*TurtleState{
 					"1": {
 						Kinect1State:    KinectStateNoBall,
-						EmergencyStatus: 0,
+						EmergencyStatus: apitest.Uint8Ptr(0),
 					},
 					"2": {
 						Kinect1State:    KinectStateBall,
 						Kinect2State:    KinectStateNoBall,
-						EmergencyStatus: 1,
+						EmergencyStatus: apitest.Uint8Ptr(1),
 					},
 					"3": {
 						HomeGoal:        HomeGoalYellow,
-						BatteryVoltage:  28,
-						EmergencyStatus: 0,
+						BatteryVoltage:  apitest.Uint8Ptr(28),
+						EmergencyStatus: apitest.Uint8Ptr(0),
 					},
 				},
 			},
@@ -67,7 +68,7 @@ func TestValidate(t *testing.T) {
 			Input: &State{
 				Turtles: map[string]*TurtleState{
 					"t": {
-						EmergencyStatus: 255, // too much
+						EmergencyStatus: apitest.Uint8Ptr(255),
 					},
 				},
 			},
@@ -90,17 +91,17 @@ func TestValidate(t *testing.T) {
 				Turtles: map[string]*TurtleState{
 					"1": {
 						Kinect1State:    KinectStateNoBall,
-						EmergencyStatus: 0,
+						EmergencyStatus: apitest.Uint8Ptr(0),
 					},
 					"2": {
 						Kinect1State:    KinectStateBall,
 						Kinect2State:    KinectStateNoBall,
-						EmergencyStatus: 1,
+						EmergencyStatus: apitest.Uint8Ptr(1),
 					},
 					"3": {
 						HomeGoal:        HomeGoalYellow,
-						BatteryVoltage:  100, // too much
-						EmergencyStatus: 0,
+						BatteryVoltage:  apitest.Uint8Ptr(100),
+						EmergencyStatus: apitest.Uint8Ptr(0),
 					},
 				},
 			},

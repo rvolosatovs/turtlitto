@@ -130,13 +130,13 @@ type TurtleState struct {
 	AppmanStatus *bool `json:"appmanstatus,omitempty"`
 
 	// RestartCountMotion represents restart count of Motion Executable (0 … 99).
-	RestartCountMotion uint8 `json:"restartcountmotion,omitempty"`
+	RestartCountMotion *uint8 `json:"restartcountmotion,omitempty"`
 
 	// RestartCountVision represents restart count of Vision Executable (0 … 99).
-	RestartCountVision uint8 `json:"restartcountvision,omitempty"`
+	RestartCountVision *uint8 `json:"restartcountvision,omitempty"`
 
 	// RestartCountWorldmodel represents restart count of Worldmodel Executable (0 … 99).
-	RestartCountWorldmodel uint8 `json:"restartcountworldmodel,omitempty"`
+	RestartCountWorldmodel *uint8 `json:"restartcountworldmodel,omitempty"`
 
 	// BallFound represents ball Found (No/Communicated/Yes).
 	BallFound BallFound `json:"ballfound,omitempty"`
@@ -148,10 +148,10 @@ type TurtleState struct {
 	CPB CPB `json:"cpb,omitempty"`
 
 	// BatteryVoltage represents battery Voltage (0 … 99).
-	BatteryVoltage uint8 `json:"batteryvoltage,omitempty"`
+	BatteryVoltage *uint8 `json:"batteryvoltage,omitempty"`
 
 	// EmergencyStatus represents emergency Status (0 100).
-	EmergencyStatus uint8 `json:"emergencystatus,omitempty"`
+	EmergencyStatus *uint8 `json:"emergencystatus,omitempty"`
 
 	// Role represents TRC Role (0 … 10).
 	Role Role `json:"role,omitempty"`
@@ -172,7 +172,7 @@ type TurtleState struct {
 	TeamColor TeamColor `json:"teamcolor,omitempty"`
 
 	// ActiveDevPC represents active DevPC controlling robot (0 … 90).
-	ActiveDevPC uint8 `json:"activedevpc,omitempty"`
+	ActiveDevPC *uint8 `json:"activedevpc,omitempty"`
 
 	// Kinect1State represents status of Kinect 1 (No State/No Ball/Ball).
 	Kinect1State KinectState `json:"kinect1_state,omitempty"`

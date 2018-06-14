@@ -118,7 +118,7 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 
 			select {
 			case <-conn.closeCh:
-				logger.Debug("TRC connection closed, returning...")
+				logger.Info("TRC connection closed, returning...")
 				// Don't handle err if connection is closed
 				close(conn.errCh)
 				return
@@ -136,7 +136,6 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 			if msg.ParentID != nil {
 				logger = logger.With(zap.Stringer("parent_id", msg.ParentID))
 			}
-			logger.Debug("TRC decoded message")
 
 			var h Handler
 			v, ok := conn.handlers.Load(msg.Type)
@@ -153,14 +152,16 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 				conn.errCh <- err
 				return
 			}
-			logger.Debug("Executing handler succeeded")
 
 			if resp == nil {
-				logger.Debug("No response returned by handler")
 				continue
 			}
 
-			logger.Debug("Sending response to SRRS")
+			logger.Debug("Sending response to SRRS...",
+				zap.String("type", string(resp.Type)),
+				zap.Stringer("message_id", resp.MessageID),
+				zap.Stringer("parent_id", resp.ParentID),
+			)
 			if err := conn.encoder.Encode(resp); err != nil {
 				conn.errCh <- err
 				return
