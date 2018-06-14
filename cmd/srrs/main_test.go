@@ -152,7 +152,7 @@ func TestAPI(t *testing.T) {
 	defer unixConn.Close()
 
 	logger.Debug("Establishing mock TRC connection...")
-	msgCh := make(chan *api.Message, 1)
+	msgCh := make(chan *api.Message)
 	trc := trctest.Connect(
 		unixConn, unixConn,
 		trctest.WithHandler(api.MessageTypePing, func(msg *api.Message) (*api.Message, error) {
@@ -261,15 +261,6 @@ func TestAPI(t *testing.T) {
 					errCh <- nil
 				}()
 
-				select {
-				case <-time.After(timeout):
-					t.Fatal("Timed out sending state to SRRS")
-				case err = <-errCh:
-					if !a.NoError(err) {
-						return
-					}
-				}
-
 				var msg *api.Message
 				select {
 				case <-time.After(timeout):
@@ -280,6 +271,15 @@ func TestAPI(t *testing.T) {
 				a.Equal(msg.Type, api.MessageTypeState)
 				a.Nil(msg.ParentID)
 				a.NotEmpty(msg.MessageID)
+
+				select {
+				case <-time.After(timeout):
+					t.Fatal("Timed out sending state to SRRS")
+				case err = <-errCh:
+					if !a.NoError(err) {
+						return
+					}
+				}
 
 				var got api.State
 				err = json.Unmarshal(msg.Payload, &got)
@@ -334,15 +334,6 @@ func TestAPI(t *testing.T) {
 					errCh <- nil
 				}()
 
-				select {
-				case <-time.After(timeout):
-					t.Fatal("Timed out sending command to SRRS")
-				case err = <-errCh:
-					if !a.NoError(err) {
-						return
-					}
-				}
-
 				var msg *api.Message
 				select {
 				case <-time.After(timeout):
@@ -353,6 +344,15 @@ func TestAPI(t *testing.T) {
 				a.Equal(msg.Type, api.MessageTypeState)
 				a.Nil(msg.ParentID)
 				a.NotEmpty(msg.MessageID)
+
+				select {
+				case <-time.After(timeout):
+					t.Fatal("Timed out sending command to SRRS")
+				case err = <-errCh:
+					if !a.NoError(err) {
+						return
+					}
+				}
 
 				var got api.State
 				err = json.Unmarshal(msg.Payload, &got)
