@@ -13,6 +13,7 @@ import (
 	"github.com/oklog/ulid"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/logcontext"
 	"go.uber.org/zap"
 )
 
@@ -272,15 +273,15 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 
 	logger.Debug("Sending request to TRC...")
 	if err := c.encoder.Encode(msg); err != nil {
+		logger.Error("Failed to send request to TRC", zap.Error(err))
 		return nil, err
 	}
-	logger.Debug("Sending request to TRC succeeded")
 
 	logger.Debug("Waiting for response...")
-
 	var resp *api.Message
 	select {
 	case <-ctx.Done():
+		logger.Debug("Context done, cancelling", zap.Error(err))
 		return nil, ctx.Err()
 	case resp = <-ch:
 		logger.Debug("Response received")
@@ -373,6 +374,9 @@ func (c *Conn) Ping(ctx context.Context) error {
 
 // SetState sends the state to TRC and waits for response.
 func (c *Conn) SetState(ctx context.Context, st *api.State) error {
+	logcontext.Logger(ctx).Debug("Sending state...",
+		zap.Reflect("state", st),
+	)
 	_, err := c.sendRequest(ctx, api.MessageTypeState, st)
 	return err
 }

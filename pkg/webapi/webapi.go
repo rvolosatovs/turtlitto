@@ -3,6 +3,7 @@ package webapi
 
 import (
 	"compress/flate"
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -15,6 +16,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/logcontext"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"go.uber.org/zap"
 )
@@ -40,10 +42,6 @@ var (
 	errFailedToGetToken    = errors.New("TRC connection established, but failed to get token")
 )
 
-// logKey is the key, under which *zap.Logger
-// is contained in the context.
-type logKey struct{}
-
 // controlWriter can write Control messages to itself.
 type controlWriter interface {
 	WriteControl(messageType int, data []byte, deadline time.Time) error
@@ -63,15 +61,6 @@ func wsError(w controlWriter, logger *zap.Logger, err error, code int) {
 	}
 }
 
-// requestLogger returns a logger associated with r or zap.L(), if no such logger is found.
-func requestLogger(r *http.Request) *zap.Logger {
-	logger, ok := r.Context().Value(logKey{}).(*zap.Logger)
-	if !ok || logger == nil {
-		return zap.L()
-	}
-	return logger
-}
-
 type session struct {
 	isActive bool
 	key      string
@@ -88,7 +77,7 @@ type server struct {
 // handleState handles requests to StateEndpoint.
 func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	logger := requestLogger(r)
+	logger := logcontext.Logger(ctx)
 
 	wsConn, err := (&websocket.Upgrader{
 		EnableCompression: true,
@@ -199,7 +188,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 
 // handleAuth handles requests to AuthEndpoint.
 func (srv *server) handleAuth(w http.ResponseWriter, r *http.Request) {
-	logger := requestLogger(r)
+	logger := logcontext.Logger(r.Context())
 
 	if r.Method != "GET" {
 		http.Error(w, errors.Errorf("expected a GET request, got %s", r.Method).Error(), http.StatusBadRequest)
@@ -260,111 +249,50 @@ func (srv *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleCommand handles requests to CommandEndpoint.
-func (srv *server) handleCommand(w http.ResponseWriter, r *http.Request) {
-	logger := requestLogger(r)
-	ctx := r.Context()
+func (srv *server) makeTRCSendHandler(f func(context.Context, *trcapi.Conn, *json.Decoder) error) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		logger := logcontext.Logger(ctx)
 
-	if r.Method != "POST" {
-		http.Error(w, errors.Errorf("Expected a POST request, got %s", r.Method).Error(), http.StatusBadRequest)
-		return
-	}
+		var err error
+		if r.Method != "POST" {
+			http.Error(w, errors.Errorf("Expected a POST request, got %s", r.Method).Error(), http.StatusBadRequest)
+			return
+		}
 
-	_, key, ok := r.BasicAuth()
-	if !ok {
-		http.Error(w, errAuthorizationHeader.Error(), http.StatusBadRequest)
-		return
-	}
+		_, key, ok := r.BasicAuth()
+		if !ok {
+			http.Error(w, errAuthorizationHeader.Error(), http.StatusBadRequest)
+			return
+		}
 
-	dec := json.NewDecoder(r.Body)
-	dec.DisallowUnknownFields()
+		srv.sessionMu.RLock()
+		defer srv.sessionMu.RUnlock()
 
-	var cmd api.Command
-	if err := dec.Decode(&cmd); err != nil {
-		http.Error(w, fmt.Sprintf("Failed to read command: %s", err), http.StatusBadRequest)
-		return
-	}
+		switch {
+		case srv.session == nil:
+			http.Error(w, errAuthenticateFirst.Error(), http.StatusMethodNotAllowed)
+			return
 
-	srv.sessionMu.RLock()
-	defer srv.sessionMu.RUnlock()
+		case key != srv.session.key:
+			http.Error(w, errInvalidSessionKey.Error(), http.StatusUnauthorized)
+			return
+		}
 
-	switch {
-	case srv.session == nil:
-		http.Error(w, errAuthenticateFirst.Error(), http.StatusMethodNotAllowed)
-		return
+		logger.Debug("Retrieving a connection from pool...")
+		trcConn, err := srv.pool.Conn()
+		if err != nil {
+			http.Error(w, errors.Wrap(err, "failed to establish connection to TRC").Error(), http.StatusInternalServerError)
+			return
+		}
 
-	case key != srv.session.key:
-		http.Error(w, errInvalidSessionKey.Error(), http.StatusUnauthorized)
-		return
-	}
+		dec := json.NewDecoder(r.Body)
+		dec.DisallowUnknownFields()
 
-	logger.Debug("Retrieving a connection from pool...")
-	trcConn, err := srv.pool.Conn()
-	if err != nil {
-		http.Error(w, errors.Wrap(err, "failed to establish connection to TRC").Error(), http.StatusInternalServerError)
-		return
-	}
-
-	logger.Debug("Sending command...",
-		zap.String("command", string(cmd)),
-	)
-	if err := trcConn.SetCommand(ctx, cmd); err != nil {
-		http.Error(w, errors.Wrap(err, "failed to send command to TRC").Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-// handleTurtles handles requests to TurtleEndpoint.
-func (srv *server) handleTurtles(w http.ResponseWriter, r *http.Request) {
-	logger := requestLogger(r)
-	ctx := r.Context()
-
-	if r.Method != "POST" {
-		http.Error(w, errors.Errorf("Expected a POST request, got %s", r.Method).Error(), http.StatusBadRequest)
-		return
-	}
-
-	_, key, ok := r.BasicAuth()
-	if !ok {
-		http.Error(w, errAuthorizationHeader.Error(), http.StatusBadRequest)
-		return
-	}
-
-	dec := json.NewDecoder(r.Body)
-	dec.DisallowUnknownFields()
-
-	var st map[string]*api.TurtleState
-	if err := dec.Decode(&st); err != nil {
-		http.Error(w, errors.Wrap(err, "failed to read states").Error(), http.StatusBadRequest)
-		return
-	}
-
-	srv.sessionMu.RLock()
-	defer srv.sessionMu.RUnlock()
-
-	switch {
-	case srv.session == nil:
-		http.Error(w, errAuthenticateFirst.Error(), http.StatusMethodNotAllowed)
-		return
-
-	case key != srv.session.key:
-		http.Error(w, errInvalidSessionKey.Error(), http.StatusUnauthorized)
-		return
-	}
-
-	logger.Debug("Retrieving a connection from pool...")
-	trcConn, err := srv.pool.Conn()
-	if err != nil {
-		http.Error(w, errors.Wrap(err, "failed to establish connection to TRC").Error(), http.StatusInternalServerError)
-		return
-	}
-
-	logger.Debug("Sending turtle state...",
-		zap.Reflect("state", st),
-	)
-	if err := trcConn.SetTurtleState(ctx, st); err != nil {
-		http.Error(w, errors.Wrap(err, "failed to send turtle state to TRC").Error(), http.StatusInternalServerError)
-		return
+		if err := f(ctx, trcConn, dec); err != nil {
+			http.Error(w, errors.Wrap(err, "failed to process request").Error(), http.StatusBadRequest)
+			return
+		}
 	}
 }
 
@@ -379,12 +307,37 @@ func RegisterHandlers(pool *trcapi.Pool, handler HandleFuncer) {
 	s := &server{
 		pool: pool,
 	}
-	for ep, fn := range map[string]http.HandlerFunc{
-		"/" + AuthEndpoint:         s.handleAuth,
-		"/" + StateEndpoint:        s.handleState,
-		"/" + CommandEndpoint:      s.handleCommand,
-		"/" + TurtleEndpoint + "/": s.handleTurtles,
+
+	for ep, f := range map[string]http.HandlerFunc{
+		"/" + AuthEndpoint: s.handleAuth,
+
+		"/" + StateEndpoint: s.handleState,
+
+		"/" + CommandEndpoint: s.makeTRCSendHandler(func(ctx context.Context, trcConn *trcapi.Conn, dec *json.Decoder) error {
+			var cmd api.Command
+			if err := dec.Decode(&cmd); err != nil {
+				return errors.Wrap(err, "failed to decode request body")
+			}
+
+			if err := trcConn.SetCommand(ctx, cmd); err != nil {
+				return errors.Wrap(err, "failed to send command to TRC")
+			}
+			return nil
+		}),
+
+		"/" + TurtleEndpoint: s.makeTRCSendHandler(func(ctx context.Context, trcConn *trcapi.Conn, dec *json.Decoder) error {
+			var st map[string]*api.TurtleState
+			if err := dec.Decode(&st); err != nil {
+				return errors.Wrap(err, "failed to read states")
+			}
+
+			if err := trcConn.SetTurtleState(ctx, st); err != nil {
+				fmt.Println("TURTLE", err)
+				return errors.Wrap(err, "failed to send turtle state to TRC")
+			}
+			return nil
+		}),
 	} {
-		handler.HandleFunc(ep, fn)
+		handler.HandleFunc(ep, f)
 	}
 }
