@@ -15,13 +15,6 @@ import (
 // MaxTurtles is the maximum amount of turtles.
 const MaxTurtles = 6
 
-func must(v interface{}, err error) interface{} {
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
 // BoolPtr returns v as *bool.
 func BoolPtr(v bool) *bool {
 	return &v
