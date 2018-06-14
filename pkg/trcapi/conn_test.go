@@ -11,6 +11,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
+	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	. "github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
 	"github.com/stretchr/testify/assert"
@@ -25,7 +26,7 @@ func TestState(t *testing.T) {
 			Expected: &api.State{
 				Turtles: map[string]*api.TurtleState{
 					"foo": {
-						BatteryVoltage: 42,
+						BatteryVoltage: apitest.Uint8Ptr(42),
 					},
 					"bar": {
 						HomeGoal: api.HomeGoalBlue,
@@ -147,7 +148,7 @@ func TestSetState(t *testing.T) {
 			Input: &api.State{
 				Turtles: map[string]*api.TurtleState{
 					"foo": {
-						BatteryVoltage: 42,
+						BatteryVoltage: apitest.Uint8Ptr(42),
 					},
 					"bar": {
 						HomeGoal: api.HomeGoalBlue,
