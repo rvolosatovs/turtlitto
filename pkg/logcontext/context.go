@@ -1,3 +1,4 @@
+// Package logcontext provides utilities to work with logger in the context.
 package logcontext
 
 import (
