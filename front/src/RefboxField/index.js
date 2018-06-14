@@ -3,6 +3,7 @@ import Button from "./RefboxButton";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import sendToServer from "../sendToServer";
+import media from "../media";
 
 const TAG_VALUES = {
   KO: "kick_off",
@@ -81,8 +82,12 @@ const RefboxField = props => {
 const Refboxes = styled.div`
   display: flex;
   justify-content: space-around;
-  flex-wrap: wrap;
+  flex-wrap: no-wrap;
   padding-top: 2rem;
+
+  ${media.sm`
+    padding-top: 0;
+  `};
 `;
 
 const Refbox = styled.div`
