@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 
 	"github.com/blang/semver"
+	"github.com/fatih/structs"
+	"github.com/mitchellh/mapstructure"
 	"github.com/oklog/ulid"
+	"reflect"
 )
 
 // Command is a TRC command.
@@ -218,4 +221,42 @@ func NewMessage(typ MessageType, pld json.RawMessage, parentID *ulid.ULID) *Mess
 		ParentID:  parentID,
 		Payload:   pld,
 	}
+}
+
+func diff(old, new map[string]interface{}) map[string]interface{} {
+	r := make(map[string]interface{})
+	if reflect.DeepEqual(old, new) {
+		return nil
+	}
+	keys := make(map[string]struct{})
+	for k := range old {
+		keys[k] = struct{}{}
+	}
+	for k := range new {
+		keys[k] = struct{}{}
+	}
+	for k := range keys {
+		if reflect.DeepEqual(old[k], new[k]) { //if there is a difference in the turtle state
+			continue
+		}
+
+		if mo, ok := old[k].(map[string]interface{}); ok {
+			if mn, ok := new[k].(map[string]interface{}); ok {
+				r[k] = diff(mo, mn)
+				continue
+			}
+		}
+
+		r[k] = new[k]
+	}
+	return r
+}
+
+//StateDiff returns a State with only values that have changed in the new state, compared to the old state
+func StateDiff(oldState, newState *State) (*State, error) {
+	var v State
+	return &v, mapstructure.Decode(diff(
+		structs.Map(oldState),
+		structs.Map(newState),
+	), &v)
 }
