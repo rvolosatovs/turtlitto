@@ -110,6 +110,7 @@ class App extends Component {
 
   onConnectionMessage(event) {
     const data = JSON.parse(event.data);
+    if (data.turtles === undefined) return {};
     this.setState(prev => {
       const turtleChanges = Object.keys(data.turtles).reduce((acc, id) => {
         if (prev.turtles[id] === undefined) {

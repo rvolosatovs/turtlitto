@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"path"
 	"path/filepath"
 	"time"
 
@@ -27,11 +26,7 @@ var (
 	tcpAddr  = flag.String("tcp", defaultAddr, "HTTP service address")
 	static   = flag.String("static", "", "Path to the static assets")
 	unixSock = flag.String("unixSocket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
-	tcpSock  = flag.String("tcpSocket", "", "Service address of tcp socket. TCP will be used instead of a Unix socket when this is set")
-
-	stateEndpoint   = path.Join("api", "v1", "state")
-	turtleEndpoint  = path.Join("api", "v1", "turtles")
-	commandEndpoint = path.Join("api", "v1", "command")
+	tcpSock  = flag.String("tcpSocket", "", "Internal TCP socket address. TRC <-> SRRS communication will use this TCP socket instead of a Unix socket when set")
 )
 
 func main() {
@@ -155,29 +150,41 @@ func main() {
 			}
 		}()
 
-		http.HandleFunc("/"+stateEndpoint, webapi.MakeStateHandler(pool))
-		http.HandleFunc("/"+commandEndpoint, webapi.MakeCommandHandler(pool))
-		http.HandleFunc("/"+turtleEndpoint+"/", webapi.MakeTurtleHandler(pool))
+		mux := http.DefaultServeMux
 
+		webapi.RegisterHandlers(pool, mux)
 		if *static != "" {
-			http.Handle("/", http.FileServer(http.Dir(*static)))
+			mux.Handle("/", http.FileServer(http.Dir(*static)))
 		}
 
-		logger := logger.With(zap.String("listen_addr_tcp", *tcpAddr))
-
-		logger.Info("Starting the web server...")
-		if err := (&http.Server{
+		tcpLogger := logger.With(zap.String("listen_addr_tcp", *tcpAddr))
+		tcpSrv := &http.Server{
 			Addr:     *tcpAddr,
 			ErrorLog: zap.NewStdLog(logger),
-			Handler: &webapi.LogHandler{
-				Logger:  logger,
-				Handler: http.DefaultServeMux,
-			},
-		}).ListenAndServe(); err != nil {
-			return errors.Wrap(err, "failed to listen")
+			Handler:  mux,
 		}
-		return nil
 
+		// TODO: Create tlsServ
+
+		tcpErrCh := make(chan error, 1)
+		go func() {
+			tcpLogger.Info("Starting the insecure web server...")
+			if err := tcpSrv.ListenAndServe(); err != nil {
+				tcpErrCh <- errors.Wrap(err, "failed to listen")
+			}
+		}()
+
+		tlsErrCh := make(chan error, 1)
+		go func() {
+			// TODO: Start tlsServ
+		}()
+
+		select {
+		case err := <-tcpErrCh:
+			return errors.Wrap(err, "TCP server failed")
+		case err := <-tlsErrCh:
+			return errors.Wrap(err, "TLS server failed")
+		}
 	}(); err != nil {
 		logger.With(zap.Error(err)).Fatal("SRRS failed")
 	}
