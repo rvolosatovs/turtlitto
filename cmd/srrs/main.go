@@ -17,13 +17,15 @@ import (
 )
 
 const (
-	defaultAddr   = ":4242" // default webserver address
-	retryInterval = 5 * time.Second
+	defaultTCPAddress = ":4242" // default webserver address
+	defaultTLSAddress = ":4244" // default https server address
+	retryInterval     = 5 * time.Second
 )
 
 var (
 	debug    = flag.Bool("debug", false, "Debug mode")
-	tcpAddr  = flag.String("tcp", defaultAddr, "HTTP service address")
+	tcpAddr  = flag.String("tcp", defaultTCPAddress, "HTTP service address")
+	tlsAddr  = flag.String("tls", defaultTLSAddress, "HTTPS service address")
 	static   = flag.String("static", "", "Path to the static assets")
 	unixSock = flag.String("unixSocket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
 	tcpSock  = flag.String("tcpSocket", "", "Internal TCP socket address. TRC <-> SRRS communication will use this TCP socket instead of a Unix socket when set")
@@ -157,14 +159,13 @@ func main() {
 			mux.Handle("/", http.FileServer(http.Dir(*static)))
 		}
 
+		// http server
 		tcpLogger := logger.With(zap.String("listen_addr_tcp", *tcpAddr))
 		tcpSrv := &http.Server{
 			Addr:     *tcpAddr,
-			ErrorLog: zap.NewStdLog(logger),
+			ErrorLog: zap.NewStdLog(tcpLogger),
 			Handler:  mux,
 		}
-
-		// TODO: Create tlsServ
 
 		tcpErrCh := make(chan error, 1)
 		go func() {
@@ -174,9 +175,23 @@ func main() {
 			}
 		}()
 
+		// https server
+		tlsLogger := logger.With(zap.String("listen_addr_tcp", *tlsAddr))
+		tlsSrv := &http.Server{
+			Addr:     *tlsAddr,
+			ErrorLog: zap.NewStdLog(tlsLogger),
+			Handler:  mux,
+		}
+
 		tlsErrCh := make(chan error, 1)
 		go func() {
-			// TODO: Start tlsServ
+			cert := filepath.Join("..", "..", "certificates", "cert.pem")
+			key := filepath.Join("..", "..", "certificates", "key.pem")
+			tlsLogger.With(zap.String("certificate path", cert), zap.String("key path", key))
+			tlsLogger.Info("Starting the secure web server...")
+			if err := tlsSrv.ListenAndServeTLS(cert, key); err != nil {
+				tlsErrCh <- errors.Wrap(err, "failed to listen")
+			}
 		}()
 
 		select {

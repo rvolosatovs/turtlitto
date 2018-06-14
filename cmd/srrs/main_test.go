@@ -87,7 +87,7 @@ func TestMain(m *testing.M) {
 	logger.Info("Starting SRRS in goroutine...")
 	go main()
 
-	dial := func() (net.Conn, error) { return net.DialTimeout("tcp", defaultAddr, time.Second) }
+	dial := func() (net.Conn, error) { return net.DialTimeout("tcp", defaultTCPAddress, time.Second) }
 	retries := 20
 
 	conn, err := dial()
@@ -96,7 +96,7 @@ func TestMain(m *testing.M) {
 		conn, err = dial()
 	}
 	if err != nil {
-		logger.Fatalf("Failed to connect to SRRS at %s: %s", defaultAddr, err)
+		logger.Fatalf("Failed to connect to SRRS at %s: %s", defaultTCPAddress, err)
 	}
 
 	if err := conn.Close(); err != nil {
@@ -127,7 +127,7 @@ func TestAPI(t *testing.T) {
 	go func() {
 		defer wg.Done()
 
-		req, err := http.NewRequest(http.MethodGet, "http://"+defaultAddr+"/"+webapi.AuthEndpoint, nil)
+		req, err := http.NewRequest(http.MethodGet, "http://"+defaultTCPAddress+"/"+webapi.AuthEndpoint, nil)
 		a.NoError(err)
 		req.SetBasicAuth("", handshake.Token)
 
@@ -184,7 +184,7 @@ func TestAPI(t *testing.T) {
 		t.FailNow()
 	}
 
-	wsAddr := "ws://localhost" + defaultAddr + "/" + webapi.StateEndpoint
+	wsAddr := "ws://localhost" + defaultTCPAddress + "/" + webapi.StateEndpoint
 	logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
 	wsConn, _, err := websocket.DefaultDialer.Dial(wsAddr, nil)
 	if !a.NoError(err) {
@@ -236,7 +236,7 @@ func TestAPI(t *testing.T) {
 				b, err := json.Marshal(expected.Turtles)
 				a.NoError(err)
 
-				req, err := http.NewRequest(http.MethodPost, "http://"+defaultAddr+"/"+webapi.TurtleEndpoint, bytes.NewReader(b))
+				req, err := http.NewRequest(http.MethodPost, "http://"+defaultTCPAddress+"/"+webapi.TurtleEndpoint, bytes.NewReader(b))
 				a.NoError(err)
 				req.SetBasicAuth("", sessionKey)
 
@@ -308,7 +308,7 @@ func TestAPI(t *testing.T) {
 				b, err := json.Marshal(expected.Command)
 				a.NoError(err)
 
-				req, err := http.NewRequest(http.MethodPost, "http://"+defaultAddr+"/"+webapi.CommandEndpoint, bytes.NewReader(b))
+				req, err := http.NewRequest(http.MethodPost, "http://"+defaultTCPAddress+"/"+webapi.CommandEndpoint, bytes.NewReader(b))
 				a.NoError(err)
 				req.SetBasicAuth("", sessionKey)
 
