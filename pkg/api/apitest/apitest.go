@@ -1,3 +1,4 @@
+// Package apitest provides utilities for API testing.
 package apitest
 
 import (
