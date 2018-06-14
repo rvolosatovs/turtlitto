@@ -21,5 +21,10 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
       Log in
     </styled.button>
   </styled.div>
+  <Styled(styled.div)>
+    <ConnectionBar
+      connectionStatus="connected"
+    />
+  </Styled(styled.div)>
 </styled.div>
 `;
