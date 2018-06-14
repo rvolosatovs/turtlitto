@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
@@ -114,7 +115,7 @@ func TestMain(m *testing.M) {
 	os.Exit(ret)
 }
 
-func TestAll(t *testing.T) {
+func TestAPI(t *testing.T) {
 	a := assert.New(t)
 
 	handshake := apitest.RandomHandshake()
@@ -197,7 +198,12 @@ func TestAll(t *testing.T) {
 	t.Run("TRC->SRRC/state", func(t *testing.T) {
 		for i := 0; i < messageCount; i++ {
 			t.Run(strconv.Itoa(i), func(t *testing.T) {
+				a = assert.New(t)
+
 				expected := apitest.RandomState()
+				if err := expected.Validate(); err != nil {
+					panic(errors.Wrap(err, "invalid state generated"))
+				}
 
 				logger.Debug("Sending random state from TRC...")
 				err = trc.SendState(expected)
@@ -215,8 +221,16 @@ func TestAll(t *testing.T) {
 	t.Run("SRRC->TRC/turtles", func(t *testing.T) {
 		for i := 0; i < messageCount; i++ {
 			t.Run(strconv.Itoa(i), func(t *testing.T) {
+				a = assert.New(t)
+
 				expected := &api.State{
-					Turtles: apitest.RandomState().Turtles,
+					Turtles: apitest.RandomTurtleStateMap(),
+				}
+				for len(expected.Turtles) == 0 {
+					expected.Turtles = apitest.RandomTurtleStateMap()
+				}
+				if err := expected.Validate(); err != nil {
+					panic(errors.Wrap(err, "invalid state generated"))
 				}
 
 				b, err := json.Marshal(expected.Turtles)
@@ -226,22 +240,40 @@ func TestAll(t *testing.T) {
 				a.NoError(err)
 				req.SetBasicAuth("", sessionKey)
 
-				wg := &sync.WaitGroup{}
-				wg.Add(1)
+				errCh := make(chan error, 1)
 				go func() {
-					defer wg.Done()
+					resp, err := http.DefaultClient.Do(req)
+					if err != nil {
+						errCh <- err
+					}
+					defer resp.Body.Close()
 
-					logger.Debug("Sending state to SRRS...")
-					_, err = http.DefaultClient.Do(req)
+					a.Equal(resp.StatusCode, http.StatusOK)
+
+					b, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						errCh <- errors.Wrap(err, "failed to read response body")
+					}
+
+					if len(b) > 0 {
+						errCh <- errors.Errorf("server returned error: %s", string(b))
+					}
+					errCh <- nil
+				}()
+
+				select {
+				case <-time.After(timeout):
+					t.Fatal("Timed out sending state to SRRS")
+				case err = <-errCh:
 					if !a.NoError(err) {
 						return
 					}
-				}()
+				}
 
 				var msg *api.Message
 				select {
 				case <-time.After(timeout):
-					t.Fatal("Timeout")
+					t.Fatal("Timed out waiting for message to arrive at SRRS")
 				case msg = <-msgCh:
 				}
 
@@ -267,8 +299,10 @@ func TestAll(t *testing.T) {
 	t.Run("SRRC->TRC/command", func(t *testing.T) {
 		for i := 0; i < messageCount; i++ {
 			t.Run(strconv.Itoa(i), func(t *testing.T) {
+				a = assert.New(t)
+
 				expected := &api.State{
-					Command: *apitest.RandomCommand(),
+					Command: apitest.RandomCommand(),
 				}
 
 				b, err := json.Marshal(expected.Command)
@@ -278,22 +312,41 @@ func TestAll(t *testing.T) {
 				a.NoError(err)
 				req.SetBasicAuth("", sessionKey)
 
-				wg := &sync.WaitGroup{}
-				wg.Add(1)
+				errCh := make(chan error, 1)
 				go func() {
-					defer wg.Done()
-
 					logger.Debug("Sending command to SRRS...")
-					_, err = http.DefaultClient.Do(req)
+					resp, err := http.DefaultClient.Do(req)
+					if err != nil {
+						errCh <- err
+					}
+					defer resp.Body.Close()
+
+					a.Equal(resp.StatusCode, http.StatusOK)
+
+					b, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						errCh <- errors.Wrap(err, "failed to read response body")
+					}
+
+					if len(b) > 0 {
+						errCh <- errors.Errorf("server returned error: %s", string(b))
+					}
+					errCh <- nil
+				}()
+
+				select {
+				case <-time.After(timeout):
+					t.Fatal("Timed out sending command to SRRS")
+				case err = <-errCh:
 					if !a.NoError(err) {
 						return
 					}
-				}()
+				}
 
 				var msg *api.Message
 				select {
 				case <-time.After(timeout):
-					t.Fatal("Timeout")
+					t.Fatal("Timed out waiting for message to arrive at SRRS")
 				case msg = <-msgCh:
 				}
 
