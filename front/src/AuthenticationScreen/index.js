@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
+//Move these two to a different location?
+import ConnectionBar from "../BottomBar/ConnectionBar";
+
 /**
  * An authentication screen. Upon a submit it will send the token in the
  * inputfield along with a callback function in case the token is incorrect.
@@ -10,6 +13,7 @@ import PropTypes from "prop-types";
  *
  * Props:
  *  - onSubmit: A function that will send the token to the SRRS
+ *  - connectionStatus: The current connection status
  */
 class AuthenticationScreen extends Component {
   constructor(props) {
@@ -57,6 +61,9 @@ class AuthenticationScreen extends Component {
             Log in
           </LoginButton>
         </Window>
+        <ConnectionWindow>
+          <ConnectionBar connectionStatus={this.props.connectionStatus} />
+        </ConnectionWindow>
       </Container>
     );
   }
@@ -72,6 +79,7 @@ const Container = styled.div`
 const Window = styled.div`
   margin: 0 auto;
   border: 0.1rem solid;
+  border-bottom: none;
   background: #ededed;
   width: 85%;
   padding: 1rem;
@@ -107,6 +115,11 @@ const LoginButton = styled.button`
   &:active {
     background-color: #ededed;
   }
+`;
+
+const ConnectionWindow = styled(Window)`
+  padding: 0;
+  border-bottom: 0.1rem solid;
 `;
 
 AuthenticationScreen.propTypes = {

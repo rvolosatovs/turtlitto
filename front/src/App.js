@@ -239,6 +239,7 @@ class App extends Component {
         ) : (
           <AuthenticationScreen
             onSubmit={(token, callback) => this.onSubmit(token, callback)}
+            connectionStatus={connectionStatus}
           />
         )}
       </ThemeProvider>
