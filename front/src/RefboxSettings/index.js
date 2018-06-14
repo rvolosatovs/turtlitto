@@ -19,13 +19,13 @@ const RefboxSettings = props => {
     <Refbox className={props.className}>
       <DropBallButton
         onClick={() => {
-          sendToServer("dropped_ball", "command", props.token);
+          sendToServer("dropped_ball", "command", props.session);
         }}
       />
       <ButtonBlockWrapper>
         <InOutButton
           onClick={prop => {
-            sendToServer(prop, "command", props.token);
+            sendToServer(prop, "command", props.session);
           }}
         />
       </ButtonBlockWrapper>

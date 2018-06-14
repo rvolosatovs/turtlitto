@@ -61,6 +61,6 @@ Object {
       "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
     },
   },
-  "method": "PUT",
+  "method": "POST",
 }
 `;

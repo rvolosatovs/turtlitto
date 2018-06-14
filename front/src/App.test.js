@@ -8,16 +8,23 @@ jest.useFakeTimers();
 describe("App.js", () => {
   it("automatically reconnects", () => {
     //Establish a server and wait for a connection
-    const mockServer = new Server("ws://user:testtoken@localhost/api/v1/state");
+    const l = window.location;
+    const mockServer = new Server(`ws://${l.host}/api/v1/state`);
+    let connectionCount = 0;
     mockServer.on("connection", server => {
+      console.log(server);
       connectionCount++;
     });
+    mockServer.on("error", server => {
+      console.log(server);
+    });
     mockServer.on("close", server => {
+      console.log(server);
       connectionCount--;
     });
     const wrapper = shallow(<App />);
-    wrapper.setState({ token: "testtoken" });
-    let connectionCount = 0;
+    wrapper.setState({ session: "testtoken" });
+    wrapper.instance().connect();
     //Let the reconnect time run down
     jest.runAllTimers();
     //Check if exactly one connection has been made
@@ -26,16 +33,14 @@ describe("App.js", () => {
     mockServer.close();
     expect(connectionCount).toBe(0);
     //Establish a new server and wait for a connection
-    const mockServer2 = new Server(
-      "ws://user:testtoken@localhost/api/v1/state"
-    );
+    const mockServer2 = new Server(`ws://${l.host}/api/v1/state`);
     mockServer2.on("connection", server => {
       connectionCount++;
     });
     mockServer2.on("close", server => {
       connectionCount--;
     });
-    jest.runAllTimers();
+    //jest.runAllTimers();
     //Wait one second since it will take one second to reconnect
     setTimeout(() => {
       //Check if exactly one connection has been made
@@ -52,16 +57,18 @@ describe("App.js", () => {
 
   describe("updates the local state when it", () => {
     let serverMessage, expectedState, initialTurtles;
-
+    const l = window.location;
     afterEach(() => {
-      const mockServer = new Server(
-        "ws://user:testtoken@localhost/api/v1/state"
-      );
+      const mockServer = new Server(`ws://${l.host}/api/v1/state`);
       mockServer.on("connection", server => {
         mockServer.send(serverMessage);
       });
+      mockServer.on("error", server => {
+        console.log(server);
+      });
       const wrapper = shallow(<App />);
       wrapper.setState({ token: "testtoken", turtles: initialTurtles });
+      wrapper.instance().connect();
       // Needed to make App.js connect to the mock server.
       // If you use runAllTimers, it goes in a loop, if you run it <3 times, it doesn't work.
       jest.runOnlyPendingTimers();

@@ -12,7 +12,7 @@ import sendToServer from "../sendToServer";
  *
  * props:
  * - turtles: an array of Turtles
- * - token: a string which holds the password needed to connect to the SRRS
+ * - session: a string which holds the password needed to connect to the SRRS
  */
 
 const CONFIG_VALUES = [
@@ -32,7 +32,7 @@ const COMMAND_VALUES = {
 };
 
 const Settings = props => {
-  const { turtles, token } = props;
+  const { turtles, session } = props;
   return (
     <SettingsWrapper>
       <RoleDropdown
@@ -40,11 +40,11 @@ const Settings = props => {
         currentValue={"Whatever"}
         values={CONFIG_VALUES}
         onChange={value => {
-          sendToServer(COMMAND_VALUES[value], "command", token);
+          sendToServer(COMMAND_VALUES[value], "command", session);
         }}
         enabled={true}
       />
-      <TurtleList turtles={turtles} />
+      <TurtleList turtles={turtles} session={session} />
     </SettingsWrapper>
   );
 };
