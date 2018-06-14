@@ -84,5 +84,11 @@ describe("App.js", () => {
       expectedState =
         '{"2":{"battery":87,"enabled":false,"teamcolor":"magenta"}}';
     });
+
+    it("gets nothing new at all", () => {
+      initialTurtles = { 1: { battery: 77, enabled: true } };
+      serverMessage = "{}\n";
+      expectedState = '{"1":{"battery":77,"enabled":true}}';
+    });
   });
 });
