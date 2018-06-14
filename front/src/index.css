@@ -2,7 +2,6 @@ html {
   box-sizing: border-box;
   font-size: 62.5%; /* 1 rem = 10px; 10px/16px = 62.5% */
   font-family: "Roboto", sans-serif;
-  overflow: hidden;
 }
 
 html,
@@ -12,18 +11,10 @@ body {
 }
 
 #root {
-  height: 100%;
   margin: 0;
-}
-
-body {
-  overflow: auto;
-}
-
-#root {
   width: 100vw;
   height: 100vh;
-  overflow: scroll;
+  overflow: visible;
   -webkit-overflow-scrolling: touch;
 }
 
