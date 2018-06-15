@@ -1,10 +1,11 @@
-package api
+package api_test
 
 import (
 	"reflect"
 	"strconv"
 	"testing"
 
+	. "github.com/rvolosatovs/turtlitto/pkg/api"
 	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
 	"github.com/stretchr/testify/assert"
 )
