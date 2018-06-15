@@ -195,12 +195,6 @@ func (srv *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, authTok, ok := r.BasicAuth()
-	if !ok {
-		http.Error(w, errAuthorizationHeader.Error(), http.StatusBadRequest)
-		return
-	}
-
 	srv.sessionMu.Lock()
 	defer srv.sessionMu.Unlock()
 
@@ -220,6 +214,12 @@ func (srv *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 	trcTok, err := trcConn.Token()
 	if err != nil {
 		http.Error(w, errors.Wrap(err, errFailedToGetToken.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, authTok, ok := r.BasicAuth()
+	if !ok && trcTok != "" {
+		http.Error(w, errAuthorizationHeader.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -260,14 +260,14 @@ func (srv *server) makeTRCSendHandler(f func(context.Context, *trcapi.Conn, *jso
 			return
 		}
 
+		srv.sessionMu.RLock()
+		defer srv.sessionMu.RUnlock()
+
 		_, key, ok := r.BasicAuth()
-		if !ok {
+		if !ok && srv.session.key != "" {
 			http.Error(w, errAuthorizationHeader.Error(), http.StatusBadRequest)
 			return
 		}
-
-		srv.sessionMu.RLock()
-		defer srv.sessionMu.RUnlock()
 
 		switch {
 		case srv.session == nil:

@@ -289,21 +289,6 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 	return resp.Payload, nil
 }
 
-// Token returns the token received from TRC during the handshake procedure or error,
-// if it did not happen yet.
-func (c *Conn) Token() (string, error) {
-	v := c.token.Load()
-	if v == nil {
-		return "", errors.New("No token configured")
-	}
-
-	tok, ok := v.(string)
-	if !ok {
-		panic("Token is not a string")
-	}
-	return tok, nil
-}
-
 // Close closes the connection.
 func (c *Conn) Close() error {
 	select {
