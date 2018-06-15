@@ -53,6 +53,12 @@ $(BINDIR)/srrs-$(GOOS)-$(GOARCH): vendor $(GO_FILES)
 
 srrs: $(BINDIR)/srrs-$(GOOS)-$(GOARCH)
 
+$(BINDIR)/srrs-$(GOOS)-$(GOARCH)-noauth: vendor $(GO_FILES)
+	$(info Compiling $@...)
+	@$(GOBUILD) -tags noauth -o $@ ./cmd/srrs
+
+srrs-noauth: $(BINDIR)/srrs-$(GOOS)-$(GOARCH)-noauth
+
 $(BINDIR)/relay-$(GOOS)-$(GOARCH): vendor $(GO_FILES)
 	$(info Compiling $@...)
 	@$(GOBUILD) -o $@ ./cmd/relay
@@ -92,4 +98,4 @@ docker: $(BINDIR)/front $(BINDIR)/srrs-linux-amd64
 clean:
 	rm -rf node_modules front/node_modules vendor $(BINDIR)/srrs-* $(BINDIR)/front
 
-.PHONY: all srrs relay trcd deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
+.PHONY: all srrs srrs-noauth relay trcd deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
