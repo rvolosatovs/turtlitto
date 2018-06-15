@@ -24,7 +24,7 @@ func NewPool(connectFunc func() (*Conn, func(), error)) *Pool {
 	}
 }
 
-// Conn returns an exisiting open connection, if such exists or establishes a new one.
+// Conn returns an existing open connection, if such exists or establishes a new one.
 func (p *Pool) Conn() (*Conn, error) {
 	logger := zap.L()
 
