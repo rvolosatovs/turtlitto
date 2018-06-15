@@ -1,7 +1,6 @@
 package api_test
 
 import (
-	"reflect"
 	"strconv"
 	"testing"
 
@@ -10,17 +9,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestStateDifference(t *testing.T) {
+func TestStateDiff(t *testing.T) {
 	type TestCase struct {
-		inputOldState       *State
-		inputNewState       *State
-		expectedOutputState *State
+		A    *State
+		B    *State
+		Diff *State
 	}
 
 	for i, tc := range []TestCase{
 		//test case 1
 		{
-			inputOldState: &State{
+			A: &State{
 				Command: CommandStop,
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -39,7 +38,7 @@ func TestStateDifference(t *testing.T) {
 					},
 				},
 			},
-			inputNewState: &State{
+			B: &State{
 				Command: CommandPenaltyMagenta,
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -58,7 +57,7 @@ func TestStateDifference(t *testing.T) {
 					},
 				},
 			},
-			expectedOutputState: &State{
+			Diff: &State{
 				Command: CommandPenaltyMagenta,
 				Turtles: map[string]*TurtleState{
 					"2": {
@@ -75,7 +74,7 @@ func TestStateDifference(t *testing.T) {
 		},
 		//test case 2
 		{
-			inputOldState: &State{
+			A: &State{
 				Command: CommandStop,
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -84,7 +83,7 @@ func TestStateDifference(t *testing.T) {
 					},
 				},
 			},
-			inputNewState: &State{
+			B: &State{
 				Command: CommandPenaltyMagenta,
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -93,13 +92,13 @@ func TestStateDifference(t *testing.T) {
 					},
 				},
 			},
-			expectedOutputState: &State{
+			Diff: &State{
 				Command: CommandPenaltyMagenta,
 			},
 		},
 		//test case 3
 		{
-			inputOldState: &State{
+			A: &State{
 				Command: CommandStop,
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -108,7 +107,7 @@ func TestStateDifference(t *testing.T) {
 					},
 				},
 			},
-			inputNewState: &State{
+			B: &State{
 				Command: CommandStop,
 				Turtles: map[string]*TurtleState{
 					"1": {
@@ -117,13 +116,26 @@ func TestStateDifference(t *testing.T) {
 					},
 				},
 			},
-			expectedOutputState: &State{},
+			Diff: nil,
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			stateDiff, err := StateDiff(tc.inputOldState, tc.inputNewState)
-			assert.Nil(t, err)
-			assert.True(t, reflect.DeepEqual(tc.expectedOutputState, stateDiff))
+			a := assert.New(t)
+
+			stateDiff, err := StateDiff(tc.A, tc.B)
+			a.Nil(err)
+			a.Equal(tc.Diff, stateDiff)
 		})
+		//t.Run("fuzz", func(t *testing.T) {
+		//for i := 0; i < 100; i++ {
+		//t.Run(strconv.Itoa(i), func(t *testing.T) {
+		//a := assert.New(t)
+
+		//var err error
+		//_, err = StateDiff(apitest.RandomState(), apitest.RandomState())
+		//a.Nil(err)
+		//})
+		//}
+		//})
 	}
 }
