@@ -74,7 +74,6 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		encoder:       json.NewEncoder(w),
 		errCh:         make(chan error),
 		stateMu:       &sync.RWMutex{},
-		state:         &api.State{},
 		stateSubsMu:   &sync.RWMutex{},
 		stateSubs:     make(map[chan<- struct{}]struct{}),
 		pendingReqsMu: &sync.RWMutex{},
@@ -161,15 +160,10 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				conn.errCh <- errors.Wrap(err, "failed to decode incoming message")
 				return
 			}
-			logger := logger.With(
-				zap.String("msg_type", string(msg.Type)),
-				zap.Stringer("msg_id", msg.MessageID),
-			)
-			if msg.ParentID != nil {
-				logger = logger.With(zap.Stringer("msg_parent_id", msg.ParentID))
-			}
 
-			logger.Debug("Received message")
+			logger.Debug("Received message",
+				zap.Reflect("msg", msg),
+			)
 
 			switch msg.Type {
 			case api.MessageTypePing:
@@ -187,12 +181,20 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 
 			case api.MessageTypeState:
 				conn.stateMu.Lock()
-				st := deepcopy.Copy(conn.state).(*api.State)
+
+				var st *api.State
+				if conn.state == nil {
+					st = &api.State{}
+				} else {
+					st = deepcopy.Copy(conn.state).(*api.State)
+				}
+
 				if err := json.Unmarshal(msg.Payload, st); err != nil {
 					conn.stateMu.Unlock()
 					conn.errCh <- errors.Wrap(err, "failed to decode state message payload")
 					continue
 				}
+
 				conn.state = st
 				conn.stateMu.Unlock()
 
@@ -257,8 +259,7 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 	msg := api.NewMessage(typ, b, nil)
 
 	logger = logger.With(
-		zap.String("type", string(msg.Type)),
-		zap.Stringer("message_id", msg.MessageID),
+		zap.Reflect("msg", msg),
 	)
 
 	ch := make(chan *api.Message, 1)

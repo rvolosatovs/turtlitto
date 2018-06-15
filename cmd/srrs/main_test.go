@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/mohae/deepcopy"
 	"github.com/pkg/errors"
 	"github.com/rvolosatovs/turtlitto/pkg/api"
 	"github.com/rvolosatovs/turtlitto/pkg/api/apitest"
@@ -30,7 +31,7 @@ var (
 
 	netLst net.Listener
 
-	logger *zap.SugaredLogger
+	logger *zap.Logger
 )
 
 const (
@@ -41,47 +42,60 @@ const (
 func init() {
 	http.DefaultClient.Timeout = timeout
 
-	zapLogger, err := zap.NewDevelopment()
+	var err error
+	logger, err = zap.NewDevelopment()
 	if err != nil {
 		panic(err)
 	}
-	logger = zapLogger.Sugar()
 
 	flag.Parse()
 	if *tcpSock == "" {
-		logger.Debug("Creating Unix socket...")
+		sockLogger := logger.With(zap.String("path", unixSockPath))
+		sockLogger.Debug("Creating Unix socket...")
 		f, err := os.Open(unixSockPath)
 		if !os.IsNotExist(err) {
 			f.Close()
 
-			logger.Infof("Removing %s...", unixSockPath)
+			sockLogger.Info("Removing UNIX socket...")
 			if err := os.Remove(unixSockPath); err != nil {
-				logger.Fatalf("Failed to remove %s: %s", unixSockPath, err)
+				sockLogger.Fatal("Failed to remove UNIX socket",
+					zap.Error(err),
+				)
 			}
 		}
 
-		logger.Debugf("Listening on UNIX socket on %s...", unixSockPath)
+		sockLogger.Debug("Listening on UNIX socket...")
 		netLst, err = net.Listen("unix", unixSockPath)
 		if err != nil {
-			logger.Fatalf("Failed to open UNIX socket on %s: %s", unixSockPath, err)
+			sockLogger.Fatal("Failed to listen on UNIX socket",
+				zap.Error(err),
+			)
 		}
 
 	} else {
-		logger.Debugf("Listening on TCP socket on %s...", *tcpSock)
+		sockLogger := logger.With(zap.String("addr", *tcpSock))
+
+		sockLogger.Debug("Listening on TCP socket...")
 		netLst, err = net.Listen("tcp", *tcpSock)
 		if err != nil {
-			logger.Fatalf("Failed to open TCP socket on %s: %s", *tcpSock, err)
+			sockLogger.Fatal("Failed to listen on TCP socket",
+				zap.Error(err),
+			)
 		}
 	}
 }
 
 func TestMain(m *testing.M) {
 	if err := flag.Set("unixSocket", unixSockPath); err != nil {
-		logger.Fatalf("Failed to set `socket` to %s: %s", unixSockPath, err)
+		logger.Fatal("Failed to set `socket` to "+unixSockPath,
+			zap.Error(err),
+		)
 	}
 
 	if err := flag.Set("debug", "true"); err != nil {
-		logger.Fatalf("Failed to set `debug`: %s", err)
+		logger.Fatal("Failed to set `debug`",
+			zap.Error(err),
+		)
 	}
 
 	logger.Info("Starting SRRS in goroutine...")
@@ -96,22 +110,27 @@ func TestMain(m *testing.M) {
 		conn, err = dial()
 	}
 	if err != nil {
-		logger.Fatalf("Failed to connect to SRRS at %s: %s", defaultAddr, err)
+		logger.Fatal("Failed to connect to SRRS",
+			zap.String("addr", defaultAddr),
+			zap.Error(err),
+		)
 	}
 
 	if err := conn.Close(); err != nil {
-		logger.Fatalf("Failed to close connection: %s", err)
+		logger.Fatal("Failed to close connection",
+			zap.Error(err),
+		)
 	}
 
-	logger = zap.S()
+	logger = zap.L()
 
 	ret := m.Run()
 
 	if err := netLst.Close(); err != nil {
-		logger.Infof("Failed to close Unix socket: %s", err)
+		logger.Info("Failed to close Unix socket", zap.Error(err))
 	}
 
-	logger.Infof("Exiting with return code: %d", ret)
+	logger.Info("Exiting with return code", zap.Int("code", ret))
 	os.Exit(ret)
 }
 
@@ -134,7 +153,9 @@ func TestAPI(t *testing.T) {
 		logger.Debug("Sending authentication request...")
 		resp, err := http.DefaultClient.Do(req)
 		if !a.NoError(err) {
-			logger.With("error", err).Error("Failed to authenticate")
+			logger.Error("Failed to authenticate",
+				zap.Error(err),
+			)
 			return
 		}
 		defer resp.Body.Close()
@@ -142,8 +163,10 @@ func TestAPI(t *testing.T) {
 		b, err := ioutil.ReadAll(resp.Body)
 		a.NoError(err)
 
-		logger.With("key", string(b)).Debug("Got session key")
 		sessionKey = string(b)
+		logger.Debug("Got session key",
+			zap.String("key", sessionKey),
+		)
 	}()
 
 	logger.Debug("Waiting for connection on Unix socket...")
@@ -185,7 +208,9 @@ func TestAPI(t *testing.T) {
 	}
 
 	wsAddr := "ws://localhost" + defaultAddr + "/" + webapi.StateEndpoint
-	logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
+	logger.Debug("Opening a WebSocket...",
+		zap.String("addr", wsAddr),
+	)
 	wsConn, _, err := websocket.DefaultDialer.Dial(wsAddr, nil)
 	if !a.NoError(err) {
 		t.Fatal("Failed to open WebSocket")
@@ -195,45 +220,70 @@ func TestAPI(t *testing.T) {
 	err = wsConn.WriteJSON(sessionKey)
 	a.NoError(err)
 
-	t.Run("TRC->SRRC/state", func(t *testing.T) {
+	currentState := &api.State{}
+
+	if !t.Run("TRC->SRRC/state", func(t *testing.T) {
 		for i := 0; i < messageCount; i++ {
-			t.Run(strconv.Itoa(i), func(t *testing.T) {
+			if !t.Run(strconv.Itoa(i), func(t *testing.T) {
 				a = assert.New(t)
 
-				expected := apitest.RandomState()
-				if err := expected.Validate(); err != nil {
+				st := apitest.RandomState()
+				if err := st.Validate(); err != nil {
 					panic(errors.Wrap(err, "invalid state generated"))
 				}
 
-				logger.Debug("Sending random state from TRC...")
-				err = trc.SendState(expected)
+				logger.Debug("Sending random state from TRC...",
+					zap.Reflect("state", st),
+				)
+				err = trc.SendState(st)
 				a.NoError(err)
 
-				var got api.State
-				logger.Debug("Receiving random state on WebSocket...")
-				err = wsConn.ReadJSON(&got)
+				b, err := json.Marshal(st)
+				if err != nil {
+					panic(err)
+				}
+
+				merged := deepcopy.Copy(currentState).(*api.State)
+				if err = json.Unmarshal(b, merged); err != nil {
+					panic(err)
+				}
+
+				st, err = api.StateDiff(currentState, merged)
+				if err != nil {
+					panic(err)
+				}
+				if st == nil {
+					st = &api.State{}
+				}
+
+				got := &api.State{}
+				err = wsConn.ReadJSON(got)
 				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
-			})
+				a.Equal(st, got)
+			}) {
+				t.FailNow()
+			}
 		}
-	})
+	}) {
+		t.FailNow()
+	}
 
-	t.Run("SRRC->TRC/turtles", func(t *testing.T) {
+	if !t.Run("SRRC->TRC/turtles", func(t *testing.T) {
 		for i := 0; i < messageCount; i++ {
-			t.Run(strconv.Itoa(i), func(t *testing.T) {
+			if !t.Run(strconv.Itoa(i), func(t *testing.T) {
 				a = assert.New(t)
 
-				expected := &api.State{
+				st := &api.State{
 					Turtles: apitest.RandomTurtleStateMap(),
 				}
-				for len(expected.Turtles) == 0 {
-					expected.Turtles = apitest.RandomTurtleStateMap()
+				for len(st.Turtles) == 0 {
+					st.Turtles = apitest.RandomTurtleStateMap()
 				}
-				if err := expected.Validate(); err != nil {
+				if err := st.Validate(); err != nil {
 					panic(errors.Wrap(err, "invalid state generated"))
 				}
 
-				b, err := json.Marshal(expected.Turtles)
+				b, err := json.Marshal(st.Turtles)
 				a.NoError(err)
 
 				req, err := http.NewRequest(http.MethodPost, "http://"+defaultAddr+"/"+webapi.TurtleEndpoint, bytes.NewReader(b))
@@ -281,31 +331,43 @@ func TestAPI(t *testing.T) {
 					}
 				}
 
-				var got api.State
-				err = json.Unmarshal(msg.Payload, &got)
-				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+				merged := deepcopy.Copy(currentState).(*api.State)
+				if err = json.Unmarshal(msg.Payload, merged); err != nil {
+					panic(err)
+				}
 
-				got = api.State{}
-				err = wsConn.ReadJSON(&got)
+				st, err = api.StateDiff(currentState, merged)
+				if err != nil {
+					panic(err)
+				}
+				if st == nil {
+					st = &api.State{}
+				}
+
+				got := &api.State{}
+				err = wsConn.ReadJSON(got)
 				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+				a.Equal(st, got)
 
 				wg.Wait()
-			})
+			}) {
+				t.FailNow()
+			}
 		}
-	})
+	}) {
+		t.FailNow()
+	}
 
 	t.Run("SRRC->TRC/command", func(t *testing.T) {
 		for i := 0; i < messageCount; i++ {
-			t.Run(strconv.Itoa(i), func(t *testing.T) {
+			if !t.Run(strconv.Itoa(i), func(t *testing.T) {
 				a = assert.New(t)
 
-				expected := &api.State{
+				st := &api.State{
 					Command: apitest.RandomCommand(),
 				}
 
-				b, err := json.Marshal(expected.Command)
+				b, err := json.Marshal(st.Command)
 				a.NoError(err)
 
 				req, err := http.NewRequest(http.MethodPost, "http://"+defaultAddr+"/"+webapi.CommandEndpoint, bytes.NewReader(b))
@@ -354,18 +416,28 @@ func TestAPI(t *testing.T) {
 					}
 				}
 
-				var got api.State
-				err = json.Unmarshal(msg.Payload, &got)
-				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+				merged := deepcopy.Copy(currentState).(*api.State)
+				if err = json.Unmarshal(msg.Payload, merged); err != nil {
+					panic(err)
+				}
 
-				got = api.State{}
-				err = wsConn.ReadJSON(&got)
+				st, err = api.StateDiff(currentState, merged)
+				if err != nil {
+					panic(err)
+				}
+				if st == nil {
+					st = &api.State{}
+				}
+
+				got := &api.State{}
+				err = wsConn.ReadJSON(got)
 				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+				a.Equal(st, got)
 
 				wg.Wait()
-			})
+			}) {
+				t.FailNow()
+			}
 		}
 	})
 }

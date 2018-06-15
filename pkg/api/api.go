@@ -118,67 +118,67 @@ const (
 // TurtleState is the state of a particular turtle.
 type TurtleState struct {
 	// VisionStatus represents status of Vision Executable.
-	VisionStatus *bool `json:"visionstatus,omitempty"`
+	VisionStatus *bool `json:"visionstatus,omitempty" structs:",omitempty"`
 
 	// MotionStatus represents status of Motion Executable (Off/On).
-	MotionStatus *bool `json:"motionstatus,omitempty"`
+	MotionStatus *bool `json:"motionstatus,omitempty" structs:",omitempty"`
 
 	// WorldmodelStatus represents status of Worldmodel Executable (Off/On).
-	WorldmodelStatus *bool `json:"worldmodelstatus,omitempty"`
+	WorldmodelStatus *bool `json:"worldmodelstatus,omitempty" structs:",omitempty"`
 
 	// AppmanStatus represents status of Appman (Off/On).
-	AppmanStatus *bool `json:"appmanstatus,omitempty"`
+	AppmanStatus *bool `json:"appmanstatus,omitempty" structs:",omitempty"`
 
 	// RestartCountMotion represents restart count of Motion Executable (0 … 99).
-	RestartCountMotion *uint8 `json:"restartcountmotion,omitempty"`
+	RestartCountMotion *uint8 `json:"restartcountmotion,omitempty" structs:",omitempty"`
 
 	// RestartCountVision represents restart count of Vision Executable (0 … 99).
-	RestartCountVision *uint8 `json:"restartcountvision,omitempty"`
+	RestartCountVision *uint8 `json:"restartcountvision,omitempty" structs:",omitempty"`
 
 	// RestartCountWorldmodel represents restart count of Worldmodel Executable (0 … 99).
-	RestartCountWorldmodel *uint8 `json:"restartcountworldmodel,omitempty"`
+	RestartCountWorldmodel *uint8 `json:"restartcountworldmodel,omitempty" structs:",omitempty"`
 
 	// BallFound represents ball Found (No/Communicated/Yes).
-	BallFound BallFound `json:"ballfound,omitempty"`
+	BallFound BallFound `json:"ballfound,omitempty" structs:",omitempty"`
 
 	// LocalizationStatus represents localization Status.
-	LocalizationStatus LocalizationStatus `json:"localizationstatus,omitempty"`
+	LocalizationStatus LocalizationStatus `json:"localizationstatus,omitempty" structs:",omitempty"`
 
 	// CPB represents current Ball Possessor (No/Team/Yes).
-	CPB CPB `json:"cpb,omitempty"`
+	CPB CPB `json:"cpb,omitempty" structs:",omitempty"`
 
 	// BatteryVoltage represents battery Voltage (0 … 99).
-	BatteryVoltage *uint8 `json:"batteryvoltage,omitempty"`
+	BatteryVoltage *uint8 `json:"batteryvoltage,omitempty" structs:",omitempty"`
 
 	// EmergencyStatus represents emergency Status (0 100).
-	EmergencyStatus *uint8 `json:"emergencystatus,omitempty"`
+	EmergencyStatus *uint8 `json:"emergencystatus,omitempty" structs:",omitempty"`
 
 	// Role represents TRC Role (0 … 10).
-	Role Role `json:"role,omitempty"`
+	Role Role `json:"role,omitempty" structs:",omitempty"`
 
 	// RefBoxRole represents TRC RefboxRole (0 … 10).
-	RefBoxRole RefBoxRole `json:"refboxrole,omitempty"`
+	RefBoxRole RefBoxRole `json:"refboxrole,omitempty" structs:",omitempty"`
 
 	// RobotInField represents TRC Robot In Field (0/1).
-	RobotInField *bool `json:"robotinfield,omitempty"`
+	RobotInField *bool `json:"robotinfield,omitempty" structs:",omitempty"`
 
 	// RobotEmergencyButton represents TRC Robot Emergency Button pressed (0/1).
-	RobotEmergencyButton *bool `json:"robotembutton,omitempty"`
+	RobotEmergencyButton *bool `json:"robotembutton,omitempty" structs:",omitempty"`
 
 	// HomeGoal represents robot’s HomeGoal (Yellow/Blue).
-	HomeGoal HomeGoal `json:"homegoal,omitempty"`
+	HomeGoal HomeGoal `json:"homegoal,omitempty" structs:",omitempty"`
 
 	// TeamColor represents robot’s Teamcolor (Magenta/Cyan).
-	TeamColor TeamColor `json:"teamcolor,omitempty"`
+	TeamColor TeamColor `json:"teamcolor,omitempty" structs:",omitempty"`
 
 	// ActiveDevPC represents active DevPC controlling robot (0 … 90).
-	ActiveDevPC *uint8 `json:"activedevpc,omitempty"`
+	ActiveDevPC *uint8 `json:"activedevpc,omitempty" structs:",omitempty"`
 
 	// Kinect1State represents status of Kinect 1 (No State/No Ball/Ball).
-	Kinect1State KinectState `json:"kinect1_state,omitempty"`
+	Kinect1State KinectState `json:"kinect1_state,omitempty" structs:",omitempty"`
 
 	// Kinect2State represents status of Kinect 2 (No State/No Ball/Ball).
-	Kinect2State KinectState `json:"kinect2_state,omitempty"`
+	Kinect2State KinectState `json:"kinect2_state,omitempty" structs:",omitempty"`
 }
 
 // Message specifies the type of the message.
@@ -198,16 +198,16 @@ type Handshake struct {
 
 // State represents the state of the TRC.
 type State struct {
-	Command Command                 `json:"command,omitempty"`
-	Turtles map[string]*TurtleState `json:"turtles,omitempty"`
+	Command Command                 `json:"command,omitempty" structs:",omitempty"`
+	Turtles map[string]*TurtleState `json:"turtles" structs:",omitempty"`
 }
 
 // Message is the structure exchanged between TRC and SRRS.
 type Message struct {
 	Type      MessageType     `json:"type"`
 	MessageID ulid.ULID       `json:"message_id"`
-	ParentID  *ulid.ULID      `json:"parent_id,omitempty"`
-	Payload   json.RawMessage `json:"payload,omitempty"`
+	ParentID  *ulid.ULID      `json:"parent_id,omitempty" structs:",omitempty"`
+	Payload   json.RawMessage `json:"payload,omitempty" structs:",omitempty"`
 }
 
 // NewMessage returns a new Message.

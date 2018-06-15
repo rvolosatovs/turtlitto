@@ -152,12 +152,16 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	defer closeFn()
 
 	oldState := trcConn.State(ctx)
-
-	logger.Debug("Sending current state on the WebSocket...")
-	if err := wsConn.WriteJSON(oldState); err != nil {
-		logger.With(zap.Error(err)).Error("Failed to write state")
-		return
+	if oldState != nil {
+		logger.Debug("Sending current state on the WebSocket...",
+			zap.Reflect("state", oldState),
+		)
+		if err := wsConn.WriteJSON(oldState); err != nil {
+			logger.With(zap.Error(err)).Error("Failed to write state")
+			return
+		}
 	}
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -172,11 +176,21 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 			logger.Debug("State change acknowledged")
 
 			st := trcConn.State(ctx)
-			// TODO: Compute diff of st and oldState
-			_ = oldState
-			diff := st
+
+			fmt.Println("DIFFING", oldState, st)
+			diff, err := api.StateDiff(oldState, st)
+			fmt.Println("GOT", diff)
+			if err != nil {
+				logger.Error("Failed to compute diff",
+					zap.Error(err),
+				)
+				diff = st
+			}
 			oldState = st
-			logger.Debug("Sending state diff on the WebSocket...")
+
+			logger.Debug("Sending state diff on the WebSocket...",
+				zap.Reflect("state", diff),
+			)
 			if err := wsConn.WriteJSON(diff); err != nil {
 				wsError(wsConn, logger, errors.Wrap(err, "failed to write state"), websocket.CloseInternalServerErr)
 				return
@@ -332,7 +346,6 @@ func RegisterHandlers(pool *trcapi.Pool, handler HandleFuncer) {
 			}
 
 			if err := trcConn.SetTurtleState(ctx, st); err != nil {
-				fmt.Println("TURTLE", err)
 				return errors.Wrap(err, "failed to send turtle state to TRC")
 			}
 			return nil

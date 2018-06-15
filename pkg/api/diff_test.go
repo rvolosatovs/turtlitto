@@ -17,7 +17,7 @@ func TestStateDiff(t *testing.T) {
 	}
 
 	for i, tc := range []TestCase{
-		//test case 1
+		//test case 0
 		{
 			A: &State{
 				Command: CommandStop,
@@ -45,34 +45,35 @@ func TestStateDiff(t *testing.T) {
 						Kinect1State:    KinectStateNoBall,
 						EmergencyStatus: apitest.Uint8Ptr(0),
 					},
-					"2": {
-						Kinect1State:    KinectStateNoBall,
-						Kinect2State:    KinectStateNoState,
-						EmergencyStatus: apitest.Uint8Ptr(12),
-					},
 					"3": {
 						HomeGoal:        HomeGoalBlue,
 						BatteryVoltage:  apitest.Uint8Ptr(23),
 						EmergencyStatus: apitest.Uint8Ptr(0),
+					},
+					"4": {
+						Kinect1State:    KinectStateNoBall,
+						Kinect2State:    KinectStateNoState,
+						EmergencyStatus: apitest.Uint8Ptr(12),
 					},
 				},
 			},
 			Diff: &State{
 				Command: CommandPenaltyMagenta,
 				Turtles: map[string]*TurtleState{
-					"2": {
-						Kinect1State:    KinectStateNoBall,
-						Kinect2State:    KinectStateNoState,
-						EmergencyStatus: apitest.Uint8Ptr(12),
-					},
+					"2": nil,
 					"3": {
 						HomeGoal:       HomeGoalBlue,
 						BatteryVoltage: apitest.Uint8Ptr(23),
 					},
+					"4": {
+						Kinect1State:    KinectStateNoBall,
+						Kinect2State:    KinectStateNoState,
+						EmergencyStatus: apitest.Uint8Ptr(12),
+					},
 				},
 			},
 		},
-		//test case 2
+		//test case 1
 		{
 			A: &State{
 				Command: CommandStop,
@@ -96,7 +97,7 @@ func TestStateDiff(t *testing.T) {
 				Command: CommandPenaltyMagenta,
 			},
 		},
-		//test case 3
+		//test case 2
 		{
 			A: &State{
 				Command: CommandStop,
@@ -123,19 +124,21 @@ func TestStateDiff(t *testing.T) {
 			a := assert.New(t)
 
 			stateDiff, err := StateDiff(tc.A, tc.B)
-			a.Nil(err)
+			if !a.Nil(err) {
+				t.FailNow()
+			}
 			a.Equal(tc.Diff, stateDiff)
 		})
-		//t.Run("fuzz", func(t *testing.T) {
-		//for i := 0; i < 100; i++ {
-		//t.Run(strconv.Itoa(i), func(t *testing.T) {
-		//a := assert.New(t)
+		t.Run("fuzz", func(t *testing.T) {
+			for i := 0; i < 100; i++ {
+				t.Run(strconv.Itoa(i), func(t *testing.T) {
+					a := assert.New(t)
 
-		//var err error
-		//_, err = StateDiff(apitest.RandomState(), apitest.RandomState())
-		//a.Nil(err)
-		//})
-		//}
-		//})
+					var err error
+					_, err = StateDiff(apitest.RandomState(), apitest.RandomState())
+					a.Nil(err)
+				})
+			}
+		})
 	}
 }

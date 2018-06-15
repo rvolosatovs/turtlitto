@@ -5,6 +5,7 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/mitchellh/mapstructure"
+	"github.com/pkg/errors"
 )
 
 func diff(a, b map[string]interface{}) map[string]interface{} {
@@ -30,13 +31,21 @@ func diff(a, b map[string]interface{}) map[string]interface{} {
 
 		if mo, ok := av.(map[string]interface{}); ok {
 			if mn, ok := bv.(map[string]interface{}); ok {
-				ret[k] = diff(mo, mn)
+				m := diff(mo, mn)
+				if len(m) > 0 {
+					ret[k] = m
+				}
 				continue
 			}
 		}
 
 		// By some weird reason mapstructure.Decode can't handle pointers, hence, we indirect the value.
-		ret[k] = reflect.Indirect(reflect.ValueOf(bv)).Interface()
+		rv := reflect.ValueOf(bv)
+		if !rv.IsValid() {
+			ret[k] = nil
+		} else {
+			ret[k] = reflect.Indirect(rv).Interface()
+		}
 	}
 
 	if len(ret) == 0 {
@@ -57,5 +66,24 @@ func StateDiff(a, b *State) (*State, error) {
 	}
 
 	v := &State{}
-	return v, mapstructure.WeakDecode(m, v)
+
+	dec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		DecodeHook: func(at reflect.Type, _ reflect.Type, v interface{}) (interface{}, error) {
+			if at.Kind() != reflect.Ptr {
+				return v, nil
+			}
+
+			rv := reflect.Indirect(reflect.ValueOf(v))
+			if !rv.IsValid() {
+				return nil, nil
+			}
+			return rv.Interface(), nil
+		},
+		ErrorUnused: true,
+		Result:      v,
+	})
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create new decoder"))
+	}
+	return v, dec.Decode(m)
 }
