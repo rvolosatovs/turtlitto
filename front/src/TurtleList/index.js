@@ -1,23 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Col } from "react-flexbox-grid";
+import { Grid, Row, Col } from "react-flexbox-grid";
 
 import Turtle from "../Turtle";
 
 const TurtleList = props => {
   const { turtles } = props;
   return (
-    <Row>
-      {Object.keys(turtles)
-        .filter(id => turtles[id].enabled)
-        .map((id, index) => {
-          return (
-            <Col xs={12} md={6} key={index}>
-              <Turtle key={index} id={id} turtle={turtles[id]} editable />
-            </Col>
-          );
-        })}
-    </Row>
+    <Grid fluid>
+      <Row>
+        {Object.keys(turtles)
+          .filter(id => turtles[id].enabled)
+          .map((id, index) => {
+            return (
+              <Col xs={12} md={6} key={index}>
+                <Turtle key={index} id={id} turtle={turtles[id]} editable />
+              </Col>
+            );
+          })}
+      </Row>
+    </Grid>
   );
 };
 
