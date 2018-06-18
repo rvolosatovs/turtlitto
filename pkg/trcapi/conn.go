@@ -59,7 +59,8 @@ type Conn struct {
 }
 
 // Connect establishes the SRRS-side connection according to TRC API protocol
-// specification of version ver on w and r.
+// specification of version ver.
+// Messages are written to w and read from r.
 func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	logger := zap.L()
 

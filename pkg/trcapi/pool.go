@@ -7,6 +7,7 @@ import (
 )
 
 // Pool represents a pool of Conn's.
+// The Pool manages synchronisation and allows easy creation, accessing and closing of connections.
 type Pool struct {
 	connectFunc func() (*Conn, func(), error)
 	closeFunc   func()
