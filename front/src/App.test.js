@@ -5,6 +5,10 @@ import App from "./App";
 
 jest.useFakeTimers();
 
+//Test_items: App.js
+//Input_spec: -
+//Output_spec: -
+//Envir_needs: The User has logged in and has enabled a TURTLE.
 describe("App.js", () => {
   it("automatically reconnects", () => {
     //Establish a server and wait for a connection

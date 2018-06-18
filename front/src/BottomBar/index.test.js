@@ -6,6 +6,10 @@ import connectionTypes from "./connectionTypes";
 import pageTypes from "./pageTypes";
 import { mountWithTheme } from "../testUtils";
 
+//Test_items: BottomBar index.js
+//Input_spec: -
+//Output_spec: -
+//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
 describe("BottomBar", () => {
   describe("is in the refbox mode", () => {
     it("should match snapshot", () => {
@@ -20,6 +24,10 @@ describe("BottomBar", () => {
       expect(wrapper).toMatchSnapshot();
     });
 
+    //Test_items: BottomBar index.js Settings Button
+    //Input_spec: -
+    //Output_spec: -
+    //Envir_needs: -
     describe("the user clicks on the settings button", () => {
       it("should pass `settings` to the `changeActivePage` function", () => {
         const changeActivePageSpy = sinon.spy();
@@ -38,7 +46,10 @@ describe("BottomBar", () => {
       });
     });
   });
-
+  //Test_items: BottomBar index.js
+  //Input_spec: -
+  //Output_spec: -
+  //Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
   describe("is in the settings mode", () => {
     it("should match snapshot", () => {
       const wrapper = mountWithTheme(
@@ -51,7 +62,10 @@ describe("BottomBar", () => {
 
       expect(wrapper).toMatchSnapshot();
     });
-
+    //Test_items: BottomBar index.js Refbox Button
+    //Input_spec: -
+    //Output_spec: -
+    //Envir_needs: -
     describe("the user clicks on the refbox button", () => {
       it("should pass `refbox` to the `changeActivePage` function", () => {
         const changeActivePageSpy = sinon.spy();
@@ -71,7 +85,10 @@ describe("BottomBar", () => {
     });
   });
 });
-
+//Test_items: BottomBar index.js Start and Stop Buttons
+//Input_spec: -
+//Output_spec: -
+//Envir_needs: -
 describe("When clicked,", () => {
   const realFetch = global.fetch;
   let wrapper = null;

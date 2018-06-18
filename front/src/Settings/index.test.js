@@ -3,6 +3,10 @@ import { shallow } from "enzyme";
 import Settings from ".";
 import { mountWithTheme } from "../testUtils";
 
+//Test_items: Settings index.js
+//Input_spec: -
+//Output_spec: -
+//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
 it("renders without crashing", () => {
   const wrapper = mountWithTheme(
     <Settings

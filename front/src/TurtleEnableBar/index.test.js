@@ -5,6 +5,10 @@ import { shallowWithTheme, mountWithTheme } from "../testUtils";
 import theme from "../theme";
 import sinon from "sinon";
 
+//Test_items: TurtleEnableBar index.js
+//Input_spec: -
+//Output_spec: -
+//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
 describe("TurtleEnableBar", () => {
   it("should match snapshot", () => {
     const wrapper = shallowWithTheme(

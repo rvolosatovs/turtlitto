@@ -4,6 +4,10 @@ import { shallow } from "enzyme";
 import sendToServer from "../sendToServer";
 import { mountWithTheme } from "../testUtils";
 
+//Test_items: Dropball.js snapshot
+//Input_spec: -
+//Output_spec: -
+//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
 describe("DropBall", () => {
   it("shows a button with DB written on it", () => {
     const wrapper = mountWithTheme(<DropBall onClick={() => {}} />);
@@ -11,6 +15,10 @@ describe("DropBall", () => {
   });
 });
 
+//Test_items: Dropball functionality.
+//Input_spec: -
+//Output_spec: -
+//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
 describe("When clicked, the Drop Ball button", () => {
   const realFetch = global.fetch;
   let wrapper = null;
