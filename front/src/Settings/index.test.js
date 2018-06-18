@@ -7,6 +7,7 @@ it("renders without crashing", () => {
   const wrapper = mountWithTheme(
     <Settings
       onChange={() => {}}
+      command="pass_demo"
       turtles={{
         1: {
           enabled: true,

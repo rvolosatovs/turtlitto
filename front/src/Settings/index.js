@@ -5,24 +5,7 @@ import Dropdown from "../Dropdown";
 import TurtleList from "../TurtleList";
 import sendToServer from "../sendToServer";
 
-/**
- * Show the settings of all turtles.
- * Author: H.E. van der Laan
- * Author: T.T.P. Franken
- *
- * props:
- * - turtles: an array of Turtles
- * - session: a string which holds the password needed to connect to the SRRS
- */
-
-const CONFIG_VALUES = [
-  "Role assigner on",
-  "Role assigner off",
-  "Pass demo",
-  "Penalty mode",
-  "Ball Handling demo"
-];
-
+// Used for translating the display value back into a sendable version
 const COMMAND_VALUES = {
   "Role assigner on": "role_assigner_on",
   "Role assigner off": "role_assigner_off",
@@ -31,14 +14,33 @@ const COMMAND_VALUES = {
   "Ball Handling demo": "ball_handling_demo"
 };
 
+// Used for translating the sent command into a human viewable version
+const COMMAND_DISPLAY_VALUES = {
+  role_assigner_on: "Role assigner on",
+  role_assigner_off: "Role assigner off",
+  pass_demo: "Pass demo",
+  penalty_mode: "Penalty Demo",
+  ball_handling_demo: "Ball Handling Demo"
+};
+
+/**
+ * Show the settings of all turtles.
+ * Author: H.E. van der Laan
+ * Author: T.T.P. Franken
+ *
+ * props:
+ * - command: the currently active command
+ * - turtles: an array of Turtles
+ * - session: a string which holds the password needed to connect to the SRRS
+ */
 const Settings = props => {
-  const { turtles, session } = props;
+  const { command, turtles, session } = props;
   return (
     <SettingsWrapper>
       <RoleDropdown
         id={"settings_role-dropdown"}
-        currentValue={"Whatever"}
-        values={CONFIG_VALUES}
+        currentValue={COMMAND_DISPLAY_VALUES[command]}
+        values={Object.keys(COMMAND_VALUES)}
         onChange={value => {
           sendToServer(COMMAND_VALUES[value], "command", session);
         }}
@@ -50,6 +52,7 @@ const Settings = props => {
 };
 
 Settings.propTypes = {
+  command: PropTypes.oneOf(Object.keys(COMMAND_DISPLAY_VALUES)),
   turtles: PropTypes.objectOf(
     PropTypes.shape({
       enabled: PropTypes.bool.isRequired,
