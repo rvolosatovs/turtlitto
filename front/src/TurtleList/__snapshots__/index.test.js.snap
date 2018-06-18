@@ -1,30 +1,370 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TurtleList should match snapshot 1`] = `
-<Grid
-  fluid={true}
+<div
+  className="container-fluid"
 >
-  <Row>
-    <Col
-      key="0"
-      md={6}
-      xs={12}
+  <Row />
+</div>
+`;
+
+exports[`TurtleList should render all turtles 1`] = `
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c3 {
+  font-size: 4rem;
+  padding-top: 0.6rem;
+}
+
+.c1 {
+  -webkit-flex-basis: 35%;
+  -ms-flex-preferred-size: 35%;
+  flex-basis: 35%;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-basis: 35%;
+  -ms-flex-preferred-size: 35%;
+  flex-basis: 35%;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-flex-basis: 30%;
+  -ms-flex-preferred-size: 30%;
+  flex-basis: 30%;
+}
+
+.c0 {
+  width: 90%;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  border-style: solid;
+  border: 0.25rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  font-size: 2rem;
+}
+
+<TurtleList
+  turtles={
+    Object {
+      "1": Object {
+        "batteryvoltage": 66,
+        "enabled": true,
+        "homegoal": "Yellow home",
+        "role": "INACTIVE",
+        "teamcolor": "Magenta",
+      },
+      "2": Object {
+        "batteryvoltage": 42,
+        "enabled": false,
+        "homegoal": "Yellow home",
+        "role": "INACTIVE",
+        "teamcolor": "Magenta",
+      },
+    }
+  }
+>
+  <Grid
+    fluid={true}
+  >
+    <div
+      className="container-fluid"
     >
-      <Turtle
-        editable={true}
-        id="1"
-        key="0"
-        turtle={
-          Object {
-            "batteryvoltage": 66,
-            "enabled": true,
-            "homegoal": "Yellow home",
-            "role": "INACTIVE",
-            "teamcolor": "Magenta",
-          }
-        }
-      />
-    </Col>
-  </Row>
-</Grid>
+      <Row>
+        <div
+          className="row"
+        >
+          <Col
+            key="0"
+            md={6}
+            xs={12}
+          >
+            <div
+              className="col-xs-12 col-md-6"
+            >
+              <Turtle
+                editable={true}
+                id="1"
+                key="0"
+                turtle={
+                  Object {
+                    "batteryvoltage": 66,
+                    "enabled": true,
+                    "homegoal": "Yellow home",
+                    "role": "INACTIVE",
+                    "teamcolor": "Magenta",
+                  }
+                }
+              >
+                <styled.div>
+                  <div
+                    className="c0"
+                  >
+                    <styled.div>
+                      <div
+                        className="c1"
+                      >
+                        <Battery
+                          percentage={66}
+                        >
+                          <styled.div>
+                            <div
+                              className="c2"
+                            >
+                              <FontAwesomeIcon
+                                border={false}
+                                className=""
+                                fixedWidth={false}
+                                flip={null}
+                                icon={
+                                  Object {
+                                    "icon": Array [
+                                      640,
+                                      512,
+                                      Array [],
+                                      "f241",
+                                      "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-144 96H96v128h320V192z",
+                                    ],
+                                    "iconName": "battery-three-quarters",
+                                    "prefix": "fas",
+                                  }
+                                }
+                                listItem={false}
+                                mask={null}
+                                name=""
+                                pull={null}
+                                pulse={false}
+                                rotation={270}
+                                size="2x"
+                                spin={false}
+                                symbol={false}
+                                transform={null}
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  className="svg-inline--fa fa-battery-three-quarters fa-w-20 fa-2x fa-rotate-270 "
+                                  data-icon="battery-three-quarters"
+                                  data-prefix="fas"
+                                  role="img"
+                                  style={Object {}}
+                                  viewBox="0 0 640 512"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-144 96H96v128h320V192z"
+                                    fill="currentColor"
+                                    style={Object {}}
+                                  />
+                                </svg>
+                              </FontAwesomeIcon>
+                              <styled.span>
+                                <span
+                                  className="c3"
+                                >
+                                  66
+                                  %
+                                </span>
+                              </styled.span>
+                            </div>
+                          </styled.div>
+                        </Battery>
+                      </div>
+                    </styled.div>
+                    <styled.div>
+                      <div
+                        className="c4"
+                      >
+                        <p>
+                          Turtle 
+                          1
+                        </p>
+                      </div>
+                    </styled.div>
+                    <styled.div>
+                      <div
+                        className="c5"
+                      >
+                        <Dropdown
+                          currentValue="INACTIVE"
+                          enabled={true}
+                          id="turtle1__role"
+                          onChange={[Function]}
+                          values={
+                            Array [
+                              "INACTIVE",
+                              "ROLE_NONE",
+                              "Att main",
+                              "Att assist",
+                              "Def main",
+                              "Def assist",
+                              "Def assist 2",
+                              "Goalkeeper",
+                            ]
+                          }
+                        >
+                          <select
+                            disabled={false}
+                            onChange={[Function]}
+                            value="INACTIVE"
+                          >
+                            <option
+                              key="INACTIVE"
+                            >
+                              INACTIVE
+                            </option>
+                            <option
+                              key="ROLE_NONE"
+                            >
+                              ROLE_NONE
+                            </option>
+                            <option
+                              key="Att main"
+                            >
+                              Att main
+                            </option>
+                            <option
+                              key="Att assist"
+                            >
+                              Att assist
+                            </option>
+                            <option
+                              key="Def main"
+                            >
+                              Def main
+                            </option>
+                            <option
+                              key="Def assist"
+                            >
+                              Def assist
+                            </option>
+                            <option
+                              key="Def assist 2"
+                            >
+                              Def assist 2
+                            </option>
+                            <option
+                              key="Goalkeeper"
+                            >
+                              Goalkeeper
+                            </option>
+                          </select>
+                        </Dropdown>
+                        <Dropdown
+                          currentValue="Yellow home"
+                          enabled={true}
+                          id="turtle1__home"
+                          onChange={[Function]}
+                          values={
+                            Array [
+                              "Yellow home",
+                              "Blue home",
+                            ]
+                          }
+                        >
+                          <select
+                            disabled={false}
+                            onChange={[Function]}
+                            value="Yellow home"
+                          >
+                            <option
+                              key="Yellow home"
+                            >
+                              Yellow home
+                            </option>
+                            <option
+                              key="Blue home"
+                            >
+                              Blue home
+                            </option>
+                          </select>
+                        </Dropdown>
+                        <Dropdown
+                          currentValue="Magenta"
+                          enabled={true}
+                          id="turtle1__team"
+                          onChange={[Function]}
+                          values={
+                            Array [
+                              "Magenta",
+                              "Cyan",
+                            ]
+                          }
+                        >
+                          <select
+                            disabled={false}
+                            onChange={[Function]}
+                            value="Magenta"
+                          >
+                            <option
+                              key="Magenta"
+                            >
+                              Magenta
+                            </option>
+                            <option
+                              key="Cyan"
+                            >
+                              Cyan
+                            </option>
+                          </select>
+                        </Dropdown>
+                      </div>
+                    </styled.div>
+                  </div>
+                </styled.div>
+              </Turtle>
+            </div>
+          </Col>
+        </div>
+      </Row>
+    </div>
+  </Grid>
+</TurtleList>
 `;

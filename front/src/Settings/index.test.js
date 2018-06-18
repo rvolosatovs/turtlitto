@@ -1,9 +1,10 @@
 import React from "react";
 import { shallow } from "enzyme";
 import Settings from ".";
+import { mountWithTheme } from "../testUtils";
 
 it("renders without crashing", () => {
-  const wrapper = shallow(
+  const wrapper = mountWithTheme(
     <Settings
       onChange={() => {}}
       turtles={{

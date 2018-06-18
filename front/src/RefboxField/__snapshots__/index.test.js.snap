@@ -1,183 +1,753 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RefboxField shows a cyan and magenta refbox field with all buttons 1`] = `
-<styled.div>
+.c3 {
+  background-color: magenta;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 4rem;
+  padding: 1.5rem 0;
+  border: 0.125rem solid;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c4 {
+  background-color: cyan;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 4rem;
+  padding: 1.5rem 0;
+  border: 0.125rem solid;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-around;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: space-around;
+  justify-content: space-around;
+  -webkit-flex-wrap: no-wrap;
+  -ms-flex-wrap: no-wrap;
+  flex-wrap: no-wrap;
+  padding-top: 2rem;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 12rem;
+}
+
+.c2 {
+  font-size: 2.5rem;
+  -webkit-flex-basis: 50%;
+  -ms-flex-preferred-size: 50%;
+  flex-basis: 50%;
+  max-width: 6rem;
+  max-height: 6rem;
+}
+
+@media (min-width:576px) {
+  .c0 {
+    padding-top: 0;
+  }
+}
+
+@media screen and (min-width:360px) {
+  .c1 {
+    max-width: 16rem;
+  }
+}
+
+@media screen and (min-width:360px) {
+  .c2 {
+    font-size: 4rem;
+  }
+}
+
+@media screen and (min-width:360px) {
+  .c2 {
+    max-width: 8rem;
+    max-height: 8rem;
+    font-size: 4rem;
+  }
+}
+
+<RefboxField
+  isPenalty={false}
+>
   <styled.div>
-    <Styled(RefboxButton)
-      id="KO_magenta"
-      isPenalty={false}
-      key="KO"
-      onClick={[Function]}
-      teamColor="magenta"
+    <div
+      className="c0"
     >
-      KO
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="FK_magenta"
-      isPenalty={false}
-      key="FK"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      FK
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="GK_magenta"
-      isPenalty={false}
-      key="GK"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      GK
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="TI_magenta"
-      isPenalty={false}
-      key="TI"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      TI
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="C_magenta"
-      isPenalty={false}
-      key="C"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      C
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="P_magenta"
-      isPenalty={false}
-      key="P"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      P
-    </Styled(RefboxButton)>
+      <styled.div>
+        <div
+          className="c1"
+        >
+          <Styled(RefboxButton)
+            id="KO_magenta"
+            isPenalty={false}
+            key="KO"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="KO_magenta"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  KO
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="FK_magenta"
+            isPenalty={false}
+            key="FK"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="FK_magenta"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  FK
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="GK_magenta"
+            isPenalty={false}
+            key="GK"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="GK_magenta"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  GK
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="TI_magenta"
+            isPenalty={false}
+            key="TI"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="TI_magenta"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  TI
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="C_magenta"
+            isPenalty={false}
+            key="C"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="C_magenta"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  C
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="P_magenta"
+            isPenalty={false}
+            key="P"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="P_magenta"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  P
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+        </div>
+      </styled.div>
+      <styled.div>
+        <div
+          className="c1"
+        >
+          <Styled(RefboxButton)
+            id="KO_cyan"
+            isPenalty={false}
+            key="KO"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="KO_cyan"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  KO
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="FK_cyan"
+            isPenalty={false}
+            key="FK"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="FK_cyan"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  FK
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="GK_cyan"
+            isPenalty={false}
+            key="GK"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="GK_cyan"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  GK
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="TI_cyan"
+            isPenalty={false}
+            key="TI"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="TI_cyan"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  TI
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="C_cyan"
+            isPenalty={false}
+            key="C"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="C_cyan"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  C
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="P_cyan"
+            isPenalty={false}
+            key="P"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="P_cyan"
+              isPenalty={false}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  P
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+        </div>
+      </styled.div>
+    </div>
   </styled.div>
-  <styled.div>
-    <Styled(RefboxButton)
-      id="KO_cyan"
-      isPenalty={false}
-      key="KO"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      KO
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="FK_cyan"
-      isPenalty={false}
-      key="FK"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      FK
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="GK_cyan"
-      isPenalty={false}
-      key="GK"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      GK
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="TI_cyan"
-      isPenalty={false}
-      key="TI"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      TI
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="C_cyan"
-      isPenalty={false}
-      key="C"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      C
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="P_cyan"
-      isPenalty={false}
-      key="P"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      P
-    </Styled(RefboxButton)>
-  </styled.div>
-</styled.div>
+</RefboxField>
 `;
 
 exports[`RefboxField shows a refbox with penalty buttons 1`] = `
-<styled.div>
+.c3 {
+  background-color: magenta;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 4rem;
+  padding: 1.5rem 0;
+  border: 0.125rem solid;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c4 {
+  background-color: cyan;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 4rem;
+  padding: 1.5rem 0;
+  border: 0.125rem solid;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-around;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: space-around;
+  justify-content: space-around;
+  -webkit-flex-wrap: no-wrap;
+  -ms-flex-wrap: no-wrap;
+  flex-wrap: no-wrap;
+  padding-top: 2rem;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  max-width: 12rem;
+}
+
+.c2 {
+  font-size: 2.5rem;
+  -webkit-flex-basis: 100%;
+  -ms-flex-preferred-size: 100%;
+  flex-basis: 100%;
+}
+
+@media (min-width:576px) {
+  .c0 {
+    padding-top: 0;
+  }
+}
+
+@media screen and (min-width:360px) {
+  .c1 {
+    max-width: 16rem;
+  }
+}
+
+@media screen and (min-width:360px) {
+  .c2 {
+    font-size: 4rem;
+  }
+}
+
+<RefboxField
+  isPenalty={true}
+>
   <styled.div>
-    <Styled(RefboxButton)
-      id="Soft_magenta"
-      isPenalty={true}
-      key="Soft"
-      onClick={[Function]}
-      teamColor="magenta"
+    <div
+      className="c0"
     >
-      Soft
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="Medium_magenta"
-      isPenalty={true}
-      key="Medium"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      Medium
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="Hard_magenta"
-      isPenalty={true}
-      key="Hard"
-      onClick={[Function]}
-      teamColor="magenta"
-    >
-      Hard
-    </Styled(RefboxButton)>
+      <styled.div>
+        <div
+          className="c1"
+        >
+          <Styled(RefboxButton)
+            id="Soft_magenta"
+            isPenalty={true}
+            key="Soft"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="Soft_magenta"
+              isPenalty={true}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  Soft
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="Medium_magenta"
+            isPenalty={true}
+            key="Medium"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="Medium_magenta"
+              isPenalty={true}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  Medium
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="Hard_magenta"
+            isPenalty={true}
+            key="Hard"
+            onClick={[Function]}
+            teamColor="magenta"
+          >
+            <RefboxButton
+              className="c2"
+              id="Hard_magenta"
+              isPenalty={true}
+              onClick={[Function]}
+              teamColor="magenta"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="magenta"
+              >
+                <button
+                  className="c2 c3"
+                  onClick={[Function]}
+                >
+                  Hard
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+        </div>
+      </styled.div>
+      <styled.div>
+        <div
+          className="c1"
+        >
+          <Styled(RefboxButton)
+            id="Soft_cyan"
+            isPenalty={true}
+            key="Soft"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="Soft_cyan"
+              isPenalty={true}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  Soft
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="Medium_cyan"
+            isPenalty={true}
+            key="Medium"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="Medium_cyan"
+              isPenalty={true}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  Medium
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+          <Styled(RefboxButton)
+            id="Hard_cyan"
+            isPenalty={true}
+            key="Hard"
+            onClick={[Function]}
+            teamColor="cyan"
+          >
+            <RefboxButton
+              className="c2"
+              id="Hard_cyan"
+              isPenalty={true}
+              onClick={[Function]}
+              teamColor="cyan"
+            >
+              <styled.button
+                className="c2"
+                onClick={[Function]}
+                teamColor="cyan"
+              >
+                <button
+                  className="c2 c4"
+                  onClick={[Function]}
+                >
+                  Hard
+                </button>
+              </styled.button>
+            </RefboxButton>
+          </Styled(RefboxButton)>
+        </div>
+      </styled.div>
+    </div>
   </styled.div>
-  <styled.div>
-    <Styled(RefboxButton)
-      id="Soft_cyan"
-      isPenalty={true}
-      key="Soft"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      Soft
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="Medium_cyan"
-      isPenalty={true}
-      key="Medium"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      Medium
-    </Styled(RefboxButton)>
-    <Styled(RefboxButton)
-      id="Hard_cyan"
-      isPenalty={true}
-      key="Hard"
-      onClick={[Function]}
-      teamColor="cyan"
-    >
-      Hard
-    </Styled(RefboxButton)>
-  </styled.div>
-</styled.div>
+</RefboxField>
 `;
 
 exports[`When clicked, a cyan C button should pass \`corner_cyan\` to the 'sendToServer' function 1`] = `

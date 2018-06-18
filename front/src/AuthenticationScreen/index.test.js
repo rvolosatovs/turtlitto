@@ -1,7 +1,7 @@
 import React from "react";
-import { shallow } from "enzyme";
 import AuthenticationScreen from ".";
 import connectionTypes from "../BottomBar/connectionTypes";
+import { mountWithTheme } from "../testUtils";
 
 describe("AuthenticationScreen", () => {
   describe("The user enters a incorrect token", () => {
@@ -9,14 +9,17 @@ describe("AuthenticationScreen", () => {
       const onSubmit = (token, onIncorrectToken) => {
         onIncorrectToken();
       };
-      const wrapper = shallow(
+      const wrapper = mountWithTheme(
         <AuthenticationScreen
           onSubmit={onSubmit}
           connectionStatus={connectionTypes.CONNECTED}
         />
       );
 
-      wrapper.find("#login-button").simulate("click");
+      wrapper
+        .find("#login-button")
+        .hostNodes()
+        .simulate("click");
       expect(wrapper).toMatchSnapshot();
     });
   });

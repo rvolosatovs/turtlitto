@@ -2,6 +2,7 @@ import React from "react";
 import NotificationWindow from ".";
 import notificationTypes from "./notificationTypes";
 import { shallow } from "enzyme";
+import { mountWithTheme } from "../testUtils";
 
 describe("NotificationWindow", () => {
   it("should display a success notification", () => {
@@ -9,7 +10,7 @@ describe("NotificationWindow", () => {
       notificationType: notificationTypes.SUCCESS,
       message: "notification message"
     };
-    const wrapper = shallow(
+    const wrapper = mountWithTheme(
       <NotificationWindow notification={notification} onDismiss={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();
@@ -20,7 +21,7 @@ describe("NotificationWindow", () => {
       notificationType: notificationTypes.WARNING,
       message: "notification message"
     };
-    const wrapper = shallow(
+    const wrapper = mountWithTheme(
       <NotificationWindow notification={notification} onDismiss={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();
@@ -31,7 +32,7 @@ describe("NotificationWindow", () => {
       notificationType: notificationTypes.ERROR,
       message: "notification message"
     };
-    const wrapper = shallow(
+    const wrapper = mountWithTheme(
       <NotificationWindow notification={notification} onDismiss={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();

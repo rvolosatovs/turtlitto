@@ -1,192 +1,433 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Battery shows a 1/4 full battery on 25% 1`] = `
-<styled.div>
-  <FontAwesomeIcon
-    border={false}
-    className=""
-    fixedWidth={false}
-    flip={null}
-    icon={
-      Object {
-        "icon": Array [
-          640,
-          512,
-          Array [],
-          "f243",
-          "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-336 96H96v128h128V192z",
-        ],
-        "iconName": "battery-quarter",
-        "prefix": "fas",
-      }
-    }
-    listItem={false}
-    mask={null}
-    name=""
-    pull={null}
-    pulse={false}
-    rotation={270}
-    size="2x"
-    spin={false}
-    symbol={false}
-    transform={null}
-  />
-  <styled.span>
-    25
-    %
-  </styled.span>
-</styled.div>
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 {
+  font-size: 4rem;
+  padding-top: 0.6rem;
+}
+
+<Battery
+  percentage={25}
+>
+  <styled.div>
+    <div
+      className="c0"
+    >
+      <FontAwesomeIcon
+        border={false}
+        className=""
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              640,
+              512,
+              Array [],
+              "f243",
+              "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-336 96H96v128h128V192z",
+            ],
+            "iconName": "battery-quarter",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={270}
+        size="2x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      >
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-battery-quarter fa-w-20 fa-2x fa-rotate-270 "
+          data-icon="battery-quarter"
+          data-prefix="fas"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 640 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-336 96H96v128h128V192z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </FontAwesomeIcon>
+      <styled.span>
+        <span
+          className="c1"
+        >
+          25
+          %
+        </span>
+      </styled.span>
+    </div>
+  </styled.div>
+</Battery>
 `;
 
 exports[`Battery shows a 3/4 full battery on 75% 1`] = `
-<styled.div>
-  <FontAwesomeIcon
-    border={false}
-    className=""
-    fixedWidth={false}
-    flip={null}
-    icon={
-      Object {
-        "icon": Array [
-          640,
-          512,
-          Array [],
-          "f241",
-          "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-144 96H96v128h320V192z",
-        ],
-        "iconName": "battery-three-quarters",
-        "prefix": "fas",
-      }
-    }
-    listItem={false}
-    mask={null}
-    name=""
-    pull={null}
-    pulse={false}
-    rotation={270}
-    size="2x"
-    spin={false}
-    symbol={false}
-    transform={null}
-  />
-  <styled.span>
-    75
-    %
-  </styled.span>
-</styled.div>
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 {
+  font-size: 4rem;
+  padding-top: 0.6rem;
+}
+
+<Battery
+  percentage={75}
+>
+  <styled.div>
+    <div
+      className="c0"
+    >
+      <FontAwesomeIcon
+        border={false}
+        className=""
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              640,
+              512,
+              Array [],
+              "f241",
+              "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-144 96H96v128h320V192z",
+            ],
+            "iconName": "battery-three-quarters",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={270}
+        size="2x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      >
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-battery-three-quarters fa-w-20 fa-2x fa-rotate-270 "
+          data-icon="battery-three-quarters"
+          data-prefix="fas"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 640 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-144 96H96v128h320V192z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </FontAwesomeIcon>
+      <styled.span>
+        <span
+          className="c1"
+        >
+          75
+          %
+        </span>
+      </styled.span>
+    </div>
+  </styled.div>
+</Battery>
 `;
 
 exports[`Battery shows a full battery on 99% 1`] = `
-<styled.div>
-  <FontAwesomeIcon
-    border={false}
-    className=""
-    fixedWidth={false}
-    flip={null}
-    icon={
-      Object {
-        "icon": Array [
-          640,
-          512,
-          Array [],
-          "f240",
-          "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-48 96H96v128h416V192z",
-        ],
-        "iconName": "battery-full",
-        "prefix": "fas",
-      }
-    }
-    listItem={false}
-    mask={null}
-    name=""
-    pull={null}
-    pulse={false}
-    rotation={270}
-    size="2x"
-    spin={false}
-    symbol={false}
-    transform={null}
-  />
-  <styled.span>
-    99
-    %
-  </styled.span>
-</styled.div>
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 {
+  font-size: 4rem;
+  padding-top: 0.6rem;
+}
+
+<Battery
+  percentage={99}
+>
+  <styled.div>
+    <div
+      className="c0"
+    >
+      <FontAwesomeIcon
+        border={false}
+        className=""
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              640,
+              512,
+              Array [],
+              "f240",
+              "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-48 96H96v128h416V192z",
+            ],
+            "iconName": "battery-full",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={270}
+        size="2x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      >
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-battery-full fa-w-20 fa-2x fa-rotate-270 "
+          data-icon="battery-full"
+          data-prefix="fas"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 640 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-48 96H96v128h416V192z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </FontAwesomeIcon>
+      <styled.span>
+        <span
+          className="c1"
+        >
+          99
+          %
+        </span>
+      </styled.span>
+    </div>
+  </styled.div>
+</Battery>
 `;
 
 exports[`Battery shows a half full battery on 50% 1`] = `
-<styled.div>
-  <FontAwesomeIcon
-    border={false}
-    className=""
-    fixedWidth={false}
-    flip={null}
-    icon={
-      Object {
-        "icon": Array [
-          640,
-          512,
-          Array [],
-          "f242",
-          "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-240 96H96v128h224V192z",
-        ],
-        "iconName": "battery-half",
-        "prefix": "fas",
-      }
-    }
-    listItem={false}
-    mask={null}
-    name=""
-    pull={null}
-    pulse={false}
-    rotation={270}
-    size="2x"
-    spin={false}
-    symbol={false}
-    transform={null}
-  />
-  <styled.span>
-    50
-    %
-  </styled.span>
-</styled.div>
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 {
+  font-size: 4rem;
+  padding-top: 0.6rem;
+}
+
+<Battery
+  percentage={50}
+>
+  <styled.div>
+    <div
+      className="c0"
+    >
+      <FontAwesomeIcon
+        border={false}
+        className=""
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              640,
+              512,
+              Array [],
+              "f242",
+              "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-240 96H96v128h224V192z",
+            ],
+            "iconName": "battery-half",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={270}
+        size="2x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      >
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-battery-half fa-w-20 fa-2x fa-rotate-270 "
+          data-icon="battery-half"
+          data-prefix="fas"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 640 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48zm-240 96H96v128h224V192z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </FontAwesomeIcon>
+      <styled.span>
+        <span
+          className="c1"
+        >
+          50
+          %
+        </span>
+      </styled.span>
+    </div>
+  </styled.div>
+</Battery>
 `;
 
 exports[`Battery shows an empty battery on 0% 1`] = `
-<styled.div>
-  <FontAwesomeIcon
-    border={false}
-    className=""
-    color="red"
-    fixedWidth={false}
-    flip={null}
-    icon={
-      Object {
-        "icon": Array [
-          640,
-          512,
-          Array [],
-          "f244",
-          "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48z",
-        ],
-        "iconName": "battery-empty",
-        "prefix": "fas",
-      }
-    }
-    listItem={false}
-    mask={null}
-    name=""
-    pull={null}
-    pulse={false}
-    rotation={270}
-    size="2x"
-    spin={false}
-    symbol={false}
-    transform={null}
-  />
-  <styled.span>
-    0
-    %
-  </styled.span>
-</styled.div>
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 {
+  font-size: 4rem;
+  padding-top: 0.6rem;
+}
+
+<Battery
+  percentage={0}
+>
+  <styled.div>
+    <div
+      className="c0"
+    >
+      <FontAwesomeIcon
+        border={false}
+        className=""
+        color="red"
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              640,
+              512,
+              Array [],
+              "f244",
+              "M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48z",
+            ],
+            "iconName": "battery-empty",
+            "prefix": "fas",
+          }
+        }
+        listItem={false}
+        mask={null}
+        name=""
+        pull={null}
+        pulse={false}
+        rotation={270}
+        size="2x"
+        spin={false}
+        symbol={false}
+        transform={null}
+      >
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-battery-empty fa-w-20 fa-2x fa-rotate-270 "
+          color="red"
+          data-icon="battery-empty"
+          data-prefix="fas"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 640 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M544 160v64h32v64h-32v64H64V160h480m16-64H48c-26.51 0-48 21.49-48 48v224c0 26.51 21.49 48 48 48h512c26.51 0 48-21.49 48-48v-16h8c13.255 0 24-10.745 24-24V184c0-13.255-10.745-24-24-24h-8v-16c0-26.51-21.49-48-48-48z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </FontAwesomeIcon>
+      <styled.span>
+        <span
+          className="c1"
+        >
+          0
+          %
+        </span>
+      </styled.span>
+    </div>
+  </styled.div>
+</Battery>
 `;

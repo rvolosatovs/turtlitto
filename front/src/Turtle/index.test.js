@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import Turtle from ".";
+import { mountWithTheme } from "../testUtils";
 
 describe("Turtle", () => {
   it("should match snapshot", () => {
@@ -10,7 +11,7 @@ describe("Turtle", () => {
       role: "Goalkeeper",
       teamcolor: "Cyan"
     };
-    const wrapper = shallow(
+    const wrapper = mountWithTheme(
       <Turtle id="2" turtle={turtle} editable={false} onChange={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();

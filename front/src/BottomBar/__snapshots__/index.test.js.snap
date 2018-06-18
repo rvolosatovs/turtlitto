@@ -1,239 +1,695 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BottomBar is in the refbox mode should match snapshot 1`] = `
-<styled.div>
-  <ConnectionBar
-    connectionStatus="connected"
-  />
+.c1 {
+  background: green;
+  padding: 0.6rem 3rem 0.6rem 0.6rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+
+.c2 {
+  text-transform: uppercase;
+  margin: 0;
+  display: block;
+  font-size: 1.4rem;
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0rem;
+}
+
+.c4 {
+  margin: 0rem;
+  -webkit-flex-basis: 50%;
+  -ms-flex-preferred-size: 50%;
+  flex-basis: 50%;
+}
+
+.c6 {
+  background: #ededed;
+  width: 100%;
+  font-size: 2rem;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.c6:active {
+  background: silver;
+}
+
+.c8 {
+  font-size: 5rem;
+  padding: 3rem;
+  -webkit-flex-basis: 50%;
+  -ms-flex-preferred-size: 50%;
+  flex-basis: 50%;
+}
+
+.c5 {
+  height: 50%;
+}
+
+.c7 {
+  height: 50%;
+}
+
+.c0 {
+  background-color: white;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+@media (min-width:768px) {
+  .c5 {
+    height: 100%;
+    padding: 3rem;
+    font-size: 5rem;
+  }
+}
+
+@media (min-width:768px) {
+  .c7 {
+    display: none;
+  }
+}
+
+<BottomBar
+  activePage="refbox"
+  changeActivePage={[Function]}
+  connectionStatus="connected"
+>
   <styled.div>
-    <styled.div>
-      <Styled(styled.button)
-        enabled={true}
-        id="bottom-bar__start-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                448,
-                512,
-                Array [],
-                "f04b",
-                "M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z",
-              ],
-              "iconName": "play",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </Styled(styled.button)>
-      <Styled(styled.button)
-        enabled={true}
-        id="bottom-bar__change-page-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                512,
-                512,
-                Array [],
-                "f013",
-                "M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z",
-              ],
-              "iconName": "cog",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </Styled(styled.button)>
-    </styled.div>
-    <Styled(styled.button)
-      enabled={true}
-      id="bottom-bar__stop-button"
-      onClick={[Function]}
+    <div
+      className="c0"
     >
-      <FontAwesomeIcon
-        border={false}
-        className=""
-        color="red"
-        fixedWidth={false}
-        flip={null}
-        icon={
-          Object {
-            "icon": Array [
-              448,
-              512,
-              Array [],
-              "f04d",
-              "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z",
-            ],
-            "iconName": "stop",
-            "prefix": "fas",
+      <ConnectionBar
+        connectionStatus="connected"
+      >
+        <styled.div
+          background={
+            Array [
+              "
+                    background: ",
+              [Function],
+              ";
+                  ",
+            ]
           }
-        }
-        listItem={false}
-        mask={null}
-        name=""
-        pull={null}
-        pulse={false}
-        rotation={null}
-        size={null}
-        spin={false}
-        symbol={false}
-        transform={null}
-      />
-    </Styled(styled.button)>
+        >
+          <div
+            className="c1"
+          >
+            <styled.p>
+              <p
+                className="c2"
+              >
+                connected
+              </p>
+            </styled.p>
+          </div>
+        </styled.div>
+      </ConnectionBar>
+      <styled.div>
+        <div
+          className="c3"
+        >
+          <styled.div>
+            <div
+              className="c4"
+            >
+              <Styled(styled.button)
+                enabled={true}
+                id="bottom-bar__start-button"
+                onClick={[Function]}
+              >
+                <styled.button
+                  className="c5"
+                  enabled={true}
+                  id="bottom-bar__start-button"
+                  onClick={[Function]}
+                >
+                  <button
+                    className="c5 c6"
+                    id="bottom-bar__start-button"
+                    onClick={[Function]}
+                  >
+                    <FontAwesomeIcon
+                      border={false}
+                      className=""
+                      fixedWidth={false}
+                      flip={null}
+                      icon={
+                        Object {
+                          "icon": Array [
+                            448,
+                            512,
+                            Array [],
+                            "f04b",
+                            "M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z",
+                          ],
+                          "iconName": "play",
+                          "prefix": "fas",
+                        }
+                      }
+                      listItem={false}
+                      mask={null}
+                      name=""
+                      pull={null}
+                      pulse={false}
+                      rotation={null}
+                      size={null}
+                      spin={false}
+                      symbol={false}
+                      transform={null}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-play fa-w-14 "
+                        data-icon="play"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 448 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
+                    </FontAwesomeIcon>
+                  </button>
+                </styled.button>
+              </Styled(styled.button)>
+              <Styled(styled.button)
+                enabled={true}
+                id="bottom-bar__change-page-button"
+                onClick={[Function]}
+              >
+                <styled.button
+                  className="c7"
+                  enabled={true}
+                  id="bottom-bar__change-page-button"
+                  onClick={[Function]}
+                >
+                  <button
+                    className="c7 c6"
+                    id="bottom-bar__change-page-button"
+                    onClick={[Function]}
+                  >
+                    <FontAwesomeIcon
+                      border={false}
+                      className=""
+                      fixedWidth={false}
+                      flip={null}
+                      icon={
+                        Object {
+                          "icon": Array [
+                            512,
+                            512,
+                            Array [],
+                            "f013",
+                            "M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z",
+                          ],
+                          "iconName": "cog",
+                          "prefix": "fas",
+                        }
+                      }
+                      listItem={false}
+                      mask={null}
+                      name=""
+                      pull={null}
+                      pulse={false}
+                      rotation={null}
+                      size={null}
+                      spin={false}
+                      symbol={false}
+                      transform={null}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-cog fa-w-16 "
+                        data-icon="cog"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
+                    </FontAwesomeIcon>
+                  </button>
+                </styled.button>
+              </Styled(styled.button)>
+            </div>
+          </styled.div>
+          <Styled(styled.button)
+            enabled={true}
+            id="bottom-bar__stop-button"
+            onClick={[Function]}
+          >
+            <styled.button
+              className="c8"
+              enabled={true}
+              id="bottom-bar__stop-button"
+              onClick={[Function]}
+            >
+              <button
+                className="c8 c6"
+                id="bottom-bar__stop-button"
+                onClick={[Function]}
+              >
+                <FontAwesomeIcon
+                  border={false}
+                  className=""
+                  color="red"
+                  fixedWidth={false}
+                  flip={null}
+                  icon={
+                    Object {
+                      "icon": Array [
+                        448,
+                        512,
+                        Array [],
+                        "f04d",
+                        "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z",
+                      ],
+                      "iconName": "stop",
+                      "prefix": "fas",
+                    }
+                  }
+                  listItem={false}
+                  mask={null}
+                  name=""
+                  pull={null}
+                  pulse={false}
+                  rotation={null}
+                  size={null}
+                  spin={false}
+                  symbol={false}
+                  transform={null}
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="svg-inline--fa fa-stop fa-w-14 "
+                    color="red"
+                    data-icon="stop"
+                    data-prefix="fas"
+                    role="img"
+                    style={Object {}}
+                    viewBox="0 0 448 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z"
+                      fill="currentColor"
+                      style={Object {}}
+                    />
+                  </svg>
+                </FontAwesomeIcon>
+              </button>
+            </styled.button>
+          </Styled(styled.button)>
+        </div>
+      </styled.div>
+    </div>
   </styled.div>
-</styled.div>
+</BottomBar>
 `;
 
 exports[`BottomBar is in the settings mode should match snapshot 1`] = `
-<styled.div>
-  <ConnectionBar
-    connectionStatus="connected"
-  />
+.c1 {
+  background: green;
+  padding: 0.6rem 3rem 0.6rem 0.6rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+
+.c2 {
+  text-transform: uppercase;
+  margin: 0;
+  display: block;
+  font-size: 1.4rem;
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0rem;
+}
+
+.c4 {
+  margin: 0rem;
+  -webkit-flex-basis: 50%;
+  -ms-flex-preferred-size: 50%;
+  flex-basis: 50%;
+}
+
+.c6 {
+  background: #ededed;
+  width: 100%;
+  font-size: 2rem;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.c6:active {
+  background: silver;
+}
+
+.c8 {
+  font-size: 5rem;
+  padding: 3rem;
+  -webkit-flex-basis: 50%;
+  -ms-flex-preferred-size: 50%;
+  flex-basis: 50%;
+}
+
+.c5 {
+  height: 50%;
+}
+
+.c7 {
+  height: 50%;
+}
+
+.c0 {
+  background-color: white;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+@media (min-width:768px) {
+  .c5 {
+    height: 100%;
+    padding: 3rem;
+    font-size: 5rem;
+  }
+}
+
+@media (min-width:768px) {
+  .c7 {
+    display: none;
+  }
+}
+
+<BottomBar
+  activePage="settings"
+  changeActivePage={[Function]}
+  connectionStatus="connected"
+>
   <styled.div>
-    <styled.div>
-      <Styled(styled.button)
-        enabled={true}
-        id="bottom-bar__start-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                448,
-                512,
-                Array [],
-                "f04b",
-                "M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z",
-              ],
-              "iconName": "play",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </Styled(styled.button)>
-      <Styled(styled.button)
-        enabled={true}
-        id="bottom-bar__change-page-button"
-        onClick={[Function]}
-      >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                512,
-                512,
-                Array [],
-                "f009",
-                "M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z",
-              ],
-              "iconName": "th-large",
-              "prefix": "fas",
-            }
-          }
-          listItem={false}
-          mask={null}
-          name=""
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          transform={null}
-        />
-      </Styled(styled.button)>
-    </styled.div>
-    <Styled(styled.button)
-      enabled={true}
-      id="bottom-bar__stop-button"
-      onClick={[Function]}
+    <div
+      className="c0"
     >
-      <FontAwesomeIcon
-        border={false}
-        className=""
-        color="red"
-        fixedWidth={false}
-        flip={null}
-        icon={
-          Object {
-            "icon": Array [
-              448,
-              512,
-              Array [],
-              "f04d",
-              "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z",
-            ],
-            "iconName": "stop",
-            "prefix": "fas",
+      <ConnectionBar
+        connectionStatus="connected"
+      >
+        <styled.div
+          background={
+            Array [
+              "
+                    background: ",
+              [Function],
+              ";
+                  ",
+            ]
           }
-        }
-        listItem={false}
-        mask={null}
-        name=""
-        pull={null}
-        pulse={false}
-        rotation={null}
-        size={null}
-        spin={false}
-        symbol={false}
-        transform={null}
-      />
-    </Styled(styled.button)>
+        >
+          <div
+            className="c1"
+          >
+            <styled.p>
+              <p
+                className="c2"
+              >
+                connected
+              </p>
+            </styled.p>
+          </div>
+        </styled.div>
+      </ConnectionBar>
+      <styled.div>
+        <div
+          className="c3"
+        >
+          <styled.div>
+            <div
+              className="c4"
+            >
+              <Styled(styled.button)
+                enabled={true}
+                id="bottom-bar__start-button"
+                onClick={[Function]}
+              >
+                <styled.button
+                  className="c5"
+                  enabled={true}
+                  id="bottom-bar__start-button"
+                  onClick={[Function]}
+                >
+                  <button
+                    className="c5 c6"
+                    id="bottom-bar__start-button"
+                    onClick={[Function]}
+                  >
+                    <FontAwesomeIcon
+                      border={false}
+                      className=""
+                      fixedWidth={false}
+                      flip={null}
+                      icon={
+                        Object {
+                          "icon": Array [
+                            448,
+                            512,
+                            Array [],
+                            "f04b",
+                            "M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z",
+                          ],
+                          "iconName": "play",
+                          "prefix": "fas",
+                        }
+                      }
+                      listItem={false}
+                      mask={null}
+                      name=""
+                      pull={null}
+                      pulse={false}
+                      rotation={null}
+                      size={null}
+                      spin={false}
+                      symbol={false}
+                      transform={null}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-play fa-w-14 "
+                        data-icon="play"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 448 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
+                    </FontAwesomeIcon>
+                  </button>
+                </styled.button>
+              </Styled(styled.button)>
+              <Styled(styled.button)
+                enabled={true}
+                id="bottom-bar__change-page-button"
+                onClick={[Function]}
+              >
+                <styled.button
+                  className="c7"
+                  enabled={true}
+                  id="bottom-bar__change-page-button"
+                  onClick={[Function]}
+                >
+                  <button
+                    className="c7 c6"
+                    id="bottom-bar__change-page-button"
+                    onClick={[Function]}
+                  >
+                    <FontAwesomeIcon
+                      border={false}
+                      className=""
+                      fixedWidth={false}
+                      flip={null}
+                      icon={
+                        Object {
+                          "icon": Array [
+                            512,
+                            512,
+                            Array [],
+                            "f009",
+                            "M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z",
+                          ],
+                          "iconName": "th-large",
+                          "prefix": "fas",
+                        }
+                      }
+                      listItem={false}
+                      mask={null}
+                      name=""
+                      pull={null}
+                      pulse={false}
+                      rotation={null}
+                      size={null}
+                      spin={false}
+                      symbol={false}
+                      transform={null}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-th-large fa-w-16 "
+                        data-icon="th-large"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
+                    </FontAwesomeIcon>
+                  </button>
+                </styled.button>
+              </Styled(styled.button)>
+            </div>
+          </styled.div>
+          <Styled(styled.button)
+            enabled={true}
+            id="bottom-bar__stop-button"
+            onClick={[Function]}
+          >
+            <styled.button
+              className="c8"
+              enabled={true}
+              id="bottom-bar__stop-button"
+              onClick={[Function]}
+            >
+              <button
+                className="c8 c6"
+                id="bottom-bar__stop-button"
+                onClick={[Function]}
+              >
+                <FontAwesomeIcon
+                  border={false}
+                  className=""
+                  color="red"
+                  fixedWidth={false}
+                  flip={null}
+                  icon={
+                    Object {
+                      "icon": Array [
+                        448,
+                        512,
+                        Array [],
+                        "f04d",
+                        "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z",
+                      ],
+                      "iconName": "stop",
+                      "prefix": "fas",
+                    }
+                  }
+                  listItem={false}
+                  mask={null}
+                  name=""
+                  pull={null}
+                  pulse={false}
+                  rotation={null}
+                  size={null}
+                  spin={false}
+                  symbol={false}
+                  transform={null}
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="svg-inline--fa fa-stop fa-w-14 "
+                    color="red"
+                    data-icon="stop"
+                    data-prefix="fas"
+                    role="img"
+                    style={Object {}}
+                    viewBox="0 0 448 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z"
+                      fill="currentColor"
+                      style={Object {}}
+                    />
+                  </svg>
+                </FontAwesomeIcon>
+              </button>
+            </styled.button>
+          </Styled(styled.button)>
+        </div>
+      </styled.div>
+    </div>
   </styled.div>
-</styled.div>
+</BottomBar>
 `;
 
 exports[`When clicked, the start button should pass \`start\` to the 'sendToServer' function 1`] = `

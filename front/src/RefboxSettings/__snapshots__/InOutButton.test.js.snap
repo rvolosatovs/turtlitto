@@ -1,20 +1,73 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`InOutButton shows two buttons with go in or go out written on it 1`] = `
-<styled.div>
-  <styled.button
-    id="InOutButton__go-in-button"
-    onClick={[Function]}
-  >
-    Go in
-  </styled.button>
-  <styled.button
-    id="InOutButton__go-out-button"
-    onClick={[Function]}
-  >
-    Go out
-  </styled.button>
-</styled.div>
+.c0 {
+  width: 50%;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c1 {
+  background-color: #ededed;
+  height: 4rem;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0.25rem solid;
+  font-size: 2rem;
+  display: block;
+}
+
+.c1:active {
+  background-color: silver;
+}
+
+<InOutButton
+  onClick={[Function]}
+>
+  <styled.div>
+    <div
+      className="c0"
+    >
+      <styled.button
+        id="InOutButton__go-in-button"
+        onClick={[Function]}
+      >
+        <button
+          className="c1"
+          id="InOutButton__go-in-button"
+          onClick={[Function]}
+        >
+          Go in
+        </button>
+      </styled.button>
+      <styled.button
+        id="InOutButton__go-out-button"
+        onClick={[Function]}
+      >
+        <button
+          className="c1"
+          id="InOutButton__go-out-button"
+          onClick={[Function]}
+        >
+          Go out
+        </button>
+      </styled.button>
+    </div>
+  </styled.div>
+</InOutButton>
 `;
 
 exports[`When clicked, the Go In button should pass \`go_in\` to the 'sendToServer' function 1`] = `

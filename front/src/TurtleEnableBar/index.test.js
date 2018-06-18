@@ -1,13 +1,13 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
 import TurtleEnableBar from ".";
 import TurtleEnableButton from "./TurtleEnableButton";
+import { shallowWithTheme, mountWithTheme } from "../testUtils";
 
 describe("TurtleEnableBar", () => {
   it("should match snapshot", () => {
-    const wrapper = shallow(
+    const wrapper = shallowWithTheme(
       <TurtleEnableBar turtles={[]} onTurtleEnableChange={() => {}} />
-    );
+    ).dive();
 
     expect(wrapper).toMatchSnapshot();
   });
@@ -27,7 +27,7 @@ describe("TurtleEnableBar", () => {
         enabled: false
       }
     ];
-    const wrapper = mount(
+    const wrapper = mountWithTheme(
       <TurtleEnableBar turtles={turtles} onTurtleEnableChange={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();

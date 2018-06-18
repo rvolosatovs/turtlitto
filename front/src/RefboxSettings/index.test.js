@@ -1,10 +1,10 @@
 import React from "react";
 import RefboxSettings from ".";
-import { shallow } from "enzyme";
+import { mountWithTheme } from "../testUtils";
 
 describe("RefboxSettings", () => {
   it("shows the settings including two dropdown menus and three buttons", () => {
-    const wrapper = shallow(<RefboxSettings />);
+    const wrapper = mountWithTheme(<RefboxSettings />);
     expect(wrapper).toMatchSnapshot();
   });
 });
