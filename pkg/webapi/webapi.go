@@ -151,9 +151,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	}
 
 	srv.stopTimerMu.Lock()
-	if !srv.stopTimer.Stop() {
-		<-srv.stopTimer.C
-	}
+	srv.stopTimer.Stop()
 	srv.stopTimerMu.Unlock()
 
 	defer func() {

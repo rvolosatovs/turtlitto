@@ -108,7 +108,6 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 	go func() {
 		for {
 			var msg api.Message
-			logger.Debug("TRC decoding message...")
 			err := conn.decoder.Decode(&msg)
 			if err == io.EOF {
 				logger.Debug("EOF while decoding")
@@ -129,14 +128,6 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 				return
 			}
 
-			logger := logger.With(
-				zap.String("type", string(msg.Type)),
-				zap.Stringer("message_id", msg.MessageID),
-			)
-			if msg.ParentID != nil {
-				logger = logger.With(zap.Stringer("parent_id", msg.ParentID))
-			}
-
 			var h Handler
 			v, ok := conn.handlers.Load(msg.Type)
 			if !ok {
@@ -145,10 +136,11 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 				h = v.(Handler)
 			}
 
-			logger.Debug("Executing handler...")
+			logger = logger.With(zap.Reflect("msg", msg))
+
 			resp, err := h(&msg)
 			if err != nil {
-				logger.With(zap.Error(err)).Debug("Executing handler failed")
+				logger.With(zap.Error(err)).Debug("Failed to handle message")
 				conn.errCh <- err
 				return
 			}
@@ -158,9 +150,7 @@ func Connect(w io.Writer, r io.Reader, opts ...Option) *Conn {
 			}
 
 			logger.Debug("Sending response to SRRS...",
-				zap.String("type", string(resp.Type)),
-				zap.Stringer("message_id", resp.MessageID),
-				zap.Stringer("parent_id", resp.ParentID),
+				zap.Reflect("resp", resp),
 			)
 			if err := conn.encoder.Encode(resp); err != nil {
 				conn.errCh <- err
