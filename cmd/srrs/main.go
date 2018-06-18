@@ -190,15 +190,20 @@ func main() {
 			}
 
 			go func() {
-				tlsLogger.With(zap.String("certificate path", cert), zap.String("key path", key))
-				tlsLogger.Info("Starting the secure web server...")
+				tlsLogger.Info("Starting the secure web server...",
+					zap.String("certificate_path", cert), zap.String("key_path", key),
+				)
 				if err := tlsSrv.ListenAndServeTLS(cert, key); err != nil {
 					tlsErrCh <- errors.Wrap(err, "failed to listen")
 				}
 			}()
 
 		} else {
-			logger.Debug("Certificate not specified; Skipping TLS server")
+			if cert == "" {
+				logger.Info("Certificate not specified; skipping secure TLS server")
+			} else {
+				logger.Warn("Certificate given but key not specified; skipping secure TLS server")
+			}
 		}
 
 		select {
