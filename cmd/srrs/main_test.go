@@ -118,7 +118,10 @@ func TestMain(m *testing.M) {
 func TestAPI(t *testing.T) {
 	a := assert.New(t)
 
-	handshake := apitest.RandomHandshake()
+	handshake := &api.Handshake{
+		Version: trcapi.DefaultVersion,
+		Token:   "test3",
+	}
 
 	var sessionKey string
 
@@ -173,9 +176,7 @@ func TestAPI(t *testing.T) {
 	)
 
 	logger.Debug("Sending handshake...")
-	err = trc.SendHandshake(&api.Handshake{
-		Version: trcapi.DefaultVersion,
-	})
+	err = trc.SendHandshake(handshake)
 	a.NoError(err)
 
 	logger.Debug("Waiting for authentication...")

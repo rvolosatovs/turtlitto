@@ -29,6 +29,8 @@ var (
 	static   = flag.String("static", "", "Path to the static assets")
 	unixSock = flag.String("unixSocket", filepath.Join(os.TempDir(), "trc.sock"), "Path to the unix socket")
 	tcpSock  = flag.String("tcpSocket", "", "Internal TCP socket address. TRC <-> SRRS communication will use this TCP socket instead of a Unix socket when set")
+	certPath = flag.String("cert", "", "Path to the authentication certificate")
+	keyPath  = flag.String("key", "", "Path to the private key of the certificate")
 )
 
 func main() {
@@ -176,23 +178,28 @@ func main() {
 		}()
 
 		// https server
-		tlsLogger := logger.With(zap.String("listen_addr_tcp", *tlsAddr))
-		tlsSrv := &http.Server{
-			Addr:     *tlsAddr,
-			ErrorLog: zap.NewStdLog(tlsLogger),
-			Handler:  mux,
-		}
-
 		tlsErrCh := make(chan error, 1)
-		go func() {
-			cert := filepath.Join("..", "..", "certificates", "cert.pem")
-			key := filepath.Join("..", "..", "certificates", "key.pem")
-			tlsLogger.With(zap.String("certificate path", cert), zap.String("key path", key))
-			tlsLogger.Info("Starting the secure web server...")
-			if err := tlsSrv.ListenAndServeTLS(cert, key); err != nil {
-				tlsErrCh <- errors.Wrap(err, "failed to listen")
+		cert := *certPath
+		key := *keyPath
+		if cert != "" && key != "" {
+			tlsLogger := logger.With(zap.String("listen_addr_tcp", *tlsAddr))
+			tlsSrv := &http.Server{
+				Addr:     *tlsAddr,
+				ErrorLog: zap.NewStdLog(tlsLogger),
+				Handler:  mux,
 			}
-		}()
+
+			go func() {
+				tlsLogger.With(zap.String("certificate path", cert), zap.String("key path", key))
+				tlsLogger.Info("Starting the secure web server...")
+				if err := tlsSrv.ListenAndServeTLS(cert, key); err != nil {
+					tlsErrCh <- errors.Wrap(err, "failed to listen")
+				}
+			}()
+
+		} else {
+			logger.Debug("Certificate not specified; Skipping TLS server")
+		}
 
 		select {
 		case err := <-tcpErrCh:
