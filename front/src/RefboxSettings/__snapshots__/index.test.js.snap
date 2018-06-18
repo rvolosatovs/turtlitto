@@ -1,14 +1,179 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RefboxSettings shows the settings including two dropdown menus and three buttons 1`] = `
-<styled.div>
-  <Styled(DropBall)
-    onClick={[Function]}
-  />
+.c2 {
+  height: 25%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c3 {
+  background-color: #ededed;
+  height: 75%;
+  width: 25%;
+  border: 0.25rem solid;
+  font-size: 2rem;
+  margin: auto;
+}
+
+.c3:active {
+  background-color: silver;
+}
+
+.c5 {
+  width: 50%;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c6 {
+  background-color: #ededed;
+  height: 4rem;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0.25rem solid;
+  font-size: 2rem;
+  display: block;
+}
+
+.c6:active {
+  background-color: silver;
+}
+
+.c4 {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c1 {
+  margin: 0.5rem;
+}
+
+.c0 {
+  height: 50%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+<RefboxSettings>
   <styled.div>
-    <InOutButton
-      onClick={[Function]}
-    />
+    <div
+      className="c0"
+    >
+      <Styled(DropBall)
+        onClick={[Function]}
+      >
+        <DropBall
+          className="c1"
+          onClick={[Function]}
+        >
+          <styled.div
+            className="c1"
+          >
+            <div
+              className="c1 c2"
+            >
+              <styled.button
+                id="drop-ball-button"
+                onClick={[Function]}
+              >
+                <button
+                  className="c3"
+                  id="drop-ball-button"
+                  onClick={[Function]}
+                >
+                  DB
+                </button>
+              </styled.button>
+            </div>
+          </styled.div>
+        </DropBall>
+      </Styled(DropBall)>
+      <styled.div>
+        <div
+          className="c4"
+        >
+          <InOutButton
+            onClick={[Function]}
+          >
+            <styled.div>
+              <div
+                className="c5"
+              >
+                <styled.button
+                  id="InOutButton__go-in-button"
+                  onClick={[Function]}
+                >
+                  <button
+                    className="c6"
+                    id="InOutButton__go-in-button"
+                    onClick={[Function]}
+                  >
+                    Go in
+                  </button>
+                </styled.button>
+                <styled.button
+                  id="InOutButton__go-out-button"
+                  onClick={[Function]}
+                >
+                  <button
+                    className="c6"
+                    id="InOutButton__go-out-button"
+                    onClick={[Function]}
+                  >
+                    Go out
+                  </button>
+                </styled.button>
+              </div>
+            </styled.div>
+          </InOutButton>
+        </div>
+      </styled.div>
+    </div>
   </styled.div>
-</styled.div>
+</RefboxSettings>
 `;

@@ -4,11 +4,12 @@ import { shallow } from "enzyme";
 import sinon from "sinon";
 import connectionTypes from "./connectionTypes";
 import pageTypes from "./pageTypes";
+import { mountWithTheme } from "../testUtils";
 
 describe("BottomBar", () => {
   describe("is in the refbox mode", () => {
     it("should match snapshot", () => {
-      const wrapper = shallow(
+      const wrapper = mountWithTheme(
         <BottomBar
           changeActivePage={() => {}}
           activePage={pageTypes.REFBOX}
@@ -40,7 +41,7 @@ describe("BottomBar", () => {
 
   describe("is in the settings mode", () => {
     it("should match snapshot", () => {
-      const wrapper = shallow(
+      const wrapper = mountWithTheme(
         <BottomBar
           changeActivePage={() => {}}
           activePage={pageTypes.SETTINGS}

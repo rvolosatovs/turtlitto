@@ -1,12 +1,12 @@
 import React from "react";
-import { shallow } from "enzyme";
 import TurtleEnableButton from "./TurtleEnableButton";
+import { shallowWithTheme } from "../testUtils";
 
 describe("TurtleEnableButton", () => {
   it("should match snapshot", () => {
-    const wrapper = shallow(
+    const wrapper = shallowWithTheme(
       <TurtleEnableButton enabled id={1} onTurtleEnableChange={() => {}} />
-    );
+    ).dive();
 
     expect(wrapper).toMatchSnapshot();
   });

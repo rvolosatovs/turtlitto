@@ -1,10 +1,15 @@
 import React from "react";
-import { shallow } from "enzyme";
 import TurtleList from ".";
+import { shallowWithTheme, mountWithTheme } from "../testUtils";
 
 describe("TurtleList", () => {
   it("should match snapshot", () => {
-    const wrapper = shallow(
+    const wrapper = shallowWithTheme(<TurtleList turtles={{}} />).dive();
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should render all turtles", () => {
+    const wrapper = mountWithTheme(
       <TurtleList
         turtles={{
           1: {

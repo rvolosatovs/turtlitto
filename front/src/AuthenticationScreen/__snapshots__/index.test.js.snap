@@ -1,30 +1,180 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AuthenticationScreen The user enters a incorrect token should match snapshot 1`] = `
-<styled.div>
+.c7 {
+  background: green;
+  padding: 0.6rem 3rem 0.6rem 0.6rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+
+.c8 {
+  text-transform: uppercase;
+  margin: 0;
+  display: block;
+  font-size: 1.4rem;
+}
+
+.c0 {
+  background: silver;
+  height: 100%;
+  padding-top: 10%;
+}
+
+.c1 {
+  margin: 0 auto;
+  border: 0.1rem solid;
+  border-bottom: none;
+  background: #ededed;
+  width: 85%;
+  padding: 1rem;
+  text-align: center;
+}
+
+.c2 {
+  font-size: 1.5rem;
+}
+
+.c4 {
+  color: red;
+}
+
+.c3 {
+  margin-top: 1rem;
+}
+
+.c3[type="text"] {
+  border: 0.1rem solid;
+  width: 100%;
+  padding: 1.75rem;
+  font-size: 1.5rem;
+}
+
+.c5 {
+  margin-top: 1rem;
+  background-color: white;
+  border-color: black;
+  border: 0.1rem solid;
+  width: 100%;
+  height: 5rem;
+  font-size: 1.5rem;
+}
+
+.c5:active {
+  background-color: #ededed;
+}
+
+.c6 {
+  padding: 0;
+  border-bottom: 0.1rem solid;
+}
+
+<AuthenticationScreen
+  connectionStatus="connected"
+  onSubmit={[Function]}
+>
   <styled.div>
-    <styled.label>
-      Token:
-    </styled.label>
-    <styled.input
-      onChange={[Function]}
-      placeholder="Enter the TRC token"
-      type="text"
-    />
-    <Styled(styled.label)>
-      Incorrect token.
-    </Styled(styled.label)>
-    <styled.button
-      id="login-button"
-      onClick={[Function]}
+    <div
+      className="c0"
     >
-      Log in
-    </styled.button>
+      <styled.div>
+        <div
+          className="c1"
+        >
+          <styled.label>
+            <label
+              className="c2"
+            >
+              Token:
+            </label>
+          </styled.label>
+          <styled.input
+            onChange={[Function]}
+            placeholder="Enter the TRC token"
+            type="text"
+          >
+            <input
+              className="c3"
+              onChange={[Function]}
+              placeholder="Enter the TRC token"
+              type="text"
+            />
+          </styled.input>
+          <Styled(styled.label)>
+            <styled.label
+              className="c4"
+            >
+              <label
+                className="c4 c2"
+              >
+                Incorrect token.
+              </label>
+            </styled.label>
+          </Styled(styled.label)>
+          <styled.button
+            id="login-button"
+            onClick={[Function]}
+          >
+            <button
+              className="c5"
+              id="login-button"
+              onClick={[Function]}
+            >
+              Log in
+            </button>
+          </styled.button>
+        </div>
+      </styled.div>
+      <Styled(styled.div)>
+        <styled.div
+          className="c6"
+        >
+          <div
+            className="c6 c1"
+          >
+            <ConnectionBar
+              connectionStatus="connected"
+            >
+              <styled.div
+                background={
+                  Array [
+                    "
+                          background: ",
+                    [Function],
+                    ";
+                        ",
+                  ]
+                }
+              >
+                <div
+                  className="c7"
+                >
+                  <styled.p>
+                    <p
+                      className="c8"
+                    >
+                      connected
+                    </p>
+                  </styled.p>
+                </div>
+              </styled.div>
+            </ConnectionBar>
+          </div>
+        </styled.div>
+      </Styled(styled.div)>
+    </div>
   </styled.div>
-  <Styled(styled.div)>
-    <ConnectionBar
-      connectionStatus="connected"
-    />
-  </Styled(styled.div)>
-</styled.div>
+</AuthenticationScreen>
 `;

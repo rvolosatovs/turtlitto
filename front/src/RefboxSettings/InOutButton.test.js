@@ -2,10 +2,11 @@ import React from "react";
 import InOutButton from "./InOutButton";
 import { shallow } from "enzyme";
 import sendToServer from "../sendToServer";
+import { mountWithTheme } from "../testUtils";
 
 describe("InOutButton", () => {
   it("shows two buttons with go in or go out written on it", () => {
-    const wrapper = shallow(<InOutButton onClick={() => {}} />);
+    const wrapper = mountWithTheme(<InOutButton onClick={() => {}} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

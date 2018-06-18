@@ -1,14 +1,15 @@
 import React from "react";
 import RefboxField from ".";
 import { shallow } from "enzyme";
+import { mountWithTheme } from "../testUtils";
 
 describe("RefboxField", () => {
   it("shows a cyan and magenta refbox field with all buttons", () => {
-    const wrapper = shallow(<RefboxField isPenalty={false} />);
+    const wrapper = mountWithTheme(<RefboxField isPenalty={false} />);
     expect(wrapper).toMatchSnapshot();
   });
   it("shows a refbox with penalty buttons", () => {
-    const wrapper = shallow(<RefboxField isPenalty={true} />);
+    const wrapper = mountWithTheme(<RefboxField isPenalty={true} />);
     expect(wrapper).toMatchSnapshot();
   });
 });
