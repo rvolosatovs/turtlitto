@@ -7,7 +7,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"path"
 	"sync"
@@ -19,6 +18,11 @@ import (
 	"github.com/rvolosatovs/turtlitto/pkg/logcontext"
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi"
 	"go.uber.org/zap"
+)
+
+const (
+	pingInterval = time.Second
+	timeout      = 5 * time.Second
 )
 
 var (
@@ -72,6 +76,9 @@ type server struct {
 
 	sessionMu sync.RWMutex
 	session   *session
+
+	stopTimerMu sync.Mutex
+	stopTimer   *time.Timer
 }
 
 // handleState handles requests to StateEndpoint.
@@ -85,7 +92,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 			return true
 		}}).Upgrade(w, r, nil)
 	if err != nil {
-		logger.With(zap.Error(err)).Error("Failed to open WebSocket")
+		logger.Error("Failed to open WebSocket")
 		return
 	}
 	defer wsConn.Close()
@@ -99,7 +106,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	var key string
 	logger.Debug("Reading key...")
 
-	if err := wsConn.SetReadDeadline(time.Now().Add(5 * time.Second)); err != nil {
+	if err := wsConn.SetReadDeadline(time.Now().Add(timeout)); err != nil {
 		wsError(wsConn, logger, errors.Wrap(err, "failed to set read deadline"), websocket.CloseInternalServerErr)
 		return
 	}
@@ -143,6 +150,26 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	srv.stopTimerMu.Lock()
+	srv.stopTimer.Stop()
+	srv.stopTimerMu.Unlock()
+
+	defer func() {
+		srv.stopTimerMu.Lock()
+		defer srv.stopTimerMu.Unlock()
+
+		srv.stopTimer = time.AfterFunc(timeout, func() {
+			trcConn, err := srv.pool.Conn()
+			if err != nil {
+				logger.Error("Failed to establish connection to TRC", zap.Error(err))
+				return
+			}
+			if err := trcConn.SetCommand(context.Background(), api.CommandStop); err != nil {
+				logger.Error("Failed to stop TRC", zap.Error(err))
+			}
+		})
+	}()
+
 	logger.Debug("Subscribing to state changes...")
 	changeCh, closeFn, err := trcConn.SubscribeStateChanges(ctx)
 	if err != nil {
@@ -153,11 +180,17 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 
 	oldState := trcConn.State(ctx)
 
-	logger.Debug("Sending current state on the WebSocket...")
-	if err := wsConn.WriteJSON(oldState); err != nil {
-		logger.With(zap.Error(err)).Error("Failed to write state")
+	if err := wsConn.SetWriteDeadline(time.Now().Add(timeout)); err != nil {
+		wsError(wsConn, logger, errors.Wrap(err, "failed to set write deadline"), websocket.CloseInternalServerErr)
 		return
 	}
+
+	logger.Debug("Sending current state on the WebSocket...", zap.Reflect("state", oldState))
+	if err := wsConn.WriteJSON(oldState); err != nil {
+		wsError(wsConn, logger, errors.Wrap(err, "failed to write state"), websocket.CloseInternalServerErr)
+		return
+	}
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -174,14 +207,29 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 			st := trcConn.State(ctx)
 			// TODO: Compute diff of st and oldState
 			_ = oldState
+
 			diff := st
+			if diff == nil {
+				continue
+			}
 			oldState = st
-			logger.Debug("Sending state diff on the WebSocket...")
+
+			if err := wsConn.SetWriteDeadline(time.Now().Add(timeout)); err != nil {
+				wsError(wsConn, logger, errors.Wrap(err, "failed to set write deadline"), websocket.CloseInternalServerErr)
+				return
+			}
+
+			logger.Debug("Sending state diff on the WebSocket...", zap.Reflect("state", diff))
 			if err := wsConn.WriteJSON(diff); err != nil {
 				wsError(wsConn, logger, errors.Wrap(err, "failed to write state"), websocket.CloseInternalServerErr)
 				return
 			}
-			logger.Debug("Sending state diff on the WebSocket succeeded")
+
+		case <-time.After(pingInterval):
+			if err := wsConn.WriteControl(websocket.PingMessage, nil, time.Now().Add(timeout)); err != nil {
+				wsError(wsConn, logger, errors.Wrap(err, "failed to write ping"), websocket.CloseInternalServerErr)
+				return
+			}
 		}
 	}
 }
@@ -305,7 +353,11 @@ type HandleFuncer interface {
 // Register endpoints registers webapi endpoints on handler.
 func RegisterHandlers(pool *trcapi.Pool, handler HandleFuncer) {
 	s := &server{
-		pool: pool,
+		pool:      pool,
+		stopTimer: time.NewTimer(0),
+	}
+	if !s.stopTimer.Stop() {
+		<-s.stopTimer.C
 	}
 
 	for ep, f := range map[string]http.HandlerFunc{
@@ -332,7 +384,6 @@ func RegisterHandlers(pool *trcapi.Pool, handler HandleFuncer) {
 			}
 
 			if err := trcConn.SetTurtleState(ctx, st); err != nil {
-				fmt.Println("TURTLE", err)
 				return errors.Wrap(err, "failed to send turtle state to TRC")
 			}
 			return nil

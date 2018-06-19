@@ -82,7 +82,6 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 		pendingReqs:   make(map[ulid.ULID]chan *api.Message),
 	}
 
-	logger.Debug("Decoding initial message...")
 	var req api.Message
 	if err := conn.decoder.Decode(&req); err != nil {
 		return nil, errors.Wrap(err, "failed to decode handshake request message")
@@ -93,8 +92,7 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	}
 
 	logger.Debug("Initial message decoded successfully",
-		zap.Stringer("msg_id", req.MessageID),
-		zap.String("msg_type", string(req.Type)),
+		zap.Reflect("msg", req),
 	)
 
 	if req.Type != api.MessageTypeHandshake {
@@ -142,7 +140,6 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	go func() {
 		for {
 			var msg api.Message
-			logger.Debug("Decoding message...")
 			err := conn.decoder.Decode(&msg)
 			if err == io.EOF {
 				logger.Debug("EOF during decoding - closing error channel, return...")
@@ -163,24 +160,16 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				return
 			}
 			logger := logger.With(
-				zap.String("msg_type", string(msg.Type)),
-				zap.Stringer("msg_id", msg.MessageID),
+				zap.Reflect("msg", msg),
 			)
-			if msg.ParentID != nil {
-				logger = logger.With(zap.Stringer("msg_parent_id", msg.ParentID))
-			}
-
-			logger.Debug("Received message")
 
 			switch msg.Type {
 			case api.MessageTypePing:
 				if msg.ParentID != nil {
-					logger.Debug("Pong received")
 					// Don't respond to a pong
 					break
 				}
 
-				logger.Debug("Ping received, encoding pong...")
 				if err := conn.encoder.Encode(api.NewMessage(api.MessageTypePing, nil, &msg.MessageID)); err != nil {
 					conn.errCh <- errors.Wrap(err, "failed to encode ping message")
 					continue
@@ -194,6 +183,9 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 					conn.errCh <- errors.Wrap(err, "failed to decode state message payload")
 					continue
 				}
+
+				logger.Debug("Received state update", zap.Reflect("state", st))
+
 				conn.state = st
 				conn.stateMu.Unlock()
 
@@ -201,9 +193,9 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 				for ch := range conn.stateSubs {
 					select {
 					case ch <- struct{}{}:
-						logger.Debug("Sending status update notification...")
+						logger.Debug("Sending state update notification...")
 					default:
-						logger.Debug("Skipping update...")
+						logger.Debug("Skipping state update...")
 					}
 				}
 				conn.stateSubsMu.RUnlock()
@@ -258,8 +250,7 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 	msg := api.NewMessage(typ, b, nil)
 
 	logger = logger.With(
-		zap.String("type", string(msg.Type)),
-		zap.Stringer("message_id", msg.MessageID),
+		zap.Reflect("msg", msg),
 	)
 
 	ch := make(chan *api.Message, 1)
@@ -278,14 +269,15 @@ func (c *Conn) sendRequest(ctx context.Context, typ api.MessageType, pld interfa
 		return nil, err
 	}
 
-	logger.Debug("Waiting for response...")
 	var resp *api.Message
 	select {
 	case <-ctx.Done():
 		logger.Debug("Context done, cancelling", zap.Error(err))
 		return nil, ctx.Err()
 	case resp = <-ch:
-		logger.Debug("Response received")
+		logger.Debug("Response received",
+			zap.Reflect("resp", resp),
+		)
 	}
 	return resp.Payload, nil
 }
