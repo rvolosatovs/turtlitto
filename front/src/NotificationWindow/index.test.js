@@ -3,6 +3,7 @@ import NotificationWindow from ".";
 import notificationTypes from "./notificationTypes";
 import { shallow } from "enzyme";
 import { mountWithTheme } from "../testUtils";
+import theme from "../theme";
 
 describe("NotificationWindow", () => {
   it("should display a success notification", () => {
@@ -14,6 +15,7 @@ describe("NotificationWindow", () => {
       <NotificationWindow notification={notification} onDismiss={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();
+    expect(wrapper).toHaveStyleRule("background", theme.success);
   });
 
   it("should display a warning notification", () => {
@@ -25,6 +27,7 @@ describe("NotificationWindow", () => {
       <NotificationWindow notification={notification} onDismiss={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();
+    expect(wrapper).toHaveStyleRule("background", theme.warning);
   });
 
   it("should display an error notification", () => {
@@ -36,6 +39,7 @@ describe("NotificationWindow", () => {
       <NotificationWindow notification={notification} onDismiss={() => {}} />
     );
     expect(wrapper).toMatchSnapshot();
+    expect(wrapper).toHaveStyleRule("background", theme.error);
   });
 
   it("should not render anything", () => {
