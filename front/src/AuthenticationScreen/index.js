@@ -24,20 +24,6 @@ class AuthenticationScreen extends Component {
     };
   }
 
-  // /**
-  //  * Callback function. In case of an incorrect token, update state to display
-  //  * error. In case of a correct token, App.js should unrender this.
-  //  * status = the response status of the token request. It detemines whether the token is a teapot or not.
-  //  */
-  // onIncorrectToken(status) {
-  //   this.setState({ showNotification: true });
-  //   if (status === 418) {
-  //     this.setState({ notification: "SRRS already in session" });
-  //   } else {
-  //     this.setState({ notification: "Incorrect token" });
-  //   }
-  // }
-
   render() {
     return (
       <Container>
