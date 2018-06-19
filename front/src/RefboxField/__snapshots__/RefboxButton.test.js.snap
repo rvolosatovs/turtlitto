@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RefboxButton shows a cyan button with KO on it 1`] = `
+exports[`RefboxButton is cyan should match snapshot 1`] = `
 .c0 {
   background-color: #00ffff;
   -webkit-box-pack: center;
@@ -13,7 +13,8 @@ exports[`RefboxButton shows a cyan button with KO on it 1`] = `
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.2rem solid #00c8c8;
+  border: 0.2rem solid;
+  border-color: #00c8c8;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -30,7 +31,7 @@ exports[`RefboxButton shows a cyan button with KO on it 1`] = `
 />
 `;
 
-exports[`RefboxButton shows a magenta button with P on it 1`] = `
+exports[`RefboxButton is magenta should match snapshot 1`] = `
 .c0 {
   background-color: #ff00ff;
   -webkit-box-pack: center;
@@ -43,7 +44,8 @@ exports[`RefboxButton shows a magenta button with P on it 1`] = `
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.2rem solid #c800c8;
+  border: 0.2rem solid;
+  border-color: #c800c8;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

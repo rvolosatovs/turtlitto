@@ -35,11 +35,11 @@ const Button = styled.button`
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.2rem solid
-    ${props =>
-      props.teamColor === "magenta"
-        ? props.theme.refboxMagentaBorder
-        : props.theme.refboxCyanBorder};
+  border: 0.2rem solid;
+  border-color: ${props =>
+    props.teamColor === "magenta"
+      ? props.theme.refboxMagentaBorder
+      : props.theme.refboxCyanBorder};
   user-select: none;
 
   &:active {
