@@ -2,7 +2,7 @@
 
 exports[`AuthenticationScreen The user enters a incorrect token should match snapshot 1`] = `
 .c7 {
-  background: green;
+  background: #45bc21;
   padding: 0.6rem 3rem 0.6rem 0.6rem;
   display: -webkit-box;
   display: -webkit-flex;
@@ -16,7 +16,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  color: white;
+  color: #FFFFFF;
   position: relative;
 }
 
@@ -28,7 +28,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
 }
 
 .c0 {
-  background: silver;
+  background: #c0c0c0;
   height: 100%;
   padding-top: 10%;
 }
@@ -48,7 +48,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
 }
 
 .c4 {
-  color: red;
+  color: #ff6347;
 }
 
 .c3 {
@@ -64,8 +64,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
 
 .c5 {
   margin-top: 1rem;
-  background-color: white;
-  border-color: black;
+  background-color: #FFFFFF;
   border: 0.1rem solid;
   width: 100%;
   height: 5rem;

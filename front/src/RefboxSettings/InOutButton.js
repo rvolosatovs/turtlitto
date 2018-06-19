@@ -42,7 +42,7 @@ const Container = styled.div`
 `;
 
 const GoButton = styled.button`
-  background-color: ${props => props.theme.inOutButton};
+  background-color: ${props => props.theme.button};
   height: 4rem;
   width: 75%;
   margin-left: auto;
@@ -51,7 +51,7 @@ const GoButton = styled.button`
   font-size: 2rem;
   display: block;
   &:active {
-    background-color: ${props => props.theme.inOutButtonActive};
+    background-color: ${props => props.theme.buttonActive};
   }
 `;
 

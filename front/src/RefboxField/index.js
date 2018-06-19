@@ -100,19 +100,27 @@ const Refbox = styled.div`
   justify-content: center;
   max-width: 12rem;
 
-  /* TODO: define media query globally with sk */
-  @media screen and (min-width: 360px) {
+  ${media.xs`
     max-width: 16rem;
-  }
+  `};
 `;
 
 const RefboxButton = styled(Button)`
   font-size: 2.5rem;
 
-  /* TODO: define media query globally with sk */
-  @media screen and (min-width: 360px) {
-    font-size: 4rem;
+  &:nth-child(odd) {
+    border-right: none;
   }
+
+  &:nth-child(3),
+  &:nth-child(4) {
+    border-top: none;
+    border-bottom: none;
+  }
+
+  ${media.xs`
+    font-size: 4rem;
+  `};
 
   ${props =>
     props.isPenalty
@@ -124,12 +132,11 @@ const RefboxButton = styled(Button)`
           max-width: 6rem;
           max-height: 6rem;
 
-          /* TODO: define media query globally with sk */
-          @media screen and (min-width: 360px) {
+          ${media.xs`
             max-width: 8rem;
             max-height: 8rem;
             font-size: 4rem;
-          }
+          `};
         `};
 `;
 

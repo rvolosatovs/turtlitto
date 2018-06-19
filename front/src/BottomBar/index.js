@@ -92,13 +92,13 @@ const ButtonColumn = styled.div`
 `;
 
 const Button = styled.button`
-  background: ${props => props.theme.bottomBarButton};
+  background: ${props => props.theme.button};
   width: 100%;
   font-size: 2rem;
   flex: 1;
 
   &:active {
-    background: ${props => props.theme.bottomBarButtonActive};
+    background: ${props => props.theme.buttonActive};
   }
 `;
 
@@ -127,7 +127,6 @@ const ChangePageButton = styled(Button)`
 `;
 
 const Bar = styled.div`
-  background-color: white;
   display: flex;
   flex-direction: column;
 `;

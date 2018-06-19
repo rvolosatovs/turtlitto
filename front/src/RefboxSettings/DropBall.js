@@ -33,14 +33,14 @@ const DropBallWrapper = styled.div`
 `;
 
 const DropBallButton = styled.button`
-  background-color: ${props => props.theme.dropBallButton};
+  background-color: ${props => props.theme.button};
   height: 75%;
   width: 25%;
   border: 0.25rem solid;
   font-size: 2rem;
   margin: auto;
   &:active {
-    background-color: ${props => props.theme.dropBallButtonActive};
+    background-color: ${props => props.theme.buttonActive};
   }
 `;
 

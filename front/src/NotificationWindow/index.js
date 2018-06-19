@@ -47,15 +47,15 @@ const getBackground = type => {
   switch (type) {
     case notificationTypes.SUCCESS:
       return css`
-        background: ${props => props.theme.notificationSuccess};
+        background: ${props => props.theme.success};
       `;
     case notificationTypes.WARNING:
       return css`
-        background: ${props => props.theme.notificationWarning};
+        background: ${props => props.theme.warning};
       `;
     case notificationTypes.ERROR:
       return css`
-        background: ${props => props.theme.notificationError};
+        background: ${props => props.theme.error};
       `;
     default:
       throw new Error("Unknown notification type");

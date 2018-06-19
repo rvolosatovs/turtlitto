@@ -26,7 +26,7 @@ exports[`DropBall shows a button with DB written on it 1`] = `
 }
 
 .c1:active {
-  background-color: silver;
+  background-color: #c0c0c0;
 }
 
 <DropBall
