@@ -25,6 +25,8 @@ class AuthenticationScreen extends Component {
   }
 
   render() {
+    const { connectionStatus, notification } = this.props;
+
     return (
       <Container>
         <Window>
@@ -34,7 +36,11 @@ class AuthenticationScreen extends Component {
             placeholder="Enter the TRC token"
             onChange={event => this.setState({ token: event.target.value })}
           />
-          <WarningLabel>{this.props.notification}</WarningLabel>
+          {notification && (
+            <WarningLabel id="auth-screen__warning-label">
+              {notification}
+            </WarningLabel>
+          )}
           <LoginButton
             id="login-button"
             onClick={() => this.props.onSubmit(this.state.token)}
@@ -43,7 +49,7 @@ class AuthenticationScreen extends Component {
           </LoginButton>
         </Window>
         <ConnectionWindow>
-          <ConnectionBar connectionStatus={this.props.connectionStatus} />
+          <ConnectionBar connectionStatus={connectionStatus} />
         </ConnectionWindow>
       </Container>
     );
@@ -73,6 +79,7 @@ const Label = styled.label`
 const WarningLabel = styled(Label)`
   color: ${props => props.theme.error};
 `;
+WarningLabel.displayName = "WarningLabel";
 
 const Input = styled.input`
   margin-top: 1rem;

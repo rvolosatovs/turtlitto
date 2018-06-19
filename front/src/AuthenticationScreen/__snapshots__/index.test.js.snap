@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuthenticationScreen The user enters a incorrect token should match snapshot 1`] = `
-.c7 {
-  background: #45bc21;
+exports[`AuthenticationScreen should match snapshot 1`] = `
+.c6 {
+  background: #ff6347;
   padding: 0.6rem 3rem 0.6rem 0.6rem;
   display: -webkit-box;
   display: -webkit-flex;
@@ -20,7 +20,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
   position: relative;
 }
 
-.c8 {
+.c7 {
   text-transform: uppercase;
   margin: 0;
   display: block;
@@ -47,10 +47,6 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
   font-size: 1.5rem;
 }
 
-.c4 {
-  color: #ff6347;
-}
-
 .c3 {
   margin-top: 1rem;
 }
@@ -62,7 +58,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
   font-size: 1.5rem;
 }
 
-.c5 {
+.c4 {
   margin-top: 1rem;
   background-color: #FFFFFF;
   border: 0.1rem solid;
@@ -71,18 +67,18 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
   font-size: 1.5rem;
 }
 
-.c5:active {
+.c4:active {
   background-color: #ededed;
 }
 
-.c6 {
+.c5 {
   padding: 0;
   border-bottom: 0.1rem solid;
 }
 
 <AuthenticationScreen
-  connectionStatus="connected"
-  notification="hurdur"
+  connectionStatus="disconnected"
+  notification=""
   onSubmit={[Function]}
 >
   <styled.div>
@@ -112,23 +108,12 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
               type="text"
             />
           </styled.input>
-          <Styled(styled.label)>
-            <styled.label
-              className="c4"
-            >
-              <label
-                className="c4 c2"
-              >
-                hurdur
-              </label>
-            </styled.label>
-          </Styled(styled.label)>
           <styled.button
             id="login-button"
             onClick={[Function]}
           >
             <button
-              className="c5"
+              className="c4"
               id="login-button"
               onClick={[Function]}
             >
@@ -139,13 +124,13 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
       </styled.div>
       <Styled(styled.div)>
         <styled.div
-          className="c6"
+          className="c5"
         >
           <div
-            className="c6 c1"
+            className="c5 c1"
           >
             <ConnectionBar
-              connectionStatus="connected"
+              connectionStatus="disconnected"
             >
               <styled.div
                 background={
@@ -159,13 +144,13 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
                 }
               >
                 <div
-                  className="c7"
+                  className="c6"
                 >
                   <styled.p>
                     <p
-                      className="c8"
+                      className="c7"
                     >
-                      connected
+                      disconnected
                     </p>
                   </styled.p>
                 </div>
