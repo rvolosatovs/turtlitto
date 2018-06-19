@@ -46,6 +46,7 @@ class App extends Component {
       activePage: pageTypes.SETTINGS,
       connectionStatus: connectionTypes.DISCONNECTED,
       session: "",
+      command: "role_assigner_on",
       turtles: {},
       notifications: [
         { notificationType: "error", message: "Pants on fire" },
@@ -104,20 +105,22 @@ class App extends Component {
 
   onConnectionMessage(event) {
     const data = JSON.parse(event.data);
-    if (data.turtles === undefined) return {};
-    this.setState(prev => {
-      const turtleChanges = Object.keys(data.turtles).reduce((acc, id) => {
-        if (prev.turtles[id] === undefined) {
-          data.turtles[id].enabled = false;
-          acc[id] = { $set: data.turtles[id] };
-        } else {
-          acc[id] = { $merge: data.turtles[id] };
-        }
-        return acc;
-      }, {});
-      const turtles = update(prev.turtles, turtleChanges);
-      return { turtles };
-    });
+    if (data.turtles !== undefined)
+      this.setState(prev => {
+        const turtleChanges = Object.keys(data.turtles).reduce((acc, id) => {
+          if (prev.turtles[id] === undefined) {
+            data.turtles[id].enabled = false;
+            acc[id] = { $set: data.turtles[id] };
+          } else {
+            acc[id] = { $merge: data.turtles[id] };
+          }
+          return acc;
+        }, {});
+        const turtles = update(prev.turtles, turtleChanges);
+
+        return { turtles };
+      });
+    if (data.command !== undefined) this.setState({ command: data.command });
   }
 
   onConnectionOpen(event) {
