@@ -7,9 +7,9 @@ describe("Turtle", () => {
   it("should match snapshot", () => {
     const turtle = {
       batteryvoltage: 42,
-      homegoal: "Blue home",
-      role: "Goalkeeper",
-      teamcolor: "Cyan"
+      homegoal: "blue",
+      role: "goalkeeper",
+      teamcolor: "cyan"
     };
     const wrapper = mountWithTheme(
       <Turtle id="2" turtle={turtle} editable={false} onChange={() => {}} />
@@ -24,9 +24,9 @@ describe("Turtle", () => {
     beforeEach(() => {
       const turtle = {
         batteryvoltage: 42,
-        homegoal: "Blue home",
-        role: "Goalkeeper",
-        teamcolor: "Cyan"
+        homegoal: "blue",
+        role: "goalkeeper",
+        teamcolor: "cyan"
       };
       wrapper = shallow(<Turtle id="2" turtle={turtle} editable />);
       const l = window.location;

@@ -12,16 +12,16 @@ it("renders without crashing", () => {
         1: {
           enabled: true,
           batteryvoltage: 66,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
+          homegoal: "yellow",
+          role: "inactive",
+          teamcolor: "magenta"
         },
         2: {
           enabled: false,
           batteryvoltage: 42,
-          homegoal: "Yellow home",
-          role: "INACTIVE",
-          teamcolor: "Magenta"
+          homegoal: "yellow",
+          role: "inactive",
+          teamcolor: "magenta"
         }
       }}
       onTurtleEnableChange={() => {}}
@@ -42,16 +42,16 @@ describe("When the role assigner dropdown is changed to", () => {
             1: {
               enabled: true,
               batteryvoltage: 66,
-              homegoal: "Yellow home",
-              role: "INACTIVE",
-              teamcolor: "Magenta"
+              homegoal: "yellow",
+              role: "inactive",
+              teamcolor: "magenta"
             },
             2: {
               enabled: false,
               batteryvoltage: 42,
-              homegoal: "Yellow home",
-              role: "INACTIVE",
-              teamcolor: "Magenta"
+              homegoal: "yellow",
+              role: "inactive",
+              teamcolor: "magenta"
             }
           }}
         />

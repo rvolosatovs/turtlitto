@@ -169,16 +169,16 @@ exports[`renders without crashing 1`] = `
       "1": Object {
         "batteryvoltage": 66,
         "enabled": true,
-        "homegoal": "Yellow home",
-        "role": "INACTIVE",
-        "teamcolor": "Magenta",
+        "homegoal": "yellow",
+        "role": "inactive",
+        "teamcolor": "magenta",
       },
       "2": Object {
         "batteryvoltage": 42,
         "enabled": false,
-        "homegoal": "Yellow home",
-        "role": "INACTIVE",
-        "teamcolor": "Magenta",
+        "homegoal": "yellow",
+        "role": "inactive",
+        "teamcolor": "magenta",
       },
     }
   }
@@ -258,16 +258,16 @@ exports[`renders without crashing 1`] = `
             "1": Object {
               "batteryvoltage": 66,
               "enabled": true,
-              "homegoal": "Yellow home",
-              "role": "INACTIVE",
-              "teamcolor": "Magenta",
+              "homegoal": "yellow",
+              "role": "inactive",
+              "teamcolor": "magenta",
             },
             "2": Object {
               "batteryvoltage": 42,
               "enabled": false,
-              "homegoal": "Yellow home",
-              "role": "INACTIVE",
-              "teamcolor": "Magenta",
+              "homegoal": "yellow",
+              "role": "inactive",
+              "teamcolor": "magenta",
             },
           }
         }
@@ -298,9 +298,9 @@ exports[`renders without crashing 1`] = `
                         Object {
                           "batteryvoltage": 66,
                           "enabled": true,
-                          "homegoal": "Yellow home",
-                          "role": "INACTIVE",
-                          "teamcolor": "Magenta",
+                          "homegoal": "yellow",
+                          "role": "inactive",
+                          "teamcolor": "magenta",
                         }
                       }
                     >

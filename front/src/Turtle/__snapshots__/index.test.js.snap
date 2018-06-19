@@ -91,9 +91,9 @@ exports[`Turtle should match snapshot 1`] = `
   turtle={
     Object {
       "batteryvoltage": 42,
-      "homegoal": "Blue home",
-      "role": "Goalkeeper",
-      "teamcolor": "Cyan",
+      "homegoal": "blue",
+      "role": "goalkeeper",
+      "teamcolor": "cyan",
     }
   }
 >
