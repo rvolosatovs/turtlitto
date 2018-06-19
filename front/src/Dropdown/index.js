@@ -10,6 +10,7 @@ import React from "react";
  *  - values: the possible values of this dropdown
  *  - onChange: a function to call when a selection is made
  *  - enabled: if the dropdown should be enabled
+ *  - className: gives the classname for css
  */
 const Dropdown = props => {
   const { currentValue, values, onChange, enabled } = props;

@@ -2,10 +2,12 @@ import React from "react";
 import Dropdown from ".";
 import { shallow } from "enzyme";
 
-//Test_items: Dropdown index.js
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+/* 
+ * Test_items: Dropdown index.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("Dropdown", () => {
   it("can be changed", () => {
     let value = "test";

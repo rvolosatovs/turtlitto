@@ -4,10 +4,12 @@ import connectionTypes from "../connectionTypes";
 import { mountWithTheme, shallowWithTheme } from "../../testUtils";
 import theme from "../../theme";
 
-//Test_items: ConnectionBar index.js
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+/* 
+ * Test_items: ConnectionBar index.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("ConnectionBar", () => {
   describe("should match snapshot", () => {
     it("when in the connecting state", () => {

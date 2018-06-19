@@ -69,6 +69,14 @@ const getContent = type => {
   }
 };
 
+/**
+ * Show the current connection status
+ * Author: B. Afonins
+ *
+ * Props:
+ *  - connectionStatus: a boolean indicating whether the client is connected to the TRC
+ *  - className: gives the classname for css
+ */
 const ConnectionBar = props => {
   const background = getBackground(props.connectionStatus);
   const content = getContent(props.connectionStatus);

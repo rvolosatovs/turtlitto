@@ -3,10 +3,12 @@ import RefboxField from ".";
 import { shallow } from "enzyme";
 import { mountWithTheme } from "../testUtils";
 
-//Test_items: RefboxField.js
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+/*
+ * Test_items: RefboxField.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("RefboxField", () => {
   it("shows a cyan and magenta refbox field with all buttons", () => {
     const wrapper = mountWithTheme(<RefboxField isPenalty={false} />);
@@ -18,10 +20,12 @@ describe("RefboxField", () => {
   });
 });
 
-//Test_items: RefboxField.js functionality.
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: -
+/*
+ * Test_items: RefboxField.js functionality.
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: -
+ */
 describe("When clicked, a cyan", () => {
   const realFetch = global.fetch;
   let wrapper = null;
@@ -59,10 +63,12 @@ describe("When clicked, a cyan", () => {
   });
 });
 
-//Test_items: RefboxField index.js
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: -
+/*
+ * Test_items: RefboxField index.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: -
+ */
 describe("When clicked, a magenta", () => {
   const realFetch = global.fetch;
   let wrapper = null;

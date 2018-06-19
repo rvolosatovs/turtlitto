@@ -5,10 +5,12 @@ import { shallow } from "enzyme";
 import { mountWithTheme } from "../testUtils";
 import theme from "../theme";
 
-//Test_items: Notification Window index.js
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+/* 
+ * Test_items: Notification Window index.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("NotificationWindow", () => {
   it("should display a success notification", () => {
     const notification = {

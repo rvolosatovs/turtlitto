@@ -2,10 +2,12 @@ import React from "react";
 import TurtleList from ".";
 import { shallowWithTheme, mountWithTheme } from "../testUtils";
 
-//Test_items: TurtleList index.js
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+/*
+ * Test_items: TurtleList index.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("TurtleList", () => {
   it("should match snapshot", () => {
     const wrapper = shallowWithTheme(<TurtleList turtles={{}} />).dive();

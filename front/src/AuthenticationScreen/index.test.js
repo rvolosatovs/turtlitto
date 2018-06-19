@@ -4,10 +4,12 @@ import connectionTypes from "../BottomBar/connectionTypes";
 import { mountWithTheme } from "../testUtils";
 import theme from "../theme";
 
-//Test_items: AuthenticationScreen index.js
-//Input_spec: -
-//Output_spec: -
-//Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+/*
+ * Test_items: AuthenticationScreen index.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("AuthenticationScreen", () => {
   it("should match snapshot", () => {
     const wrapper = mountWithTheme(

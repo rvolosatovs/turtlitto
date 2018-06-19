@@ -9,10 +9,13 @@ import sendToServer from "../sendToServer";
  * - Drop ball
  * - Go in
  * - Go out
- *
  * Author: G.W. van der Heijden
  * Author: S.A. Tanja
  * Author: T.T.P. Franken
+ *
+ * Props:
+ *  - className: gives the classname for css
+ *  - token: a string which holds the password needed to connect to the SRRS
  */
 const RefboxSettings = props => {
   return (
