@@ -15,31 +15,28 @@ import ConnectionBar from "../BottomBar/ConnectionBar";
  *  - onSubmit: A function that will send the token to the SRRS
  *  - connectionStatus: The current connection status
  */
+
 class AuthenticationScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      token: "",
-      showNotification: false
+      token: ""
     };
   }
 
-  /**
-   * Callback function. In case of an incorrect token, update state to display
-   * error. In case of a correct token, App.js should unrender this.
-   */
-  onIncorrectToken() {
-    this.setState({ showNotification: true });
-  }
-
-  /**
-   * Gets the user inputed token, and calls the onSubmit function given from
-   * props, and gives a callback to update state.
-   */
-  onSubmit(event) {
-    const token = this.state.token;
-    this.props.onSubmit(token, isCorrectToken => this.onIncorrectToken());
-  }
+  // /**
+  //  * Callback function. In case of an incorrect token, update state to display
+  //  * error. In case of a correct token, App.js should unrender this.
+  //  * status = the response status of the token request. It detemines whether the token is a teapot or not.
+  //  */
+  // onIncorrectToken(status) {
+  //   this.setState({ showNotification: true });
+  //   if (status === 418) {
+  //     this.setState({ notification: "SRRS already in session" });
+  //   } else {
+  //     this.setState({ notification: "Incorrect token" });
+  //   }
+  // }
 
   render() {
     return (
@@ -51,12 +48,10 @@ class AuthenticationScreen extends Component {
             placeholder="Enter the TRC token"
             onChange={event => this.setState({ token: event.target.value })}
           />
-          {this.state.showNotification && (
-            <WarningLabel>Incorrect token.</WarningLabel>
-          )}
+          <WarningLabel>{this.props.notification}</WarningLabel>
           <LoginButton
             id="login-button"
-            onClick={event => this.onSubmit(event)}
+            onClick={() => this.props.onSubmit(this.state.token)}
           >
             Log in
           </LoginButton>
@@ -123,7 +118,8 @@ const ConnectionWindow = styled(Window)`
 `;
 
 AuthenticationScreen.propTypes = {
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  notification: PropTypes.string.isRequired
 };
 
 export default AuthenticationScreen;

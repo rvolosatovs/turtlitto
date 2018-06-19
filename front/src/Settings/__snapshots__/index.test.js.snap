@@ -8,7 +8,7 @@ Object {
       "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
     },
   },
-  "method": "PUT",
+  "method": "POST",
 }
 `;
 
@@ -20,7 +20,7 @@ Object {
       "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
     },
   },
-  "method": "PUT",
+  "method": "POST",
 }
 `;
 
@@ -32,7 +32,7 @@ Object {
       "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
     },
   },
-  "method": "PUT",
+  "method": "POST",
 }
 `;
 
@@ -44,7 +44,7 @@ Object {
       "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
     },
   },
-  "method": "PUT",
+  "method": "POST",
 }
 `;
 
@@ -56,7 +56,7 @@ Object {
       "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
     },
   },
-  "method": "PUT",
+  "method": "POST",
 }
 `;
 
@@ -161,6 +161,7 @@ exports[`renders without crashing 1`] = `
 }
 
 <Settings
+  command="pass_demo"
   onChange={[Function]}
   onTurtleEnableChange={[Function]}
   turtles={
@@ -187,7 +188,7 @@ exports[`renders without crashing 1`] = `
       className="c0"
     >
       <Styled(Dropdown)
-        currentValue="Whatever"
+        currentValue="Pass demo"
         enabled={true}
         id="settings_role-dropdown"
         onChange={[Function]}
@@ -203,7 +204,7 @@ exports[`renders without crashing 1`] = `
       >
         <Dropdown
           className="c1"
-          currentValue="Whatever"
+          currentValue="Pass demo"
           enabled={true}
           id="settings_role-dropdown"
           onChange={[Function]}
@@ -221,7 +222,7 @@ exports[`renders without crashing 1`] = `
             className="c1"
             disabled={false}
             onChange={[Function]}
-            value="Whatever"
+            value="Pass demo"
           >
             <option
               key="Role assigner on"

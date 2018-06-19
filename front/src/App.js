@@ -42,17 +42,18 @@ const StickyBottomContainer = styled.div`
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       activePage: pageTypes.SETTINGS,
       connectionStatus: connectionTypes.DISCONNECTED,
-      token: "dummy",
+      session: "",
+      command: "role_assigner_on",
       turtles: {},
       notifications: [
         { notificationType: "error", message: "Pants on fire" },
         { notificationType: "success", message: "Rendering Notifications" }
       ],
-      loggedIn: false
+      loggedIn: false,
+      authNotification: ""
     };
     this.connection = null;
     this.checkWindowWidth = this.checkWindowWidth.bind(this);
@@ -71,9 +72,7 @@ class App extends Component {
   connect() {
     const l = window.location;
     this.connection = new WebSocket(
-      `${l.protocol === "https:" ? "wss" : "ws"}://user:${this.state.token}@${
-        l.host
-      }/api/v1/state`
+      `${l.protocol === "https:" ? "wss" : "ws"}://${l.host}/api/v1/state`
     );
     this.connection.onclose = event => this.onConnectionClose(event);
     this.connection.onerror = event => this.onConnectionError(event);
@@ -82,10 +81,6 @@ class App extends Component {
     window.addEventListener("resize", this.checkWindowWidth);
 
     this.setState({ connectionStatus: connectionTypes.CONNECTING });
-  }
-
-  componentDidMount() {
-    this.connect();
   }
 
   componentWillUnmount() {
@@ -110,28 +105,27 @@ class App extends Component {
 
   onConnectionMessage(event) {
     const data = JSON.parse(event.data);
-    if (data.turtles === undefined) return {};
-    this.setState(prev => {
-      const turtleChanges = Object.keys(data.turtles).reduce((acc, id) => {
-        if (prev.turtles[id] === undefined) {
-          data.turtles[id].enabled = false;
-          acc[id] = { $set: data.turtles[id] };
-        } else {
-          acc[id] = { $merge: data.turtles[id] };
-        }
-        return acc;
-      }, {});
-      const turtles = update(prev.turtles, turtleChanges);
-      return { turtles };
-    });
+    if (data.turtles !== undefined)
+      this.setState(prev => {
+        const turtleChanges = Object.keys(data.turtles).reduce((acc, id) => {
+          if (prev.turtles[id] === undefined) {
+            data.turtles[id].enabled = false;
+            acc[id] = { $set: data.turtles[id] };
+          } else {
+            acc[id] = { $merge: data.turtles[id] };
+          }
+          return acc;
+        }, {});
+        const turtles = update(prev.turtles, turtleChanges);
+
+        return { turtles };
+      });
+    if (data.command !== undefined) this.setState({ command: data.command });
   }
 
   onConnectionOpen(event) {
+    this.connection.send(JSON.stringify(this.state.session));
     this.setState({ connectionStatus: connectionTypes.CONNECTED });
-  }
-
-  onSend(message) {
-    console.log(`Sent: ${message}`);
   }
 
   onTurtleEnableChange(id) {
@@ -153,16 +147,33 @@ class App extends Component {
    * The function AuthenticationScreen will call when a token has been
    * submitted.
    * @param token The token received from AuthenticationScreen.
-   * @param onIncorrectToken Callback from AuthenticationScreen to update the
-   * AuthenticationScreen in case the token was incorrect.
    */
-  onSubmit(token, onIncorrectToken) {
-    //TODO: Implement a correct version
-    if (token === "techunited") {
-      this.setState({ loggedIn: true, token: token });
-    } else {
-      onIncorrectToken();
-    }
+  authSubmit(token) {
+    const l = window.location;
+    console.log(`send authorization to ${l.protocol}//${l.host}/api/v1/auth`);
+    fetch(`${l.protocol}//${l.host}/api/v1/auth`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: "Basic " + btoa(`user:${token}`)
+      })
+    })
+      .then(response => {
+        if (response.status === 418) {
+          throw new Error("SRRS already in session");
+        } else if (!response.ok) {
+          throw new Error("Incorrect token");
+        }
+        return response;
+      })
+      .then(response => {
+        response.text().then(result => {
+          this.setState({ loggedIn: true, session: result });
+          this.connect();
+        });
+      })
+      .catch(error => {
+        this.setState({ authNotification: error.message });
+      });
   }
 
   getNextNotification() {
@@ -189,14 +200,14 @@ class App extends Component {
                   onTurtleEnableChange={id => this.onTurtleEnableChange(id)}
                 />
                 <ScrollableContent>
-                  <Settings turtles={turtles} token={this.state.token} />
+                  <Settings turtles={turtles} session={this.state.session} />
                 </ScrollableContent>
               </Fragment>
             )}
             <StickyBottomContainer>
               <Row bottom="xs">
                 <Col md={4} className={"hidden-xs hidden-sm"}>
-                  <RefboxField isPenalty={false} token={this.state.token} />
+                  <RefboxField isPenalty={false} session={this.state.session} />
                 </Col>
                 <Col md={4} className={"hidden-xs hidden-sm"}>
                   <NotificationWindow
@@ -205,19 +216,22 @@ class App extends Component {
                   />
                 </Col>
                 <Col xs={12} md={4} className={"hidden-xs hidden-sm"}>
-                  <RefboxSettings token={this.state.token} />
+                  <RefboxSettings session={this.state.session} />
                   <BottomBar
                     activePage={activePage}
                     changeActivePage={() => {}}
                     connectionStatus={connectionStatus}
-                    token={this.state.token}
+                    session={this.state.session}
                   />
                 </Col>
                 <Col xs={12} className={"hidden-md hidden-lg hidden-xl"}>
                   {activePage === pageTypes.REFBOX && (
                     <Fragment>
-                      <RefboxField isPenalty={false} token={this.state.token} />
-                      <RefboxSettings token={this.state.token} />
+                      <RefboxField
+                        isPenalty={false}
+                        session={this.state.session}
+                      />
+                      <RefboxSettings session={this.state.session} />
                     </Fragment>
                   )}
                   <NotificationWindow
@@ -230,7 +244,7 @@ class App extends Component {
                       this.setState({ activePage: page })
                     }
                     connectionStatus={connectionStatus}
-                    token={this.state.token}
+                    session={this.state.session}
                   />
                 </Col>
               </Row>
@@ -238,7 +252,8 @@ class App extends Component {
           </Container>
         ) : (
           <AuthenticationScreen
-            onSubmit={(token, callback) => this.onSubmit(token, callback)}
+            notification={this.state.authNotification}
+            onSubmit={(token, callback) => this.authSubmit(token, callback)}
             connectionStatus={connectionStatus}
           />
         )}

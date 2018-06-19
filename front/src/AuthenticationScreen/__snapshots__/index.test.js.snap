@@ -83,6 +83,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
 
 <AuthenticationScreen
   connectionStatus="connected"
+  notification="hurdur"
   onSubmit={[Function]}
 >
   <styled.div>
@@ -119,7 +120,7 @@ exports[`AuthenticationScreen The user enters a incorrect token should match sna
               <label
                 className="c4 c2"
               >
-                Incorrect token.
+                hurdur
               </label>
             </styled.label>
           </Styled(styled.label)>

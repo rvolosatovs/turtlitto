@@ -29,8 +29,9 @@ describe("Turtle", () => {
         teamcolor: "Cyan"
       };
       wrapper = shallow(<Turtle id="2" turtle={turtle} editable />);
+      const l = window.location;
       global.fetch = jest.fn().mockImplementation((url, params) => {
-        expect(url).toBe("/api/v1/turtles/");
+        expect(url).toBe(`${l.protocol}//${l.host}/api/v1/turtles`);
         expect(params).toMatchSnapshot();
         return Promise.resolve({ ok: true });
       });

@@ -318,20 +318,35 @@ exports[`Turtle should match snapshot 1`] = `
 exports[`Turtle the user changes dropdown values should change the home 1`] = `
 Object {
   "body": "{\\"2\\":{\\"homegoal\\":\\"yellow\\"}}",
-  "method": "PUT",
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
+  "method": "POST",
 }
 `;
 
 exports[`Turtle the user changes dropdown values should change the role 1`] = `
 Object {
   "body": "{\\"2\\":{\\"role\\":\\"inactive\\"}}",
-  "method": "PUT",
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
+  "method": "POST",
 }
 `;
 
 exports[`Turtle the user changes dropdown values should change the team 1`] = `
 Object {
   "body": "{\\"2\\":{\\"teamcolor\\":\\"magenta\\"}}",
-  "method": "PUT",
+  "headers": Headers {
+    "map": Object {
+      "authorization": "Basic dXNlcjp1bmRlZmluZWQ=",
+    },
+  },
+  "method": "POST",
 }
 `;

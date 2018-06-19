@@ -1,13 +1,12 @@
-export default (message, destination, token) => {
+export default (message, destination, session) => {
   const l = window.location;
-  console.log(
-    `send ${message} to ${l.protocol}//${l.host}/api/v1/${destination}`
-  );
+  const msg = JSON.stringify(message);
+  console.log(`send ${msg} to ${l.protocol}//${l.host}/api/v1/${destination}`);
   return fetch(`${l.protocol}//${l.host}/api/v1/${destination}`, {
-    method: "PUT",
+    method: "POST",
     headers: new Headers({
-      Authorization: "Basic " + btoa(`user:${token}`)
+      Authorization: "Basic " + btoa(`user:${session}`)
     }),
-    body: JSON.stringify(message)
+    body: msg
   });
 };
