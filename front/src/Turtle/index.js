@@ -19,6 +19,20 @@ const ROLE_VALUES = {
   Goalkeeper: "goalkeeper"
 };
 
+// The following values are used for translating the sent command into a human viewable version. They should be the reverse of the table above.
+const TEAM_DISPLAY_VALUES = { magenta: "Magenta", cyan: "Cyan" };
+const HOME_DISPLAY_VALUES = { yellow: "Yellow home", blue: "Blue home" };
+const ROLE_DISPLAY_VALUES = {
+  inactive: "INACTIVE",
+  none: "ROLE_NONE",
+  attacker_main: "Att main",
+  attacker_assist: "Att assist",
+  defender_main: "Def main",
+  defender_assist: "Def assist",
+  def_assist2: "Def assist 2",
+  goalkeeper: "Goalkeeper"
+};
+
 const onChange = (id, propName, propValue, session) => {
   const body = {};
   body[id] = {};
@@ -54,7 +68,7 @@ const Turtle = props => {
       <DropDownSection>
         <Dropdown
           id={`turtle${id}__role`}
-          currentValue={role}
+          currentValue={ROLE_DISPLAY_VALUES[role]}
           enabled={editable}
           values={Object.keys(ROLE_VALUES)}
           onChange={value => {
@@ -63,7 +77,7 @@ const Turtle = props => {
         />
         <Dropdown
           id={`turtle${id}__home`}
-          currentValue={homegoal}
+          currentValue={HOME_DISPLAY_VALUES[homegoal]}
           enabled={editable}
           values={Object.keys(HOME_VALUES)}
           onChange={value => {
@@ -72,7 +86,7 @@ const Turtle = props => {
         />
         <Dropdown
           id={`turtle${id}__team`}
-          currentValue={teamcolor}
+          currentValue={TEAM_DISPLAY_VALUES[teamcolor]}
           enabled={editable}
           values={Object.keys(TEAM_VALUES)}
           onChange={value => {
