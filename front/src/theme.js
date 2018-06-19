@@ -14,19 +14,13 @@ export default {
   border: "#ccc",
   shadow: "rgba(0, 0, 0, 0.17)",
   turtleEnableBar: "#ededed",
-  turtleEnableButton: "#ededed",
-  turtleEnableButtonActive: "silver",
-  bottomBarButton: "#ededed",
-  bottomBarButtonActive: "silver",
   notificationSuccess: "green",
   notificationWarning: "#ffcc00",
   notificationError: "Tomato",
-  dropBallButton: "#ededed",
-  dropBallButtonActive: "silver",
-  inOutButton: "#ededed",
-  inOutButtonActive: "silver",
   refboxMagenta: "magenta",
   refboxCyan: "cyan",
   refboxMagentaActive: "magenta",
-  refboxCyanActive: "cyan"
+  refboxCyanActive: "cyan",
+  button: "#ededed",
+  buttonActive: "#c0c0c0"
 };
