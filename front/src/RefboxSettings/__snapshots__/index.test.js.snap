@@ -26,7 +26,7 @@ exports[`RefboxSettings shows the settings including two dropdown menus and thre
 }
 
 .c3:active {
-  background-color: silver;
+  background-color: #c0c0c0;
 }
 
 .c5 {
@@ -59,7 +59,7 @@ exports[`RefboxSettings shows the settings including two dropdown menus and thre
 }
 
 .c6:active {
-  background-color: silver;
+  background-color: #c0c0c0;
 }
 
 .c4 {

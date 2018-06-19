@@ -2,7 +2,7 @@
 
 exports[`ConnectionBar should match snapshot when in the connected state 1`] = `
 .c0 {
-  background: green;
+  background: #45bc21;
   padding: 0.6rem 3rem 0.6rem 0.6rem;
   display: -webkit-box;
   display: -webkit-flex;
@@ -16,7 +16,7 @@ exports[`ConnectionBar should match snapshot when in the connected state 1`] = `
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  color: white;
+  color: #FFFFFF;
   position: relative;
 }
 
@@ -72,7 +72,7 @@ exports[`ConnectionBar should match snapshot when in the connecting state 1`] = 
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  color: white;
+  color: #FFFFFF;
   position: relative;
 }
 
@@ -176,7 +176,7 @@ exports[`ConnectionBar should match snapshot when in the connecting state 1`] = 
 
 exports[`ConnectionBar should match snapshot when in the disconnected state 1`] = `
 .c0 {
-  background: Tomato;
+  background: #ff6347;
   padding: 0.6rem 3rem 0.6rem 0.6rem;
   display: -webkit-box;
   display: -webkit-flex;
@@ -190,7 +190,7 @@ exports[`ConnectionBar should match snapshot when in the disconnected state 1`] 
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  color: white;
+  color: #FFFFFF;
   position: relative;
 }
 

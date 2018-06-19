@@ -2,7 +2,7 @@
 
 exports[`NotificationWindow should display a success notification 1`] = `
 .c0 {
-  background: green;
+  background: #45bc21;
   border-style: solid;
   border-width: 0.4rem;
   width: 90%;
@@ -298,7 +298,7 @@ exports[`NotificationWindow should display a warning notification 1`] = `
 
 exports[`NotificationWindow should display an error notification 1`] = `
 .c0 {
-  background: Tomato;
+  background: #ff6347;
   border-style: solid;
   border-width: 0.4rem;
   width: 90%;

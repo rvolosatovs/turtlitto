@@ -31,7 +31,7 @@ exports[`InOutButton shows two buttons with go in or go out written on it 1`] = 
 }
 
 .c1:active {
-  background-color: silver;
+  background-color: #c0c0c0;
 }
 
 <InOutButton
