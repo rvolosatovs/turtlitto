@@ -18,6 +18,10 @@ import (
 	"go.uber.org/zap"
 )
 
+//Test_items: Connect(), SendHandshake(), SendState(), State(), SubscribeStateChanges() in conn.go
+//Input_spec: -
+//Output_spec: Pass or fail
+//Envir_needs: -
 func TestState(t *testing.T) {
 	for i, tc := range []struct {
 		Expected *api.State
@@ -163,6 +167,10 @@ func TestState(t *testing.T) {
 	}
 }
 
+//Test_items: Connect(), SendHandshake(), SendState(), State(), SubscribeStateChanges() in conn.go
+//Input_spec: -
+//Output_spec: Pass or fail
+//Envir_needs: -
 func TestSetState(t *testing.T) {
 	logger := zap.L()
 

@@ -8,6 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//Test_items: Validate() in validate.go
+//Input_spec: -
+//Output_spec: Pass or fail
+//Envir_needs: -
 func TestValidate(t *testing.T) {
 	type TestCase struct {
 		Name        string
