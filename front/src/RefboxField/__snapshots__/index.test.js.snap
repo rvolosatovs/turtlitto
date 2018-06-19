@@ -13,7 +13,8 @@ exports[`RefboxField shows a cyan and magenta refbox field with all buttons 1`] 
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.2rem solid #c800c8;
+  border: 0.2rem solid;
+  border-color: #c800c8;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -36,7 +37,8 @@ exports[`RefboxField shows a cyan and magenta refbox field with all buttons 1`] 
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.2rem solid #00c8c8;
+  border: 0.2rem solid;
+  border-color: #00c8c8;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -495,7 +497,8 @@ exports[`RefboxField shows a refbox with penalty buttons 1`] = `
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.2rem solid #c800c8;
+  border: 0.2rem solid;
+  border-color: #c800c8;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -518,7 +521,8 @@ exports[`RefboxField shows a refbox with penalty buttons 1`] = `
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.2rem solid #00c8c8;
+  border: 0.2rem solid;
+  border-color: #00c8c8;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
