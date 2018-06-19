@@ -5,7 +5,7 @@ import { Grid, Row, Col } from "react-flexbox-grid";
 import Turtle from "../Turtle";
 
 const TurtleList = props => {
-  const { turtles } = props;
+  const { turtles, session } = props;
   return (
     <Grid fluid>
       <Row>
@@ -14,7 +14,13 @@ const TurtleList = props => {
           .map((id, index) => {
             return (
               <Col xs={12} md={6} key={index}>
-                <Turtle key={index} id={id} turtle={turtles[id]} editable />
+                <Turtle
+                  key={index}
+                  id={id}
+                  turtle={turtles[id]}
+                  session={session}
+                  editable
+                />
               </Col>
             );
           })}

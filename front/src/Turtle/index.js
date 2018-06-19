@@ -3,6 +3,7 @@ import React from "react";
 import Dropdown from "../Dropdown";
 import Battery from "../Battery";
 import styled from "styled-components";
+import sendToServer from "../sendToServer";
 
 // The following values are used in the Turtle refbox. The property name (or key) is shown in the UI, while its value will be sent over to the TRC.
 const TEAM_VALUES = { Magenta: "magenta", Cyan: "cyan" };
@@ -18,16 +19,11 @@ const ROLE_VALUES = {
   Goalkeeper: "goalkeeper"
 };
 
-const onChange = (id, propName, propValue) => {
+const onChange = (id, propName, propValue, session) => {
   const body = {};
   body[id] = {};
   body[id][propName] = propValue;
-  fetch("/api/v1/turtles/", {
-    body: JSON.stringify(body),
-    method: "PUT"
-  })
-    .then(data => console.log(data))
-    .catch(error => console.error(error));
+  sendToServer(body, "turtles", session).catch(error => console.error(error));
 };
 
 /**
@@ -46,7 +42,7 @@ const onChange = (id, propName, propValue) => {
  */
 const Turtle = props => {
   const { batteryvoltage, homegoal, role, teamcolor } = props.turtle;
-  const { editable, id } = props;
+  const { editable, id, session } = props;
   return (
     <DefaultTurtle>
       <BatterySection>
@@ -62,7 +58,7 @@ const Turtle = props => {
           enabled={editable}
           values={Object.keys(ROLE_VALUES)}
           onChange={value => {
-            onChange(id, "role", ROLE_VALUES[value]);
+            onChange(id, "role", ROLE_VALUES[value], session);
           }}
         />
         <Dropdown
@@ -71,7 +67,7 @@ const Turtle = props => {
           enabled={editable}
           values={Object.keys(HOME_VALUES)}
           onChange={value => {
-            onChange(id, "homegoal", HOME_VALUES[value]);
+            onChange(id, "homegoal", HOME_VALUES[value], session);
           }}
         />
         <Dropdown
@@ -80,7 +76,7 @@ const Turtle = props => {
           enabled={editable}
           values={Object.keys(TEAM_VALUES)}
           onChange={value => {
-            onChange(id, "teamcolor", TEAM_VALUES[value]);
+            onChange(id, "teamcolor", TEAM_VALUES[value], session);
           }}
         />
       </DropDownSection>

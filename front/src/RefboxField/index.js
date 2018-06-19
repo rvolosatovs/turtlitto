@@ -31,7 +31,7 @@ const TAG_VALUES = {
  *
  * Props:
  *  - isPenalty: a boolean which indicates whether to go into penalty mode
- *  - token: a string which holds the password needed to connect to the SRRS
+ *  - session: a string which holds the password needed to connect to the SRRS
  */
 const RefboxField = props => {
   return (
@@ -49,7 +49,7 @@ const RefboxField = props => {
                 sendToServer(
                   `${TAG_VALUES[tag]}_magenta`,
                   "command",
-                  props.token
+                  props.session
                 );
               }}
             >
@@ -67,7 +67,11 @@ const RefboxField = props => {
               teamColor={"cyan"}
               id={`${tag}_cyan`}
               onClick={() => {
-                sendToServer(`${TAG_VALUES[tag]}_cyan`, "command", props.token);
+                sendToServer(
+                  `${TAG_VALUES[tag]}_cyan`,
+                  "command",
+                  props.session
+                );
               }}
             >
               {tag}
