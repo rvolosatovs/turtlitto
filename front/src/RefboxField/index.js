@@ -108,6 +108,16 @@ const Refbox = styled.div`
 const RefboxButton = styled(Button)`
   font-size: 2.5rem;
 
+  &:nth-child(odd) {
+    border-right: none;
+  }
+
+  &:nth-child(3),
+  &:nth-child(4) {
+    border-top: none;
+    border-bottom: none;
+  }
+
   ${media.xs`
     font-size: 4rem;
   `};

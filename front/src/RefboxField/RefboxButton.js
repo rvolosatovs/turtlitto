@@ -35,7 +35,7 @@ const Button = styled.button`
   align-items: center;
   font-size: 4rem;
   padding: 1.5rem 0;
-  border: 0.125rem solid
+  border: 0.2rem solid
     ${props =>
       props.teamColor === "magenta"
         ? props.theme.refboxMagentaBorder
