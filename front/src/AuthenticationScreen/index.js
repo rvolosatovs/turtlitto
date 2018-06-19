@@ -64,9 +64,8 @@ class AuthenticationScreen extends Component {
   }
 }
 
-//TODO: Apply theme.js for all styled components (if applicable)
 const Container = styled.div`
-  background: silver;
+  background: ${props => props.theme.loginScreenBackground};
   height: 100%;
   padding-top: 10%;
 `;
@@ -75,7 +74,7 @@ const Window = styled.div`
   margin: 0 auto;
   border: 0.1rem solid;
   border-bottom: none;
-  background: #ededed;
+  background: ${props => props.theme.loginFormBackground};
   width: 85%;
   padding: 1rem;
   text-align: center;
@@ -86,11 +85,12 @@ const Label = styled.label`
 `;
 
 const WarningLabel = styled(Label)`
-  color: red;
+  color: ${props => props.theme.error};
 `;
 
 const Input = styled.input`
   margin-top: 1rem;
+
   &[type="text"] {
     border: 0.1rem solid;
     width: 100%;
@@ -101,14 +101,14 @@ const Input = styled.input`
 
 const LoginButton = styled.button`
   margin-top: 1rem;
-  background-color: white;
-  border-color: black;
+  background-color: ${props => props.theme.loginButton};
   border: 0.1rem solid;
   width: 100%;
   height: 5rem;
   font-size: 1.5rem;
+
   &:active {
-    background-color: #ededed;
+    background-color: ${props => props.theme.loginButtonActive};
   }
 `;
 

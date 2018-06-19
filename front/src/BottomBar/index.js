@@ -127,7 +127,6 @@ const ChangePageButton = styled(Button)`
 `;
 
 const Bar = styled.div`
-  background-color: white;
   display: flex;
   flex-direction: column;
 `;

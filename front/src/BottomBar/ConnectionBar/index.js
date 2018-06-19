@@ -11,7 +11,7 @@ const Bar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: ${props => props.theme.connectionStatusText};
   position: relative;
 `;
 
@@ -34,15 +34,15 @@ const getBackground = type => {
   switch (type) {
     case connectionTypes.CONNECTING:
       return css`
-        background: ${props => props.theme.notificationWarning};
+        background: ${props => props.theme.warning};
       `;
     case connectionTypes.CONNECTED:
       return css`
-        background: ${props => props.theme.notificationSuccess};
+        background: ${props => props.theme.success};
       `;
     case connectionTypes.DISCONNECTED:
       return css`
-        background: ${props => props.theme.notificationError};
+        background: ${props => props.theme.error};
       `;
     default:
       throw new Error("Unknown connection status type");
