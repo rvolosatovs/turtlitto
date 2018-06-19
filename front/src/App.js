@@ -121,7 +121,7 @@ class App extends Component {
   }
 
   onConnectionOpen(event) {
-    this.connection.send(this.state.session);
+    this.connection.send(JSON.stringify(this.state.session));
     this.setState({ connectionStatus: connectionTypes.CONNECTED });
   }
 
