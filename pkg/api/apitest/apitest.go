@@ -232,9 +232,9 @@ func RandomTurtleState() *api.TurtleState {
 // RandomTurtleStateMap returns a random valid *api.TurtleState map.
 func RandomTurtleStateMap() map[string]*api.TurtleState {
 	ret := map[string]*api.TurtleState{}
-	perm := rand.Perm(MaxTurtles + 1)[:rand.Intn(MaxTurtles+2)]
+	perm := rand.Perm(MaxTurtles)[:rand.Intn(MaxTurtles+1)]
 	for _, i := range perm {
-		ret[strconv.Itoa(i)] = RandomTurtleState()
+		ret[strconv.Itoa(i+1)] = RandomTurtleState()
 	}
 	return ret
 }

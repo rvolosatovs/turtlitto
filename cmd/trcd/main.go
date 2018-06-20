@@ -156,7 +156,7 @@ func main() {
 						)
 						return
 					}
-					logger.Info("Sent initial state",
+					logger.Debug("Sent initial state",
 						zap.Reflect("state", st),
 					)
 
