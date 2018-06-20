@@ -13,20 +13,21 @@ import media from "../media";
 import ConnectionBar from "./ConnectionBar";
 
 /**
- * All of the props depend on the implementation in App.js. App.js should include WebSockets,
- * a state variable which has the values "settings" and "refbox",
- * and the implementation of the functions passed to BottomBar.
+ * All of the props depend on the implementation in App.js.
+ * App.js should include WebSockets, a state variable which has the
+ * values "settings" and "refbox" and the implementation
+ * of the functions passed to BottomBar.
  * Author: T.T.P. Franken
  * Author: B. Afonins
  * Author: G.M. van der Sanden
  *
  * Props:
- * - changeActivePage: function to change the active page
- * - activePage: a string indicating the current active page
- * - connectionStatus: a boolean indicating whether the client is connected to the TRC
- * - session: a string which holds the password needed to connect to the SRRS
+ *  - changeActivePage: function to change the active page
+ *  - activePage: a string indicating the current active page
+ *  - connectionStatus: a boolean indicating whether the client is connected to the TRC
+ *  - session: a string which holds the password needed to connect to the SRRS
+ *  - className: gives the classname for css
  */
-
 const BottomBar = props => {
   const { changeActivePage, activePage, connectionStatus, session } = props;
   const isSettingsPage = activePage === pageTypes.SETTINGS;

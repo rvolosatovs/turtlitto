@@ -69,11 +69,8 @@ const getBackground = type => {
  * Author: B. Afonins
  *
  * Props:
- * - onDismiss: pass a function that causes the component to no longer be rendered
- * - children: possible extra elements that could be included (buttons, etc)
- * - notification: the notification to display, can be null
- *  - message: the message of the notification
- *  - notificationType: the type of the notification
+ *  - onDismiss: pass a function that causes the component to no longer be rendered
+ *  - notification: the notification to display, can be null
  */
 const NotificationWindow = props => {
   const { onDismiss, notification } = props;

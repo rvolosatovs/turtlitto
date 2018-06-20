@@ -2,20 +2,20 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-//Move these two to a different location?
+// TODO: Move these two to a different location
 import ConnectionBar from "../BottomBar/ConnectionBar";
 
 /**
- * An authentication screen. Upon a submit it will send the token in the
- * inputfield along with a callback function in case the token is incorrect.
+ * An authentication screen.
+ * Upon a submit it will send the token in the inputfield along with
+ * a callback function in case the token is incorrect.
  * App.js is responsible for its unrendering.
  * Author: S.A. Tanja
  *
  * Props:
- *  - onSubmit: A function that will send the token to the SRRS
+ *  - onSubmit: A function that describes what to do when the token is submitted
  *  - connectionStatus: The current connection status
  */
-
 class AuthenticationScreen extends Component {
   constructor(props) {
     super(props);

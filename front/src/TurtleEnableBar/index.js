@@ -5,17 +5,18 @@ import PropTypes from "prop-types";
 import media from "../media";
 
 /**
- * Simple bar with all the turtles
+ * Simple bar with all the turtles.
  * Author: S.A. Tanja
  * Author: H.E. van der Laan
  * Author: T.T.P. Franken
  * Author: B. Afonins
  *
  * Props:
- * - turtles: a list of turtles to be displayed in the bar
- *   - id: an identificator of the turtle. Should be unique.
+ *  - turtles: a list of turtles to be displayed in the bar
+ *   - id: identifier of a turtle
  *   - enabled: a boolean flag specifying whether the turtle is enabled
- * - onTurtleEnableChange: function to call when the turtle enable button is pressed. The first argument is the id of the turtle that is changed.
+ *  - onTurtleEnableChange: function to call when the turtle enable button is pressed. The first argument is the id of the turtle that is changed.
+ *  - className: gives the classname for css
  */
 
 const TurtleEnableBar = props => {

@@ -4,6 +4,12 @@ import { shallow } from "enzyme";
 import sendToServer from "../sendToServer";
 import { mountWithTheme } from "../testUtils";
 
+/*
+ * Test_items: InOutButton.js matchshot
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("InOutButton", () => {
   it("shows two buttons with go in or go out written on it", () => {
     const wrapper = mountWithTheme(<InOutButton onClick={() => {}} />);
@@ -11,6 +17,12 @@ describe("InOutButton", () => {
   });
 });
 
+/*
+ * Test_items: InOutButton.js functionality.
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("When clicked,", () => {
   const realFetch = global.fetch;
   let wrapper = null;

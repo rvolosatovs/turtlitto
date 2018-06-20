@@ -28,10 +28,10 @@ const COMMAND_DISPLAY_VALUES = {
  * Author: H.E. van der Laan
  * Author: T.T.P. Franken
  *
- * props:
- * - command: the currently active command
- * - turtles: an array of Turtles
- * - session: a string which holds the password needed to connect to the SRRS
+ * Props:
+ *  - command: the currently active command
+ *  - turtles: an array of Turtles
+ *  - session: a string which holds the password needed to connect to the SRRS
  */
 const Settings = props => {
   const { command, turtles, session } = props;

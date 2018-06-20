@@ -5,6 +5,12 @@ import App from "./App";
 
 jest.useFakeTimers();
 
+/* 
+ * Test_items: App.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: The User has logged in and has enabled a TURTLE.
+ */
 describe("App.js", () => {
   it("automatically reconnects", () => {
     //Establish a server and wait for a connection
@@ -69,8 +75,10 @@ describe("App.js", () => {
       const wrapper = shallow(<App />);
       wrapper.setState({ token: "testtoken", turtles: initialTurtles });
       wrapper.instance().connect();
-      // Needed to make App.js connect to the mock server.
-      // If you use runAllTimers, it goes in a loop, if you run it <3 times, it doesn't work.
+      /*
+       * Needed to make App.js connect to the mock server.
+       * If you use runAllTimers, it goes in a loop, if you run it <3 times, it doesn't work.
+       */
       jest.runOnlyPendingTimers();
       jest.runOnlyPendingTimers();
       jest.runOnlyPendingTimers();

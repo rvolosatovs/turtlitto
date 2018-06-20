@@ -3,12 +3,13 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 /**
- * Constructs a button for the Drop Ball command
+ * Constructs a button for the Drop Ball command.
  * Author: G.W. van der Heijden
  * Author: T.T.P. Franken
  *
  * Props:
- * - onClick: a function on what to do when the button is pressed
+ *  - onClick: a function on what to do when the button is pressed
+ *  - className: gives the classname for css
  */
 const DropBall = props => {
   return (

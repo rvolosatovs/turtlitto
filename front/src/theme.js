@@ -1,5 +1,7 @@
-// these colors are exposed by the styled-components ThemeProvider
-// and used within the application
+/*
+ * These colors are exposed by the styled-components ThemeProvider
+ * and used within the application
+ */
 export default {
   success: "#45bc21",
   warning: "#ffcc00",

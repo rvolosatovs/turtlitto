@@ -39,6 +39,18 @@ const StickyBottomContainer = styled.div`
   margin: 0;
 `;
 
+/**
+ * Main component that combines all other components
+ * Author: B. Afonins
+ * Author: T.T.P. Franken
+ * Author: G.W. van der Heijden
+ * Author: H.E. van der Laan
+ * Author: G.M. van der Sanden
+ * Author: S.A. Tanja
+ *
+ * Props:
+ *
+ */
 class App extends Component {
   constructor(props) {
     super(props);
@@ -63,7 +75,7 @@ class App extends Component {
     /*
      * Once enter the tablet mode, make sure
      * we transition to the settings page
-    */
+     */
     if (window.innerWidth >= screenSizes.md) {
       this.setState({ activePage: pageTypes.SETTINGS });
     }
@@ -93,6 +105,7 @@ class App extends Component {
 
   onConnectionClose(event) {
     this.setState({ connectionStatus: connectionTypes.DISCONNECTED });
+    //Try to reconnect automatically
     this.timer = setTimeout(() => {
       this.timer = null;
       this.connect();
@@ -143,9 +156,10 @@ class App extends Component {
     });
   }
 
-  /**
+  /*
    * The function AuthenticationScreen will call when a token has been
    * submitted.
+   *
    * @param token The token received from AuthenticationScreen.
    */
   authSubmit(token) {

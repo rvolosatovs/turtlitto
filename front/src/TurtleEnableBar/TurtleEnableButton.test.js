@@ -3,6 +3,12 @@ import TurtleEnableButton from "./TurtleEnableButton";
 import { shallowWithTheme } from "../testUtils";
 import theme from "../theme";
 
+/*
+ * Test_items: TurtleEnableButton.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("TurtleEnableButton", () => {
   describe("is active", () => {
     it("should match snapshot", () => {

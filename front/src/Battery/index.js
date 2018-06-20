@@ -14,6 +14,7 @@ import styled from "styled-components";
  *
  * Props:
  * - percentage: battery percentage
+ * - className: gives the classname for css
  */
 const Battery = props => {
   const { percentage, className } = props;

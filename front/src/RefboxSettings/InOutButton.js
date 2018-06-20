@@ -3,12 +3,12 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 /**
- * Constructs two buttons for in and out
+ * Constructs two buttons for in and out.
  * Author: G.W. van der Heijden
  * Author: T.T.P. Franken
  *
  * Props:
- * - onClick: a function on what to do when the button is pressed
+ *  - onClick: a function on what to do when the button is pressed
  */
 const InOutButton = props => {
   return (
