@@ -203,7 +203,10 @@ class App extends Component {
             <StickyBottomContainer>
               <Row bottom="xs">
                 <Col md={4} className={"hidden-xs hidden-sm"}>
-                  <RefboxField isPenalty={false} session={this.state.session} />
+                  <RefboxField
+                    isPenalty={this.state.command === "penalty_demo"}
+                    session={this.state.session}
+                  />
                 </Col>
                 <Col md={4} className={"hidden-xs hidden-sm"}>
                   <NotificationWindow
@@ -224,7 +227,7 @@ class App extends Component {
                   {activePage === pageTypes.REFBOX && (
                     <Fragment>
                       <RefboxField
-                        isPenalty={false}
+                        isPenalty={this.state.command === "penalty_demo"}
                         session={this.state.session}
                       />
                       <RefboxSettings session={this.state.session} />
