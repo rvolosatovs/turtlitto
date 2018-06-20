@@ -61,7 +61,7 @@ Object {
 `;
 
 exports[`renders without crashing 1`] = `
-.c4 {
+.c3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -75,18 +75,18 @@ exports[`renders without crashing 1`] = `
   align-items: center;
 }
 
-.c5 {
+.c4 {
   font-size: 4rem;
   padding-top: 0.6rem;
 }
 
-.c3 {
+.c2 {
   -webkit-flex-basis: 35%;
   -ms-flex-preferred-size: 35%;
   flex-basis: 35%;
 }
 
-.c6 {
+.c5 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -107,7 +107,7 @@ exports[`renders without crashing 1`] = `
   flex-basis: 35%;
 }
 
-.c7 {
+.c6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -124,7 +124,7 @@ exports[`renders without crashing 1`] = `
   flex-basis: 30%;
 }
 
-.c2 {
+.c1 {
   width: 90%;
   margin: 0 auto;
   padding: 1.5rem 0;
@@ -144,7 +144,7 @@ exports[`renders without crashing 1`] = `
   font-size: 2rem;
 }
 
-.c1 {
+.c7 {
   margin-left: auto;
   margin-right: auto;
   height: 4rem;
@@ -187,71 +187,6 @@ exports[`renders without crashing 1`] = `
     <div
       className="c0"
     >
-      <Styled(Dropdown)
-        currentValue="Pass demo"
-        enabled={true}
-        id="settings_role-dropdown"
-        onChange={[Function]}
-        values={
-          Array [
-            "Role assigner on",
-            "Role assigner off",
-            "Pass demo",
-            "Penalty mode",
-            "Ball Handling demo",
-          ]
-        }
-      >
-        <Dropdown
-          className="c1"
-          currentValue="Pass demo"
-          enabled={true}
-          id="settings_role-dropdown"
-          onChange={[Function]}
-          values={
-            Array [
-              "Role assigner on",
-              "Role assigner off",
-              "Pass demo",
-              "Penalty mode",
-              "Ball Handling demo",
-            ]
-          }
-        >
-          <select
-            className="c1"
-            disabled={false}
-            onChange={[Function]}
-            value="Pass demo"
-          >
-            <option
-              key="Role assigner on"
-            >
-              Role assigner on
-            </option>
-            <option
-              key="Role assigner off"
-            >
-              Role assigner off
-            </option>
-            <option
-              key="Pass demo"
-            >
-              Pass demo
-            </option>
-            <option
-              key="Penalty mode"
-            >
-              Penalty mode
-            </option>
-            <option
-              key="Ball Handling demo"
-            >
-              Ball Handling demo
-            </option>
-          </select>
-        </Dropdown>
-      </Styled(Dropdown)>
       <TurtleList
         turtles={
           Object {
@@ -306,18 +241,18 @@ exports[`renders without crashing 1`] = `
                     >
                       <styled.div>
                         <div
-                          className="c2"
+                          className="c1"
                         >
                           <styled.div>
                             <div
-                              className="c3"
+                              className="c2"
                             >
                               <Battery
                                 percentage={66}
                               >
                                 <styled.div>
                                   <div
-                                    className="c4"
+                                    className="c3"
                                   >
                                     <FontAwesomeIcon
                                       border={false}
@@ -367,7 +302,7 @@ exports[`renders without crashing 1`] = `
                                     </FontAwesomeIcon>
                                     <styled.span>
                                       <span
-                                        className="c5"
+                                        className="c4"
                                       >
                                         66
                                         %
@@ -380,7 +315,7 @@ exports[`renders without crashing 1`] = `
                           </styled.div>
                           <styled.div>
                             <div
-                              className="c6"
+                              className="c5"
                             >
                               <p>
                                 Turtle 
@@ -390,7 +325,7 @@ exports[`renders without crashing 1`] = `
                           </styled.div>
                           <styled.div>
                             <div
-                              className="c7"
+                              className="c6"
                             >
                               <Dropdown
                                 currentValue="INACTIVE"
@@ -527,6 +462,71 @@ exports[`renders without crashing 1`] = `
           </div>
         </Grid>
       </TurtleList>
+      <Styled(Dropdown)
+        currentValue="Pass demo"
+        enabled={true}
+        id="settings_role-dropdown"
+        onChange={[Function]}
+        values={
+          Array [
+            "Role assigner on",
+            "Role assigner off",
+            "Pass demo",
+            "Penalty mode",
+            "Ball Handling demo",
+          ]
+        }
+      >
+        <Dropdown
+          className="c7"
+          currentValue="Pass demo"
+          enabled={true}
+          id="settings_role-dropdown"
+          onChange={[Function]}
+          values={
+            Array [
+              "Role assigner on",
+              "Role assigner off",
+              "Pass demo",
+              "Penalty mode",
+              "Ball Handling demo",
+            ]
+          }
+        >
+          <select
+            className="c7"
+            disabled={false}
+            onChange={[Function]}
+            value="Pass demo"
+          >
+            <option
+              key="Role assigner on"
+            >
+              Role assigner on
+            </option>
+            <option
+              key="Role assigner off"
+            >
+              Role assigner off
+            </option>
+            <option
+              key="Pass demo"
+            >
+              Pass demo
+            </option>
+            <option
+              key="Penalty mode"
+            >
+              Penalty mode
+            </option>
+            <option
+              key="Ball Handling demo"
+            >
+              Ball Handling demo
+            </option>
+          </select>
+        </Dropdown>
+      </Styled(Dropdown)>
     </div>
   </styled.div>
 </Settings>
