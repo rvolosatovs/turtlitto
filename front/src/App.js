@@ -156,24 +156,20 @@ class App extends Component {
       headers: new Headers({
         Authorization: "Basic " + btoa(`user:${token}`)
       })
-    })
-      .then(response => {
-        if (response.status === 418) {
-          throw new Error("SRRS already in session");
-        } else if (!response.ok) {
-          throw new Error("Incorrect token");
-        }
-        return response;
-      })
-      .then(response => {
-        response.text().then(result => {
+    }).then(response => {
+      response
+        .text()
+        .then(result => {
+          if (!response.ok) {
+            throw new Error(result);
+          }
           this.setState({ loggedIn: true, session: result });
           this.connect();
+        })
+        .catch(error => {
+          this.setState({ authNotification: error.message });
         });
-      })
-      .catch(error => {
-        this.setState({ authNotification: error.message });
-      });
+    });
   }
 
   getNextNotification() {
