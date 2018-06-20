@@ -168,6 +168,10 @@ func (s *State) Validate() error {
 		return s.Command.Validate()
 	}
 	for _, ts := range s.Turtles {
+		if ts == nil {
+			continue
+		}
+
 		if err := ts.Validate(); err != nil {
 			return err
 		}

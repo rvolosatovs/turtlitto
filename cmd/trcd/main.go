@@ -145,7 +145,7 @@ func main() {
 						)
 						return
 					}
-					logger.Debug("Sent handshake",
+					logger.Info("Sent handshake",
 						zap.Reflect("handshake", hs),
 					)
 
