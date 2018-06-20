@@ -37,6 +37,7 @@ const Settings = props => {
   const { command, turtles, session } = props;
   return (
     <SettingsWrapper>
+      <TurtleList turtles={turtles} session={session} />
       <RoleDropdown
         id={"settings_role-dropdown"}
         currentValue={COMMAND_DISPLAY_VALUES[command]}
@@ -46,7 +47,6 @@ const Settings = props => {
         }}
         enabled={true}
       />
-      <TurtleList turtles={turtles} session={session} />
     </SettingsWrapper>
   );
 };
