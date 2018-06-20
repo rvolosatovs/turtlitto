@@ -2,6 +2,12 @@ import React from "react";
 import Battery from ".";
 import { mountWithTheme } from "../testUtils";
 
+/*
+ * Test_items: Battery index.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("Battery", () => {
   it("shows a full battery on 99%", () => {
     const wrapper = mountWithTheme(<Battery percentage={99} />);

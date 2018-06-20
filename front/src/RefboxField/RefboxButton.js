@@ -3,7 +3,8 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 /**
- * A button part of the refbox. Does a callback to its parent to handle onClick events
+ * A button part of the refbox.
+ * Does a callback to its parent to handle onClick events.
  * Author: S.A. Tanja
  * Author: G.W. van der Heijden
  *
@@ -11,6 +12,7 @@ import PropTypes from "prop-types";
  *  - teamColor: the team color of the button (cyan or magenta).
  *  - onClick: a function on what to do when the button is pressed
  *  - children: the children of the button
+ *  - className: gives the classname for css
  */
 const RefboxButton = props => {
   return (

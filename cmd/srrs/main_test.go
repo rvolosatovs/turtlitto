@@ -75,6 +75,10 @@ func init() {
 	}
 }
 
+//Test_items: init() in main.go
+//Input_spec: -
+//Output_spec: Pass or fail
+//Envir_needs: -
 func TestMain(m *testing.M) {
 	if err := flag.Set("unixSocket", unixSockPath); err != nil {
 		logger.Fatalf("Failed to set `socket` to %s: %s", unixSockPath, err)
@@ -115,6 +119,10 @@ func TestMain(m *testing.M) {
 	os.Exit(ret)
 }
 
+//Test_items: init() in main.go
+//Input_spec: -
+//Output_spec: Pass or fail
+//Envir_needs: -
 func TestAPI(t *testing.T) {
 	a := assert.New(t)
 

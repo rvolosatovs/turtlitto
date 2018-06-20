@@ -3,6 +3,12 @@ import RefboxButton from "./RefboxButton";
 import { shallowWithTheme } from "../testUtils";
 import theme from "../theme";
 
+/*
+ * Test_items: Refboxbutton.js
+ * Input_spec: -
+ * Output_spec: -
+ * Envir_needs: snapshot (automatically made, found in the __snapshot__ folder).
+ */
 describe("RefboxButton", () => {
   describe("is cyan", () => {
     it("should match snapshot", () => {

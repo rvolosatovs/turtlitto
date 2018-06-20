@@ -5,7 +5,11 @@ import Battery from "../Battery";
 import styled from "styled-components";
 import sendToServer from "../sendToServer";
 
-// The following values are used in the Turtle refbox. The property name (or key) is shown in the UI, while its value will be sent over to the TRC.
+/*
+ * The following values are used in the Turtle refbox.
+ * The property name (or key) is shown in the UI,
+ * while its value will be sent over to the TRC.
+ */
 const TEAM_VALUES = { Magenta: "magenta", Cyan: "cyan" };
 const HOME_VALUES = { "Yellow home": "yellow", "Blue home": "blue" };
 const ROLE_VALUES = {
@@ -41,18 +45,17 @@ const onChange = (id, propName, propValue, session) => {
 };
 
 /**
- * Show all details for a turtle
+ * Show all details for a turtle.
  * Author: H.E. van der Laan
  *
  * Props:
- * - turtle: An object containing the following turtle details:
+ *  - turtle: an object containing the following turtle details:
  *   - batteryvoltage: the current battery status of the turtle
  *   - homegoal: the current home goal of this turtle
- *   - id: the ID number of the turtle
  *   - role: the current role of this turtle
  *   - teamcolor: the current team of this turtle
- * - editable: whether this turtle's properties can be edited
- * - onChange: a function with two arguments that is called when one of the dropdowns is changed. The first argument is name of the prop that is changed, the second argument is its new value.
+ *  - editable: whether this turtle's properties can be edited
+ *  - id: identifier of a turtle
  */
 const Turtle = props => {
   const { batteryvoltage, homegoal, role, teamcolor } = props.turtle;
@@ -106,8 +109,7 @@ Turtle.propTypes = {
     teamcolor: PropTypes.string
   }).isRequired,
   id: PropTypes.string.isRequired,
-  editable: PropTypes.bool,
-  onChange: PropTypes.func
+  editable: PropTypes.bool
 };
 
 const BatterySection = styled.div`

@@ -25,7 +25,7 @@ const TAG_VALUES = {
  * - Throw in (TI)
  * - Corner (C)
  * - Penalty (P)
- * Also takes care of handling commands that the buttons represents
+ * Also takes care of handling commands that the buttons represents.
  * Author: S.A. Tanja
  * Author: G.W. van der Heijden
  *

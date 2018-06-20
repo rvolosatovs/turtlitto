@@ -3,16 +3,17 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 /**
- * A button that keeps track whether the turtle is enabled
- * Is reflected to the user in terms in terms of button appearance
+ * A button that keeps track whether the turtle is enabled.
+ * It is reflected to the user in terms in terms of button appearance.
  * Author: S.A. Tanja
  * Author: H.E. van der Laan
  * Author: T.T.P. Franken
  *
  * Props:
- * - enabled: a boolean flag specifying whether is enabled or not
- * - onTurtleEnableChange: function to call when the turtle enable button is pressed
- * - id: identificator of a turtle
+ *  - enabled: a boolean flag specifying whether is enabled or not
+ *  - onTurtleEnableChange: function to call when the turtle enable button is pressed
+ *  - id: identifier of a turtle
+ *  - className: gives the classname for css
  */
 const TurtleEnableButton = props => {
   const { enabled, id, className, onTurtleEnableChange } = props;
