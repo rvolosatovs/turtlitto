@@ -245,9 +245,7 @@ func RandomState() *api.State {
 	if rand.Intn(2) == 0 {
 		pld.Command = RandomCommand()
 	}
-	if rand.Intn(2) == 0 {
-		pld.Turtles = RandomTurtleStateMap()
-	}
+	pld.Turtles = RandomTurtleStateMap()
 	return &pld
 }
 
