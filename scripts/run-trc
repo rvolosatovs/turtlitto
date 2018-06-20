@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+version="1.0.0"
+
+cd $(mktemp -d)
+
+
+echo "Downloading mock TRC..."
+curl -sL "https://github.com/rvolosatovs/turtlitto/releases/download/v${version}/trcd-$(go env GOOS)-$(go env GOARCH)" -o trcd
+chmod +x ./trcd
+
+echo "Starting mock TRC..."
+rm -f /tmp/trc.sock
+./trcd -unixSocket /tmp/trc.sock $@ 2>&1 | humanlog

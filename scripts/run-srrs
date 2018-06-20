@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+
+version="1.0.0"
+
+cd $(mktemp -d)
+
+echo "Generating TLS certificates..."
+go run $(go env GOROOT)/src/crypto/tls/generate_cert.go -ecdsa-curve P256 -host $(curl -sL ifconfig.co)
+bin=$(which srrs-linux-amd64)
+
+echo "Downloading backend..."
+curl -sL "https://github.com/rvolosatovs/turtlitto/releases/download/v${version}/srrs-$(go env GOOS)-$(go env GOARCH)" -o srrs
+chmod +x ./srrs
+
+echo "Downloading frontend..."
+curl -sL "https://github.com/rvolosatovs/turtlitto/releases/download/v${version}/front.zip" -O
+unzip -q front.zip
+
+echo "Starting SRR..."
+sudo ./srrs -unixSocket /tmp/trc.sock -cert cert.pem -key key.pem -tls ":443" -tcp ":80" -static front $@ 2>&1 | humanlog
