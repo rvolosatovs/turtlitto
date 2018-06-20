@@ -25,12 +25,16 @@ func TestState(t *testing.T) {
 		{
 			Expected: &api.State{
 				Turtles: map[string]*api.TurtleState{
-					"foo": {
+					"1": {
 						BatteryVoltage: apitest.Uint8Ptr(42),
 					},
-					"bar": {
+					"2": {
 						HomeGoal: api.HomeGoalBlue,
 					},
+					"3": {},
+					"4": {},
+					"5": {},
+					"6": {},
 				},
 			},
 		},
@@ -38,15 +42,28 @@ func TestState(t *testing.T) {
 			Expected: &api.State{
 				Command: api.CommandBallHandlingDemo,
 				Turtles: map[string]*api.TurtleState{
-					"bar": {
+					"1": {
 						HomeGoal: api.HomeGoalBlue,
 					},
+					"2": {},
+					"3": {},
+					"4": {},
+					"5": {},
+					"6": {},
 				},
 			},
 		},
 		{
 			Expected: &api.State{
 				Command: api.CommandCornerMagenta,
+				Turtles: map[string]*api.TurtleState{
+					"1": {},
+					"2": {},
+					"3": {},
+					"4": {},
+					"5": {},
+					"6": {},
+				},
 			},
 		},
 	} {
@@ -92,7 +109,16 @@ func TestState(t *testing.T) {
 			ctx := context.Background()
 
 			st := conn.State(ctx)
-			a.Equal(&api.State{}, st)
+			a.Equal(&api.State{
+				Turtles: map[string]*api.TurtleState{
+					"1": {},
+					"2": {},
+					"3": {},
+					"4": {},
+					"5": {},
+					"6": {},
+				},
+			}, st)
 
 			ch, closeFn, err := conn.SubscribeStateChanges(ctx)
 			a.NoError(err)
@@ -147,19 +173,28 @@ func TestSetState(t *testing.T) {
 		{
 			Input: &api.State{
 				Turtles: map[string]*api.TurtleState{
-					"foo": {
+					"1": {
 						BatteryVoltage: apitest.Uint8Ptr(42),
 					},
-					"bar": {
+					"2": {
 						HomeGoal: api.HomeGoalBlue,
 					},
+					"3": {},
+					"4": {},
+					"5": {},
+					"6": {},
 				},
 			},
 			Output: &api.State{
 				Turtles: map[string]*api.TurtleState{
-					"bar": {
+					"1": {},
+					"2": {
 						HomeGoal: api.HomeGoalBlue,
 					},
+					"3": {},
+					"4": {},
+					"5": {},
+					"6": {},
 				},
 			},
 		},
@@ -223,7 +258,16 @@ func TestSetState(t *testing.T) {
 			ctx := context.Background()
 
 			st := conn.State(ctx)
-			a.Equal(&api.State{}, st)
+			a.Equal(&api.State{
+				Turtles: map[string]*api.TurtleState{
+					"1": {},
+					"2": {},
+					"3": {},
+					"4": {},
+					"5": {},
+					"6": {},
+				},
+			}, st)
 
 			ch, closeFn, err := conn.SubscribeStateChanges(ctx)
 			a.NoError(err)

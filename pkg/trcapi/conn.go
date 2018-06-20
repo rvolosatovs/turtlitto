@@ -67,15 +67,24 @@ func Connect(ver semver.Version, w io.Writer, r io.Reader) (*Conn, error) {
 	dec := json.NewDecoder(r)
 	dec.DisallowUnknownFields()
 	conn := &Conn{
-		version:       ver,
-		token:         &atomic.Value{},
-		closeChMu:     &sync.RWMutex{},
-		closeCh:       make(chan struct{}),
-		decoder:       dec,
-		encoder:       json.NewEncoder(w),
-		errCh:         make(chan error),
-		stateMu:       &sync.RWMutex{},
-		state:         &api.State{},
+		version:   ver,
+		token:     &atomic.Value{},
+		closeChMu: &sync.RWMutex{},
+		closeCh:   make(chan struct{}),
+		decoder:   dec,
+		encoder:   json.NewEncoder(w),
+		errCh:     make(chan error),
+		stateMu:   &sync.RWMutex{},
+		state: &api.State{
+			Turtles: map[string]*api.TurtleState{
+				"1": {},
+				"2": {},
+				"3": {},
+				"4": {},
+				"5": {},
+				"6": {},
+			},
+		},
 		stateSubsMu:   &sync.RWMutex{},
 		stateSubs:     make(map[chan<- struct{}]struct{}),
 		pendingReqsMu: &sync.RWMutex{},
