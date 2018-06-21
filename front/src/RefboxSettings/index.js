@@ -50,6 +50,7 @@ const DropBallButton = styled(DropBall)`
 const Refbox = styled.div`
   height: 50%;
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
   padding: 0.5rem;
