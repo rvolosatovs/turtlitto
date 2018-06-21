@@ -74,7 +74,7 @@ class App extends Component {
      * Once enter the tablet mode, make sure
      * we transition to the settings page
      */
-    if (window.innerWidth >= screenSizes.md) {
+    if (document.body.clientWidth >= screenSizes.md) {
       this.setState({ activePage: pageTypes.SETTINGS });
     }
   }
