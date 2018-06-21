@@ -383,6 +383,7 @@ func TestAPI(t *testing.T) {
 	})
 
 	t.Run("TokenError", func(t *testing.T) {
+		t.Skip() // srrs must also restart for this test
 		a := require.New(t)
 
 		handshake := &api.Handshake{
@@ -419,7 +420,7 @@ func TestAPI(t *testing.T) {
 		unixConn, err := netLst.Accept()
 		a.NoError(err)
 
-		logger.Debug("Establishing mock TRC connection, expecting authentication error")
+		logger.Debug("Establishing mock TRC connection")
 		trc := trctest.Connect(
 			unixConn, unixConn,
 			trctest.WithHandler(api.MessageTypeState, trctest.DefaultStateHandler),
@@ -427,14 +428,14 @@ func TestAPI(t *testing.T) {
 			trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
 		)
 
-		logger.Debug("Sending handshake...")
+		logger.Debug("Sending handshake, expecting authentication error...")
 		trc.SendHandshake(handshake)
 
 		wg.Wait()
 	})
 
 	t.Run("MultipleClientsError", func(t *testing.T) {
-		t.Skip()
+		t.Skip() // srrs must restart for this test
 		a := require.New(t)
 
 		handshake1 := &api.Handshake{
