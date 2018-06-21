@@ -96,30 +96,32 @@ exports[`AuthenticationScreen should match snapshot 1`] = `
               Token:
             </label>
           </styled.label>
-          <styled.input
+          <TokenInput
+            id="auth-screen_token-input"
             onChange={[Function]}
             placeholder="Enter the TRC token"
             type="text"
           >
             <input
               className="c3"
+              id="auth-screen_token-input"
               onChange={[Function]}
               placeholder="Enter the TRC token"
               type="text"
             />
-          </styled.input>
-          <styled.button
-            id="login-button"
+          </TokenInput>
+          <LoginButton
+            id="auth-screen__login-button"
             onClick={[Function]}
           >
             <button
               className="c4"
-              id="login-button"
+              id="auth-screen__login-button"
               onClick={[Function]}
             >
               Log in
             </button>
-          </styled.button>
+          </LoginButton>
         </div>
       </styled.div>
       <Styled(styled.div)>

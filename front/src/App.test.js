@@ -2,6 +2,7 @@ import React from "react";
 import { Server } from "mock-socket";
 import { shallow } from "enzyme";
 import App from "./App";
+import { mountWithTheme } from "./testUtils";
 
 jest.useFakeTimers();
 
@@ -104,6 +105,140 @@ describe("App.js", () => {
       initialTurtles = { 1: { battery: 77, enabled: true } };
       serverMessage = "{}\n";
       expectedState = '{"1":{"battery":77,"enabled":true}}';
+    });
+  });
+
+  describe("the user submits the login form", () => {
+    let fetchSpy = null;
+    let wrapper = null;
+    const token = "test-token";
+    const session = "session";
+
+    beforeEach(() => {
+      fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
+        Promise.resolve({
+          text: () => Promise.resolve(""),
+          ok: true
+        })
+      );
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it("should call `authSubmit` with the input token", () => {
+      wrapper = mountWithTheme(<App />);
+      wrapper.instance().authSubmit = jest.fn();
+      wrapper.update();
+      wrapper
+        .find("TokenInput")
+        .simulate("change", { target: { value: token } });
+      wrapper.find("LoginButton").simulate("click");
+
+      const authSubmit = wrapper.instance().authSubmit;
+      expect(authSubmit.mock.calls.length).toBe(1);
+      expect(authSubmit).toBeCalledWith(token);
+    });
+
+    it("should send an authentication request only once", () => {
+      wrapper = mountWithTheme(<App />);
+      wrapper.find("LoginButton").simulate("click");
+
+      expect(fetchSpy.mock.calls.length).toBe(1);
+    });
+
+    it("should have correct authorization headers", () => {
+      wrapper = mountWithTheme(<App />);
+      wrapper
+        .find("TokenInput")
+        .simulate("change", { target: { value: token } });
+      wrapper.find("LoginButton").simulate("click");
+
+      const actualHeaders = fetchSpy.mock.calls[0][1].headers;
+      const expectedHeaders = new Headers({
+        Authorization: "Basic " + btoa(`user:${token}`)
+      });
+
+      expect(expectedHeaders).toEqual(actualHeaders);
+    });
+
+    describe("the user inputs a valid token", () => {
+      beforeEach(() => {
+        fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
+          Promise.resolve({
+            text: () => Promise.resolve(session),
+            ok: true
+          })
+        );
+        wrapper = mountWithTheme(<App />);
+        wrapper
+          .find("TokenInput")
+          .simulate("change", { target: { value: token } });
+        wrapper.find("LoginButton").simulate("click");
+      });
+
+      it("should be logged in", () => {
+        expect(wrapper.state().loggedIn).toBe(true);
+        expect(wrapper.state().session).toBe(session);
+      });
+
+      it("should match snapshot", () => {
+        wrapper.update();
+        expect(wrapper).toMatchSnapshot();
+      });
+
+      describe("the user enables a turtle", () => {
+        it("the turtle should become enabled", () => {
+          wrapper.setState({
+            turtles: [
+              {
+                id: "1",
+                enabled: false
+              },
+              {
+                id: "2",
+                enabled: false
+              },
+              {
+                id: "3",
+                enabled: false
+              }
+            ]
+          });
+          wrapper.update();
+          const buttonWrapper = wrapper.find("TurtleEnableButton").first();
+          buttonWrapper.simulate("click");
+
+          expect(wrapper.state().turtles[0].enabled).toBe(true);
+        });
+      });
+    });
+
+    describe("the user inputs an invalid token", () => {
+      beforeEach(() => {
+        fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
+          Promise.resolve({
+            text: () => Promise.resolve("Error message"),
+            ok: false
+          })
+        );
+        wrapper = mountWithTheme(<App />);
+        wrapper
+          .find("TokenInput")
+          .simulate("change", { target: { value: token } });
+        wrapper.find("LoginButton").simulate("click");
+      });
+
+      it("should not be logged in", () => {
+        expect(wrapper.state().loggedIn).toBe(false);
+        expect(wrapper.state().session).toBe("");
+      });
+
+      it("should match snapshot", () => {
+        wrapper.update();
+        expect(wrapper).toMatchSnapshot();
+      });
     });
   });
 });
