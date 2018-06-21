@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"sync"
@@ -22,6 +23,7 @@ import (
 	"github.com/rvolosatovs/turtlitto/pkg/trcapi/trctest"
 	"github.com/rvolosatovs/turtlitto/pkg/webapi"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 )
 
@@ -126,255 +128,450 @@ func TestMain(m *testing.M) {
 func TestAPI(t *testing.T) {
 	a := assert.New(t)
 
-	handshake := &api.Handshake{
-		Version: trcapi.DefaultVersion,
-		Token:   "test3",
-	}
+	t.Run("ExpectedBehaviour", func(t *testing.T) {
 
-	var sessionKey string
+		handshake := &api.Handshake{
+			Version: trcapi.DefaultVersion,
+			Token:   "adminadmin",
+		}
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+		var sessionKey string
 
-		req, err := http.NewRequest(http.MethodGet, "http://"+defaultTCPAddress+"/"+webapi.AuthEndpoint, nil)
+		wg := &sync.WaitGroup{}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			req, err := http.NewRequest(http.MethodGet, "http://"+defaultTCPAddress+"/"+webapi.AuthEndpoint, nil)
+			a.NoError(err)
+			req.SetBasicAuth("", handshake.Token)
+
+			logger.Debug("Sending authentication request...")
+			resp, err := http.DefaultClient.Do(req)
+			a.NoError(err, "Failed to authenticate")
+			a.Equal(http.StatusOK, resp.StatusCode, "Received status: %s", resp.Status)
+
+			defer resp.Body.Close()
+
+			b, err := ioutil.ReadAll(resp.Body)
+			a.NoError(err)
+
+			logger.With("key", string(b)).Debug("Got session key")
+			sessionKey = string(b)
+		}()
+
+		logger.Debug("Waiting for connection on Unix socket...")
+		unixConn, err := netLst.Accept()
+		a.NoError(err)
+		defer unixConn.Close()
+
+		logger.Debug("Establishing mock TRC connection...")
+		msgCh := make(chan *api.Message)
+		trc := trctest.Connect(
+			unixConn, unixConn,
+			trctest.WithHandler(api.MessageTypePing, func(msg *api.Message) (*api.Message, error) {
+				return trctest.DefaultPingHandler(msg)
+			}),
+			trctest.WithHandler(api.MessageTypeHandshake, func(msg *api.Message) (*api.Message, error) {
+				a.NotNil(msg.ParentID)
+				a.NotEmpty(msg.ParentID)
+				a.NotEmpty(msg.MessageID)
+				a.NotEqual(msg.MessageID, msg.ParentID)
+				a.NotEmpty(msg.Payload)
+				return nil, nil
+			}),
+			trctest.WithHandler(api.MessageTypeState, func(msg *api.Message) (*api.Message, error) {
+				msgCh <- msg
+				return trctest.DefaultStateHandler(msg)
+			}),
+		)
+
+		logger.Debug("Sending handshake...")
+		err = trc.SendHandshake(handshake)
+		a.NoError(err)
+
+		logger.Debug("Waiting for authentication...")
+		wg.Wait()
+
+		wsAddr := "ws://localhost" + defaultTCPAddress + "/" + webapi.StateEndpoint
+		logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
+		wsConn, _, err := websocket.DefaultDialer.Dial(wsAddr, nil)
+		a.NoError(err, "Failed to open WebSocket")
+		defer wsConn.Close()
+
+		err = wsConn.WriteJSON(sessionKey)
+		a.NoError(err)
+
+		if t.Failed() {
+			t.Skip("initialisation failed, skipping testcases")
+		}
+
+		t.Run("TRC->SRRC/state", func(t *testing.T) {
+			for i := 0; i < messageCount; i++ {
+				t.Run(strconv.Itoa(i), func(t *testing.T) {
+					expected := apitest.RandomState()
+					if err := expected.Validate(); err != nil {
+						t.Fatal(errors.Wrap(err, "invalid state generated"))
+					}
+
+					logger.Debug("Sending random state from TRC...")
+					err = trc.SendState(expected)
+					a.NoError(err)
+
+					var got api.State
+					logger.Debug("Receiving random state on WebSocket...")
+					err = wsConn.ReadJSON(&got)
+					a.NoError(err)
+					//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+				})
+			}
+		})
+
+		t.Run("SRRC->TRC/turtles", func(t *testing.T) {
+			for i := 0; i < messageCount; i++ {
+				t.Run(strconv.Itoa(i), func(t *testing.T) {
+					expected := &api.State{
+						Turtles: apitest.RandomTurtleStateMap(),
+					}
+					for len(expected.Turtles) == 0 {
+						expected.Turtles = apitest.RandomTurtleStateMap()
+					}
+					if err := expected.Validate(); err != nil {
+						panic(errors.Wrap(err, "invalid state generated"))
+					}
+
+					b, err := json.Marshal(expected.Turtles)
+					a.NoError(err)
+
+					req, err := http.NewRequest(http.MethodPost, "http://"+defaultTCPAddress+"/"+webapi.TurtleEndpoint, bytes.NewReader(b))
+					a.NoError(err)
+					req.SetBasicAuth("", sessionKey)
+
+					errCh := make(chan error, 1)
+					go func() {
+						resp, err := http.DefaultClient.Do(req)
+						if err != nil {
+							errCh <- err
+						}
+						defer resp.Body.Close()
+
+						a.Equal(http.StatusOK, resp.StatusCode, "Received status: %s", resp.Status)
+
+						b, err := ioutil.ReadAll(resp.Body)
+						if err != nil {
+							errCh <- errors.Wrap(err, "failed to read response body")
+						}
+
+						if len(b) > 0 {
+							errCh <- errors.Errorf("server returned error: %s", string(b))
+						}
+						errCh <- nil
+					}()
+
+					var msg *api.Message
+					select {
+					case <-time.After(timeout):
+						t.Fatal("Timed out waiting for message to arrive at SRRS")
+					case msg = <-msgCh:
+					}
+
+					a.Equal(api.MessageTypeState, msg.Type)
+					a.Nil(msg.ParentID)
+					a.NotEmpty(msg.MessageID)
+
+					select {
+					case <-time.After(timeout):
+						t.Fatal("Timed out sending state to SRRS")
+					case err = <-errCh:
+						if !a.NoError(err) {
+							return
+						}
+					}
+
+					var got api.State
+					err = json.Unmarshal(msg.Payload, &got)
+					a.NoError(err)
+					//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+
+					got = api.State{}
+					err = wsConn.ReadJSON(&got)
+					a.NoError(err)
+					//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+				})
+			}
+		})
+
+		t.Run("SRRC->TRC/command", func(t *testing.T) {
+			for i := 0; i < messageCount; i++ {
+				t.Run(strconv.Itoa(i), func(t *testing.T) {
+					expected := &api.State{
+						Command: apitest.RandomCommand(),
+					}
+
+					b, err := json.Marshal(expected.Command)
+					a.NoError(err)
+
+					req, err := http.NewRequest(http.MethodPost, "http://"+defaultTCPAddress+"/"+webapi.CommandEndpoint, bytes.NewReader(b))
+					a.NoError(err)
+					req.SetBasicAuth("", sessionKey)
+
+					errCh := make(chan error, 1)
+					go func() {
+						logger.Debug("Sending command to SRRS...")
+						resp, err := http.DefaultClient.Do(req)
+						if err != nil {
+							errCh <- err
+						}
+						defer resp.Body.Close()
+
+						a.Equal(http.StatusOK, resp.StatusCode, "Received status: %s", resp.Status)
+
+						b, err := ioutil.ReadAll(resp.Body)
+						if err != nil {
+							errCh <- errors.Wrap(err, "failed to read response body")
+						}
+
+						if len(b) > 0 {
+							errCh <- errors.Errorf("server returned error: %s", string(b))
+						}
+						errCh <- nil
+					}()
+
+					var msg *api.Message
+					select {
+					case <-time.After(timeout):
+						t.Fatal("Timed out waiting for message to arrive at SRRS")
+					case msg = <-msgCh:
+					}
+
+					a.Equal(api.MessageTypeState, msg.Type)
+					a.Nil(msg.ParentID)
+					a.NotEmpty(msg.MessageID)
+
+					select {
+					case <-time.After(timeout):
+						t.Fatal("Timed out sending command to SRRS")
+					case err = <-errCh:
+						if !a.NoError(err) {
+							return
+						}
+					}
+
+					var got api.State
+					err = json.Unmarshal(msg.Payload, &got)
+					a.NoError(err)
+					//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+
+					got = api.State{}
+					err = wsConn.ReadJSON(&got)
+					a.NoError(err)
+					//a.Equal(expected, &got) // TODO: enable, once diffs are sent
+				})
+			}
+		})
+	})
+
+	t.Run("EndpointError", func(t *testing.T) {
+		a := require.New(t)
+
+		handshake := &api.Handshake{
+			Version: trcapi.DefaultVersion,
+			Token:   "wachtwoord1",
+		}
+		req, err := http.NewRequest(http.MethodGet, "http://"+defaultTCPAddress+"/"+path.Join("api", "v1"), nil)
 		a.NoError(err)
 		req.SetBasicAuth("", handshake.Token)
 
 		logger.Debug("Sending authentication request...")
 		resp, err := http.DefaultClient.Do(req)
-		if !a.NoError(err) {
-			logger.With("error", err).Error("Failed to authenticate")
-			return
-		}
+		a.NoError(err)
 		defer resp.Body.Close()
+		logger.Debug("Received " + resp.Status)
+		a.Equal(http.StatusNotFound, resp.StatusCode, "Received status: %s", resp.Status)
+	})
 
-		b, err := ioutil.ReadAll(resp.Body)
+	t.Run("TokenError", func(t *testing.T) {
+		t.Skip() // srrs must also restart for this test
+		a := require.New(t)
+
+		handshake := &api.Handshake{
+			Version: trcapi.DefaultVersion,
+			Token:   "theRightToken",
+		}
+
+		falseToken := "theWrongToken"
+
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+
+		// go-routine and main function are swapped to allow early termination
+		go func() {
+			req, err := http.NewRequest(http.MethodGet, "http://"+defaultTCPAddress+"/"+webapi.AuthEndpoint, nil)
+			a.NoError(err)
+			req.SetBasicAuth("", falseToken)
+
+			logger.Debug("Sending authentication request...")
+			resp, err := http.DefaultClient.Do(req)
+			a.NoError(err)
+			defer resp.Body.Close()
+			if resp.StatusCode != http.StatusUnauthorized && resp.StatusCode != http.StatusForbidden {
+				if resp.StatusCode == http.StatusOK {
+					logger.Error("Authentication was successful while token was invalid: " + resp.Status)
+					t.Fail()
+				}
+				logger.Error("Authentication failed with wrong error code: " + resp.Status)
+			}
+			wg.Done()
+		}()
+
+		logger.Debug("Waiting for connection on Unix socket...")
+		unixConn, err := netLst.Accept()
 		a.NoError(err)
 
-		logger.With("key", string(b)).Debug("Got session key")
-		sessionKey = string(b)
-	}()
+		logger.Debug("Establishing mock TRC connection")
+		trc := trctest.Connect(
+			unixConn, unixConn,
+			trctest.WithHandler(api.MessageTypeState, trctest.DefaultStateHandler),
+			trctest.WithHandler(api.MessageTypePing, trctest.DefaultPingHandler),
+			trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
+		)
 
-	logger.Debug("Waiting for connection on Unix socket...")
-	unixConn, err := netLst.Accept()
-	a.NoError(err)
-	defer unixConn.Close()
+		logger.Debug("Sending handshake, expecting authentication error...")
+		trc.SendHandshake(handshake)
 
-	logger.Debug("Establishing mock TRC connection...")
-	msgCh := make(chan *api.Message)
-	trc := trctest.Connect(
-		unixConn, unixConn,
-		trctest.WithHandler(api.MessageTypePing, func(msg *api.Message) (*api.Message, error) {
-			return trctest.DefaultPingHandler(msg)
-		}),
-		trctest.WithHandler(api.MessageTypeHandshake, func(msg *api.Message) (*api.Message, error) {
-			a.NotNil(msg.ParentID)
-			a.NotEmpty(msg.ParentID)
-			a.NotEmpty(msg.MessageID)
-			a.NotEqual(msg.MessageID, msg.ParentID)
-			a.NotEmpty(msg.Payload)
-			return nil, nil
-		}),
-		trctest.WithHandler(api.MessageTypeState, func(msg *api.Message) (*api.Message, error) {
-			msgCh <- msg
-			return trctest.DefaultStateHandler(msg)
-		}),
-	)
-
-	logger.Debug("Sending handshake...")
-	err = trc.SendHandshake(handshake)
-	a.NoError(err)
-
-	logger.Debug("Waiting for authentication...")
-	wg.Wait()
-	if t.Failed() {
-		t.FailNow()
-	}
-
-	wsAddr := "ws://localhost" + defaultTCPAddress + "/" + webapi.StateEndpoint
-	logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
-	wsConn, _, err := websocket.DefaultDialer.Dial(wsAddr, nil)
-	if !a.NoError(err) {
-		t.Fatal("Failed to open WebSocket")
-	}
-	defer wsConn.Close()
-
-	err = wsConn.WriteJSON(sessionKey)
-	a.NoError(err)
-
-	t.Run("TRC->SRRC/state", func(t *testing.T) {
-		for i := 0; i < messageCount; i++ {
-			t.Run(strconv.Itoa(i), func(t *testing.T) {
-				a = assert.New(t)
-
-				expected := apitest.RandomState()
-				if err := expected.Validate(); err != nil {
-					panic(errors.Wrap(err, "invalid state generated"))
-				}
-
-				logger.Debug("Sending random state from TRC...")
-				err = trc.SendState(expected)
-				a.NoError(err)
-
-				var got api.State
-				logger.Debug("Receiving random state on WebSocket...")
-				err = wsConn.ReadJSON(&got)
-				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
-			})
-		}
+		wg.Wait()
 	})
 
-	t.Run("SRRC->TRC/turtles", func(t *testing.T) {
-		for i := 0; i < messageCount; i++ {
-			t.Run(strconv.Itoa(i), func(t *testing.T) {
-				a = assert.New(t)
+	t.Run("MultipleClientsError", func(t *testing.T) {
+		t.Skip() // srrs must restart for this test
+		a := require.New(t)
 
-				expected := &api.State{
-					Turtles: apitest.RandomTurtleStateMap(),
-				}
-				for len(expected.Turtles) == 0 {
-					expected.Turtles = apitest.RandomTurtleStateMap()
-				}
-				if err := expected.Validate(); err != nil {
-					panic(errors.Wrap(err, "invalid state generated"))
-				}
-
-				b, err := json.Marshal(expected.Turtles)
-				a.NoError(err)
-
-				req, err := http.NewRequest(http.MethodPost, "http://"+defaultTCPAddress+"/"+webapi.TurtleEndpoint, bytes.NewReader(b))
-				a.NoError(err)
-				req.SetBasicAuth("", sessionKey)
-
-				errCh := make(chan error, 1)
-				go func() {
-					resp, err := http.DefaultClient.Do(req)
-					if err != nil {
-						errCh <- err
-					}
-					defer resp.Body.Close()
-
-					a.Equal(resp.StatusCode, http.StatusOK)
-
-					b, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						errCh <- errors.Wrap(err, "failed to read response body")
-					}
-
-					if len(b) > 0 {
-						errCh <- errors.Errorf("server returned error: %s", string(b))
-					}
-					errCh <- nil
-				}()
-
-				var msg *api.Message
-				select {
-				case <-time.After(timeout):
-					t.Fatal("Timed out waiting for message to arrive at SRRS")
-				case msg = <-msgCh:
-				}
-
-				a.Equal(msg.Type, api.MessageTypeState)
-				a.Nil(msg.ParentID)
-				a.NotEmpty(msg.MessageID)
-
-				select {
-				case <-time.After(timeout):
-					t.Fatal("Timed out sending state to SRRS")
-				case err = <-errCh:
-					if !a.NoError(err) {
-						return
-					}
-				}
-
-				var got api.State
-				err = json.Unmarshal(msg.Payload, &got)
-				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
-
-				got = api.State{}
-				err = wsConn.ReadJSON(&got)
-				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
-
-				wg.Wait()
-			})
+		handshake1 := &api.Handshake{
+			Version: trcapi.DefaultVersion,
+			Token:   "correctHorseBatteryStaple",
 		}
-	})
-
-	t.Run("SRRC->TRC/command", func(t *testing.T) {
-		for i := 0; i < messageCount; i++ {
-			t.Run(strconv.Itoa(i), func(t *testing.T) {
-				a = assert.New(t)
-
-				expected := &api.State{
-					Command: apitest.RandomCommand(),
-				}
-
-				b, err := json.Marshal(expected.Command)
-				a.NoError(err)
-
-				req, err := http.NewRequest(http.MethodPost, "http://"+defaultTCPAddress+"/"+webapi.CommandEndpoint, bytes.NewReader(b))
-				a.NoError(err)
-				req.SetBasicAuth("", sessionKey)
-
-				errCh := make(chan error, 1)
-				go func() {
-					logger.Debug("Sending command to SRRS...")
-					resp, err := http.DefaultClient.Do(req)
-					if err != nil {
-						errCh <- err
-					}
-					defer resp.Body.Close()
-
-					a.Equal(resp.StatusCode, http.StatusOK)
-
-					b, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						errCh <- errors.Wrap(err, "failed to read response body")
-					}
-
-					if len(b) > 0 {
-						errCh <- errors.Errorf("server returned error: %s", string(b))
-					}
-					errCh <- nil
-				}()
-
-				var msg *api.Message
-				select {
-				case <-time.After(timeout):
-					t.Fatal("Timed out waiting for message to arrive at SRRS")
-				case msg = <-msgCh:
-				}
-
-				a.Equal(msg.Type, api.MessageTypeState)
-				a.Nil(msg.ParentID)
-				a.NotEmpty(msg.MessageID)
-
-				select {
-				case <-time.After(timeout):
-					t.Fatal("Timed out sending command to SRRS")
-				case err = <-errCh:
-					if !a.NoError(err) {
-						return
-					}
-				}
-
-				var got api.State
-				err = json.Unmarshal(msg.Payload, &got)
-				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
-
-				got = api.State{}
-				err = wsConn.ReadJSON(&got)
-				a.NoError(err)
-				//a.Equal(expected, &got) // TODO: enable, once diffs are sent
-
-				wg.Wait()
-			})
+		handshake2 := &api.Handshake{
+			Version: trcapi.DefaultVersion,
+			Token:   "wrongHorseBatteryStaple",
 		}
+
+		var sessionKey string
+
+		wg := &sync.WaitGroup{}
+		wg.Add(1)
+		// first connect
+		go func() {
+			defer wg.Done()
+
+			req, err := http.NewRequest(http.MethodGet, "http://"+defaultTCPAddress+"/"+webapi.AuthEndpoint, nil)
+			a.NoError(err)
+			req.SetBasicAuth("", handshake1.Token)
+
+			logger.Debug("Sending first authentication request...")
+			resp, err := http.DefaultClient.Do(req)
+			a.NoError(err, "Failed to authenticate")
+			a.Equal(http.StatusOK, resp.StatusCode, "Received status: %s", resp.Status)
+
+			defer resp.Body.Close()
+
+			b, err := ioutil.ReadAll(resp.Body)
+			a.NoError(err)
+
+			logger.With("key", string(b)).Debug("Got session key")
+			sessionKey = string(b)
+		}()
+
+		// function that tries to connect using handshake 2
+		trySecondConnect := func() {
+
+			req, err := http.NewRequest(http.MethodGet, "http://"+defaultTCPAddress+"/"+webapi.AuthEndpoint, nil)
+			a.NoError(err, "Error occurred while generating request")
+			req.SetBasicAuth("", handshake2.Token)
+
+			logger.Debug("Sending second authentication request...")
+			resp, err := http.DefaultClient.Do(req)
+			a.NoError(err)
+
+			if resp.StatusCode != http.StatusUnauthorized && resp.StatusCode != http.StatusForbidden {
+				if resp.StatusCode == http.StatusOK {
+					logger.Error("Secondary connection succeeded")
+					t.Fail()
+				} else {
+					logger.Error("Secondary connection failed with wrong error code: " + resp.Status)
+				}
+			}
+			resp.Body.Close()
+		}
+
+		logger.Debug("Waiting for connection on Unix socket...")
+		unixConn, err := netLst.Accept()
+		a.NoError(err)
+		defer unixConn.Close()
+
+		logger.Debug("Establishing mock TRC connection...")
+		trc := trctest.Connect(
+			unixConn, unixConn,
+			trctest.WithHandler(api.MessageTypeState, trctest.DefaultStateHandler),
+			trctest.WithHandler(api.MessageTypePing, trctest.DefaultPingHandler),
+			trctest.WithHandler(api.MessageTypeHandshake, trctest.DefaultHandshakeHandler),
+		)
+
+		logger.Debug("Sending handshake...")
+		err = trc.SendHandshake(handshake1)
+		a.NoError(err)
+
+		logger.Debug("Waiting for authentication...")
+		wg.Wait()
+		if t.Failed() {
+			t.Skip("initialisation failed, skipping testcases")
+		}
+
+		trySecondConnect()
+
+		wsAddr := "ws://localhost" + defaultTCPAddress + "/" + webapi.StateEndpoint
+		logger.With("addr", wsAddr).Debug("Opening a WebSocket...")
+		wsConn, _, err := websocket.DefaultDialer.Dial(wsAddr, nil)
+		a.NoError(err, "Failed to open WebSocket")
+		defer wsConn.Close()
+
+		trySecondConnect()
+
+		err = wsConn.WriteJSON(sessionKey)
+		a.NoError(err)
+
+		trySecondConnect()
+
+		// send basic turtles message
+		b, err := json.Marshal(apitest.RandomTurtleStateMap())
+		a.NoError(err)
+
+		req, err := http.NewRequest(http.MethodPost, "http://"+defaultTCPAddress+"/"+webapi.TurtleEndpoint, bytes.NewReader(b))
+		a.NoError(err)
+		req.SetBasicAuth("", sessionKey)
+
+		trySecondConnect()
+
+		errCh := make(chan error, 1)
+		go func() {
+			resp, err := http.DefaultClient.Do(req)
+			if err != nil {
+				errCh <- err
+			}
+			defer resp.Body.Close()
+
+			a.Equal(http.StatusOK, resp.StatusCode, "Received status: %s", resp.Status)
+
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				errCh <- errors.Wrap(err, "failed to read response body")
+			}
+
+			if len(b) > 0 {
+				errCh <- errors.Errorf("server returned error: %s", string(b))
+			}
+			errCh <- nil
+		}()
+
+		trySecondConnect()
 	})
 }
