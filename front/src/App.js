@@ -34,7 +34,7 @@ const BottomBar = styled(Bar)`
 
 const StickyBottomContainer = styled.div`
   position: sticky;
-  top: 100%;
+  bottom: 0;
   width: 100%;
   margin: 0;
 `;
@@ -211,6 +211,15 @@ class App extends Component {
                 </ScrollableContent>
               </Fragment>
             )}
+            {activePage === pageTypes.REFBOX && (
+              <Fragment>
+                <RefboxField
+                  isPenalty={this.state.command === "penalty_demo"}
+                  session={this.state.session}
+                />
+                <RefboxSettings session={this.state.session} />
+              </Fragment>
+            )}
             <StickyBottomContainer>
               <Row bottom="xs">
                 <Col md={4} className={"hidden-xs hidden-sm"}>
@@ -235,15 +244,6 @@ class App extends Component {
                   />
                 </Col>
                 <Col xs={12} className={"hidden-md hidden-lg hidden-xl"}>
-                  {activePage === pageTypes.REFBOX && (
-                    <Fragment>
-                      <RefboxField
-                        isPenalty={this.state.command === "penalty_demo"}
-                        session={this.state.session}
-                      />
-                      <RefboxSettings session={this.state.session} />
-                    </Fragment>
-                  )}
                   <NotificationWindow
                     onDismiss={() => this.onNotificationDismiss()}
                     notification={this.getNextNotification()}
