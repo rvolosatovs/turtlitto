@@ -21,8 +21,17 @@ import (
 )
 
 const (
-	pingInterval = time.Second
-	timeout      = 5 * time.Second
+	// pingInterval is pingInterval.
+	pingInterval = 5 * time.Second
+
+	// writeTimeout is writeTimeout.
+	writeTimeout = 3 * time.Second
+
+	// readTimeout is readTimeout.
+	readTimeout = 3 * time.Second
+
+	// inactivityTimeout is inactivityTimeout.
+	inactivityTimeout = 5 * time.Second
 )
 
 var (
@@ -40,7 +49,7 @@ var (
 
 	errActiveWebSocket     = errors.New("an active WebSocket connection already exists")
 	errAuthenticateFirst   = errors.New("authenticate first")
-	errAuthorizationHeader = errors.New("Authorization header not found or invalid")
+	errAuthorizationHeader = errors.New("`Authorization` header not found or invalid")
 	errInvalidSessionKey   = errors.New("invalid session key")
 	errInvalidToken        = errors.New("invalid token")
 	errFailedToGetToken    = errors.New("TRC connection established, but failed to get token")
@@ -59,9 +68,9 @@ func wsError(w controlWriter, logger *zap.Logger, err error, code int) {
 		zap.Int("code", code),
 	)
 
-	logger.Debug("Closing WebSocket...")
-	if err := w.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(code, err.Error()), time.Time{}); err != nil {
-		logger.Error("Failed to gracefully close WebSocket")
+	logger.Error("Closing WebSocket...")
+	if err := w.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(code, err.Error()), time.Now().Add(writeTimeout)); err != nil {
+		logger.Warn("Failed to gracefully close WebSocket")
 	}
 }
 
@@ -87,6 +96,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	logger := logcontext.Logger(ctx)
 
 	wsConn, err := (&websocket.Upgrader{
+		HandshakeTimeout:  readTimeout,
 		EnableCompression: true,
 		CheckOrigin: func(r *http.Request) bool {
 			return true
@@ -106,7 +116,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	var key string
 	logger.Debug("Reading key...")
 
-	if err := wsConn.SetReadDeadline(time.Now().Add(timeout)); err != nil {
+	if err := wsConn.SetReadDeadline(time.Now().Add(readTimeout)); err != nil {
 		wsError(wsConn, logger, errors.Wrap(err, "failed to set read deadline"), websocket.CloseInternalServerErr)
 		return
 	}
@@ -119,18 +129,18 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 	srv.sessionMu.Lock()
 	switch {
 	case srv.session == nil:
-		wsError(wsConn, logger, errAuthenticateFirst, websocket.ClosePolicyViolation)
 		srv.sessionMu.Unlock()
+		wsError(wsConn, logger, errAuthenticateFirst, websocket.ClosePolicyViolation)
 		return
 
 	case key != srv.session.key:
-		wsError(wsConn, logger, errInvalidSessionKey, websocket.CloseInvalidFramePayloadData)
 		srv.sessionMu.Unlock()
+		wsError(wsConn, logger, errInvalidSessionKey, websocket.CloseInvalidFramePayloadData)
 		return
 
 	case srv.session.isActive:
-		wsError(wsConn, logger, errActiveWebSocket, websocket.ClosePolicyViolation)
 		srv.sessionMu.Unlock()
+		wsError(wsConn, logger, errActiveWebSocket, websocket.ClosePolicyViolation)
 		return
 	}
 
@@ -150,26 +160,6 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	srv.stopTimerMu.Lock()
-	srv.stopTimer.Stop()
-	srv.stopTimerMu.Unlock()
-
-	defer func() {
-		srv.stopTimerMu.Lock()
-		defer srv.stopTimerMu.Unlock()
-
-		srv.stopTimer = time.AfterFunc(timeout, func() {
-			trcConn, err := srv.pool.Conn()
-			if err != nil {
-				logger.Error("Failed to establish connection to TRC", zap.Error(err))
-				return
-			}
-			if err := trcConn.SetCommand(context.Background(), api.CommandStop); err != nil {
-				logger.Error("Failed to stop TRC", zap.Error(err))
-			}
-		})
-	}()
-
 	logger.Debug("Subscribing to state changes...")
 	changeCh, closeFn, err := trcConn.SubscribeStateChanges(ctx)
 	if err != nil {
@@ -180,7 +170,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 
 	oldState := trcConn.State(ctx)
 
-	if err := wsConn.SetWriteDeadline(time.Now().Add(timeout)); err != nil {
+	if err := wsConn.SetWriteDeadline(time.Now().Add(writeTimeout)); err != nil {
 		wsError(wsConn, logger, errors.Wrap(err, "failed to set write deadline"), websocket.CloseInternalServerErr)
 		return
 	}
@@ -191,14 +181,40 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := wsConn.SetReadDeadline(time.Now().Add(pingInterval + writeTimeout + readTimeout)); err != nil {
+		wsError(wsConn, logger, errors.Wrap(err, "failed to set read deadline"), websocket.CloseInternalServerErr)
+	}
+	wsConn.SetPongHandler(func(string) error {
+		return wsConn.SetReadDeadline(time.Now().Add(pingInterval + writeTimeout + readTimeout))
+	})
+
+	errCh := make(chan error, 1)
+	go func() {
+		for {
+			_, _, err := wsConn.NextReader()
+			if err != nil {
+				errCh <- err
+			}
+		}
+	}()
+
 	for {
 		select {
 		case <-ctx.Done():
-			wsError(wsConn, logger, errors.New("Context done"), websocket.CloseInvalidFramePayloadData)
+			wsError(wsConn, logger, errors.New("context done"), websocket.CloseInvalidFramePayloadData)
 			return
 
 		case <-trcConn.Closed():
 			wsError(wsConn, logger, errors.New("TRC connection is closed"), websocket.CloseInternalServerErr)
+			return
+
+		case <-trcConn.Errors():
+			defer trcConn.Close()
+			wsError(wsConn, logger, errors.New("communication with TRC failed"), websocket.CloseInternalServerErr)
+			return
+
+		case err := <-errCh:
+			wsError(wsConn, logger, errors.Wrap(err, "communication via WebSocket failed"), websocket.CloseAbnormalClosure)
 			return
 
 		case <-changeCh:
@@ -214,7 +230,7 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 			}
 			oldState = st
 
-			if err := wsConn.SetWriteDeadline(time.Now().Add(timeout)); err != nil {
+			if err := wsConn.SetWriteDeadline(time.Now().Add(writeTimeout)); err != nil {
 				wsError(wsConn, logger, errors.Wrap(err, "failed to set write deadline"), websocket.CloseInternalServerErr)
 				return
 			}
@@ -226,7 +242,12 @@ func (srv *server) handleState(w http.ResponseWriter, r *http.Request) {
 			}
 
 		case <-time.After(pingInterval):
-			if err := wsConn.WriteControl(websocket.PingMessage, nil, time.Now().Add(timeout)); err != nil {
+			if err := wsConn.SetWriteDeadline(time.Now().Add(writeTimeout)); err != nil {
+				wsError(wsConn, logger, errors.Wrap(err, "failed to set write deadline"), websocket.CloseInternalServerErr)
+				return
+			}
+
+			if err := wsConn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				wsError(wsConn, logger, errors.Wrap(err, "failed to write ping"), websocket.CloseInternalServerErr)
 				return
 			}
@@ -352,14 +373,26 @@ type HandleFuncer interface {
 
 // Register endpoints registers webapi endpoints on handler.
 func RegisterHandlers(pool *trcapi.Pool, handler HandleFuncer) {
-	s := &server{
-		pool:      pool,
-		stopTimer: time.NewTimer(0),
-	}
-	if !s.stopTimer.Stop() {
-		<-s.stopTimer.C
-	}
+	var stopTimerMu sync.Mutex
+	stopTimer := time.AfterFunc(420 /* blaze it */, func() {
+		trcConn, err := pool.Conn()
+		if err != nil {
+			zap.L().Error("Failed to establish connection to TRC", zap.Error(err))
+			return
+		}
+		defer trcConn.Close()
 
+		if err := trcConn.SetCommand(context.Background(), api.CommandStop); err != nil {
+			zap.L().Error("Failed to stop TRC", zap.Error(err))
+		}
+	})
+	stopTimer.Stop()
+
+	activeConns := 0
+
+	s := &server{
+		pool: pool,
+	}
 	for ep, f := range map[string]http.HandlerFunc{
 		"/" + AuthEndpoint: s.handleAuth,
 
@@ -370,7 +403,11 @@ func RegisterHandlers(pool *trcapi.Pool, handler HandleFuncer) {
 			if err := dec.Decode(&cmd); err != nil {
 				return errors.Wrap(err, "failed to decode request body")
 			}
+			if cmd == "" {
+				return nil
+			}
 
+			zap.L().Info("Received command", zap.String("command", string(cmd)))
 			if err := trcConn.SetCommand(ctx, cmd); err != nil {
 				return errors.Wrap(err, "failed to send command to TRC")
 			}
@@ -378,17 +415,37 @@ func RegisterHandlers(pool *trcapi.Pool, handler HandleFuncer) {
 		}),
 
 		"/" + TurtleEndpoint: s.makeTRCSendHandler(func(ctx context.Context, trcConn *trcapi.Conn, dec *json.Decoder) error {
+
 			var st map[string]*api.TurtleState
 			if err := dec.Decode(&st); err != nil {
 				return errors.Wrap(err, "failed to read states")
 			}
+			if len(st) == 0 {
+				return nil
+			}
 
+			zap.L().Info("Received turtle state", zap.Reflect("state", st))
 			if err := trcConn.SetTurtleState(ctx, st); err != nil {
 				return errors.Wrap(err, "failed to send turtle state to TRC")
 			}
 			return nil
 		}),
 	} {
-		handler.HandleFunc(ep, f)
+		hdl := f
+		handler.HandleFunc(ep, func(w http.ResponseWriter, r *http.Request) {
+			stopTimerMu.Lock()
+			activeConns++
+			stopTimer.Stop()
+			stopTimerMu.Unlock()
+
+			hdl(w, r)
+
+			stopTimerMu.Lock()
+			activeConns--
+			if activeConns == 0 {
+				stopTimer.Reset(inactivityTimeout)
+			}
+			stopTimerMu.Unlock()
+		})
 	}
 }

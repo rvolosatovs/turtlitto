@@ -157,35 +157,44 @@ func TestAPI(t *testing.T) {
 		sessionKey = string(b)
 	}()
 
-	logger.Debug("Waiting for connection on Unix socket...")
-	unixConn, err := netLst.Accept()
-	a.NoError(err)
-	defer unixConn.Close()
-
-	logger.Debug("Establishing mock TRC connection...")
 	msgCh := make(chan *api.Message)
-	trc := trctest.Connect(
-		unixConn, unixConn,
-		trctest.WithHandler(api.MessageTypePing, func(msg *api.Message) (*api.Message, error) {
-			return trctest.DefaultPingHandler(msg)
-		}),
-		trctest.WithHandler(api.MessageTypeHandshake, func(msg *api.Message) (*api.Message, error) {
-			a.NotNil(msg.ParentID)
-			a.NotEmpty(msg.ParentID)
-			a.NotEmpty(msg.MessageID)
-			a.NotEqual(msg.MessageID, msg.ParentID)
-			a.NotEmpty(msg.Payload)
-			return nil, nil
-		}),
-		trctest.WithHandler(api.MessageTypeState, func(msg *api.Message) (*api.Message, error) {
-			msgCh <- msg
-			return trctest.DefaultStateHandler(msg)
-		}),
-	)
 
-	logger.Debug("Sending handshake...")
-	err = trc.SendHandshake(handshake)
-	a.NoError(err)
+	trcConnect := func() (*trctest.Conn, func(), error) {
+		logger.Debug("Waiting for connection on Unix socket...")
+		unixConn, err := netLst.Accept()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		logger.Debug("Establishing mock TRC connection...")
+		trc := trctest.Connect(
+			unixConn, unixConn,
+			trctest.WithHandler(api.MessageTypePing, func(msg *api.Message) (*api.Message, error) {
+				return trctest.DefaultPingHandler(msg)
+			}),
+			trctest.WithHandler(api.MessageTypeHandshake, func(msg *api.Message) (*api.Message, error) {
+				a.NotNil(msg.ParentID)
+				a.NotEmpty(msg.ParentID)
+				a.NotEmpty(msg.MessageID)
+				a.NotEqual(msg.MessageID, msg.ParentID)
+				a.NotEmpty(msg.Payload)
+				return nil, nil
+			}),
+			trctest.WithHandler(api.MessageTypeState, func(msg *api.Message) (*api.Message, error) {
+				msgCh <- msg
+				return trctest.DefaultStateHandler(msg)
+			}),
+		)
+		return trc, func() { unixConn.Close() }, trc.SendHandshake(handshake)
+	}
+
+	trc, closeFn, err := trcConnect()
+	if closeFn != nil {
+		defer closeFn()
+	}
+	if !a.NoError(err) {
+		t.FailNow()
+	}
 
 	logger.Debug("Waiting for authentication...")
 	wg.Wait()
@@ -202,7 +211,9 @@ func TestAPI(t *testing.T) {
 	defer wsConn.Close()
 
 	err = wsConn.WriteJSON(sessionKey)
-	a.NoError(err)
+	if !a.NoError(err) {
+		t.FailNow()
+	}
 
 	t.Run("TRC->SRRC/state", func(t *testing.T) {
 		for i := 0; i < messageCount; i++ {

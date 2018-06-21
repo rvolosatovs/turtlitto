@@ -129,31 +129,6 @@ func main() {
 		})
 		defer pool.Close()
 
-		go func() {
-			var last time.Time
-			for {
-				d := time.Until(last.Add(retryInterval))
-				if d > 0 {
-					logger.With(zap.Duration("duration", d)).Debug("Sleeping before retrying the connection...")
-				}
-				time.Sleep(d)
-
-				last = time.Now()
-
-				logger.Debug("Retrieving a connection from pool...")
-				trcConn, err := pool.Conn()
-				if err != nil {
-					logger.With(zap.Error(err)).Warn("Failed to retrieve TRC connection from pool")
-					continue
-				}
-				logger.Debug("Connection retrieval from pool succeeded")
-
-				for err := range trcConn.Errors() {
-					logger.With(zap.Error(err)).Error("Communication with TRC failed")
-				}
-			}
-		}()
-
 		mux := http.DefaultServeMux
 
 		webapi.RegisterHandlers(pool, mux)

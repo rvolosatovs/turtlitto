@@ -96,6 +96,6 @@ docker: $(BINDIR)/front $(BINDIR)/srrs-linux-amd64
 	docker build -t rvolosatovs/srr:$(DOCKER_IMAGE_VERSION) .
 
 clean:
-	rm -rf node_modules front/node_modules vendor $(BINDIR)/srrs-* $(BINDIR)/front
+	rm -rf node_modules front/node_modules vendor $(BINDIR)/srrs-* $(BINDIR)/front*
 
 .PHONY: all srrs srrs-noauth relay trcd deps fmt test go.build go.fmt go.test go.lint js.build js.fmt md.fmt clean
