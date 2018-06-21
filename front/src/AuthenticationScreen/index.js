@@ -32,6 +32,7 @@ class AuthenticationScreen extends Component {
         <Window>
           <Label>Token:</Label>
           <Input
+            id="auth-screen_token-input"
             type="text"
             placeholder="Enter the TRC token"
             onChange={event => this.setState({ token: event.target.value })}
@@ -42,7 +43,7 @@ class AuthenticationScreen extends Component {
             </WarningLabel>
           )}
           <LoginButton
-            id="login-button"
+            id="auth-screen__login-button"
             onClick={() => this.props.onSubmit(this.state.token)}
           >
             Log in
@@ -91,6 +92,7 @@ const Input = styled.input`
     font-size: 1.5rem;
   }
 `;
+Input.displayName = "TokenInput";
 
 const LoginButton = styled.button`
   margin-top: 1rem;
@@ -104,6 +106,7 @@ const LoginButton = styled.button`
     background-color: ${props => props.theme.loginButtonActive};
   }
 `;
+LoginButton.displayName = "LoginButton";
 
 const ConnectionWindow = styled(Window)`
   padding: 0;

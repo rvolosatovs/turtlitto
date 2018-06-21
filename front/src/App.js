@@ -265,7 +265,7 @@ class App extends Component {
         ) : (
           <AuthenticationScreen
             notification={this.state.authNotification}
-            onSubmit={(token, callback) => this.authSubmit(token, callback)}
+            onSubmit={token => this.authSubmit(token)}
             connectionStatus={connectionStatus}
           />
         )}

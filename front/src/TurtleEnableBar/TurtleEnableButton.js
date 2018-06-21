@@ -51,5 +51,6 @@ const Button = styled.button`
   min-width: 7rem;
   flex: 1;
 `;
+Button.displayName = "TurtleEnableButton";
 
 export default TurtleEnableButton;

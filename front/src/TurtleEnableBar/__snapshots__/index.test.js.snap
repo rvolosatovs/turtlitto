@@ -118,7 +118,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
         key="1"
         onTurtleEnableChange={[Function]}
       >
-        <styled.button
+        <TurtleEnableButton
           isActive={false}
           onClick={[Function]}
         >
@@ -128,7 +128,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
           >
             1
           </button>
-        </styled.button>
+        </TurtleEnableButton>
       </TurtleEnableButton>
       <TurtleEnableButton
         enabled={false}
@@ -136,7 +136,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
         key="2"
         onTurtleEnableChange={[Function]}
       >
-        <styled.button
+        <TurtleEnableButton
           isActive={false}
           onClick={[Function]}
         >
@@ -146,7 +146,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
           >
             2
           </button>
-        </styled.button>
+        </TurtleEnableButton>
       </TurtleEnableButton>
       <TurtleEnableButton
         enabled={false}
@@ -154,7 +154,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
         key="3"
         onTurtleEnableChange={[Function]}
       >
-        <styled.button
+        <TurtleEnableButton
           isActive={false}
           onClick={[Function]}
         >
@@ -164,7 +164,7 @@ exports[`TurtleEnableBar should render all turtles as <TurtleEnableButton /> com
           >
             3
           </button>
-        </styled.button>
+        </TurtleEnableButton>
       </TurtleEnableButton>
     </div>
   </styled.div>
