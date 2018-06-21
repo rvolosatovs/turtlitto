@@ -16,6 +16,7 @@ import RefboxSettings from "./RefboxSettings";
 import Settings from "./Settings";
 import TurtleEnableBar from "./TurtleEnableBar";
 import AuthenticationScreen from "./AuthenticationScreen";
+import SupportBar from "./SupportBar";
 
 const Container = styled.div`
   height: 100%;
@@ -256,6 +257,7 @@ class App extends Component {
                     connectionStatus={connectionStatus}
                     session={this.state.session}
                   />
+                  <SupportBar />
                 </Col>
               </Row>
             </StickyBottomContainer>
