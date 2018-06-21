@@ -60,10 +60,7 @@ class App extends Component {
       session: "",
       command: "role_assigner_on",
       turtles: {},
-      notifications: [
-        { notificationType: "error", message: "Pants on fire" },
-        { notificationType: "success", message: "Rendering Notifications" }
-      ],
+      notifications: [],
       loggedIn: false,
       authNotification: ""
     };
