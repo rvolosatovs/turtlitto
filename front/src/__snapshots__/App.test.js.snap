@@ -1654,11 +1654,11 @@ exports[`App.js the user submits the login form the user inputs a valid token sh
                         </styled.div>
                       </BottomBar>
                     </Styled(BottomBar)>
-                    <SupportBar />
                   </div>
                 </Col>
               </div>
             </Row>
+            <SupportBar />
           </div>
         </styled.div>
       </div>
