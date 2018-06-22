@@ -21,9 +21,18 @@ exports[`Turtle should match snapshot 1`] = `
 }
 
 .c1 {
+  min-width: 9.5rem;
   -webkit-flex-basis: 35%;
   -ms-flex-preferred-size: 35%;
   flex-basis: 35%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
 
 .c4 {
@@ -45,6 +54,7 @@ exports[`Turtle should match snapshot 1`] = `
   -webkit-flex-basis: 35%;
   -ms-flex-preferred-size: 35%;
   flex-basis: 35%;
+  padding: 0 0.5rem;
 }
 
 .c5 {

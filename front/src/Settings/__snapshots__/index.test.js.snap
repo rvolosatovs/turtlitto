@@ -81,9 +81,18 @@ exports[`renders without crashing 1`] = `
 }
 
 .c2 {
+  min-width: 9.5rem;
   -webkit-flex-basis: 35%;
   -ms-flex-preferred-size: 35%;
   flex-basis: 35%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
 
 .c5 {
@@ -105,6 +114,7 @@ exports[`renders without crashing 1`] = `
   -webkit-flex-basis: 35%;
   -ms-flex-preferred-size: 35%;
   flex-basis: 35%;
+  padding: 0 0.5rem;
 }
 
 .c6 {
@@ -207,11 +217,9 @@ exports[`renders without crashing 1`] = `
           }
         }
       >
-        <Grid
-          fluid={true}
-        >
+        <Grid>
           <div
-            className="container-fluid"
+            className="container"
           >
             <Row>
               <div
