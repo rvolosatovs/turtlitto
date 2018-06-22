@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
 
@@ -21,7 +21,8 @@ export default class SupportBar extends Component {
       navigator.userAgent
     );
     const isIosSafari = /iP.* Version/.test(navigator.userAgent);
-    this.state = { show: isAndroidChrome || isIosSafari };
+    const isIpad = /iPad.* Version/.test(navigator.userAgent);
+    this.state = { show: isAndroidChrome || isIosSafari, isIpad: isIpad };
     this.onResize = () => this.forceUpdate();
     window.addEventListener("resize", this.onResize);
   }
@@ -32,10 +33,9 @@ export default class SupportBar extends Component {
 
   render() {
     // Don't show the SupportBar in landscape mode
-    const { clientHeight, clientWidth } = document.body;
-    if (this.state.show && clientHeight > clientWidth) {
+    if (this.state.show) {
       return (
-        <Bar>
+        <Bar isIpad={this.state.isIpad}>
           <span>Soccer Robot Remote</span>
           <CloseButton onClick={() => this.setState({ show: false })}>
             <FontAwesomeIcon icon={faTimes} />
@@ -52,7 +52,14 @@ const Bar = styled.div`
   align-items: center;
   display: flex;
   font-size: 3rem;
-  height: 10vh;
+  ${props =>
+    props.isIpad
+      ? css`
+          height: 4vh;
+        `
+      : css`
+          height: 9vh;
+        `};
   justify-content: space-around;
 `;
 

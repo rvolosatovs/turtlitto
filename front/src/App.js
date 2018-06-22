@@ -258,9 +258,9 @@ class App extends Component {
                     connectionStatus={connectionStatus}
                     session={this.state.session}
                   />
-                  <SupportBar />
                 </Col>
               </Row>
+              <SupportBar />
             </StickyBottomContainer>
           </Container>
         ) : (
