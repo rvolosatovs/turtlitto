@@ -19,7 +19,7 @@ import Turtle from "../Turtle";
 const TurtleList = props => {
   const { turtles, session } = props;
   return (
-    <Grid fluid>
+    <Grid>
       <Row>
         {Object.keys(turtles)
           .filter(id => turtles[id].enabled)

@@ -461,11 +461,9 @@ exports[`App.js the user submits the login form the user inputs a valid token sh
                     session="session"
                     turtles={Object {}}
                   >
-                    <Grid
-                      fluid={true}
-                    >
+                    <Grid>
                       <div
-                        className="container-fluid"
+                        className="container"
                       >
                         <Row>
                           <div

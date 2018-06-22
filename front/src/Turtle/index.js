@@ -113,7 +113,10 @@ Turtle.propTypes = {
 };
 
 const BatterySection = styled.div`
+  min-width: 9.5rem;
   flex-basis: 35%;
+  display: flex;
+  justify-content: center;
 `;
 
 const SubSection = styled.div`
@@ -122,6 +125,7 @@ const SubSection = styled.div`
   justify-content: center;
   align-items: center;
   flex-basis: 35%;
+  padding: 0 0.5rem;
 `;
 
 const DropDownSection = styled.div`
