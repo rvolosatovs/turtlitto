@@ -27,6 +27,7 @@ const Container = styled.div`
 const ScrollableContent = styled.div`
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const BottomBar = styled(Bar)`
