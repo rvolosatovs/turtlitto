@@ -342,6 +342,7 @@ exports[`App.js the user submits the login form the user inputs a valid token sh
   -ms-flex: 1;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .c18 {
